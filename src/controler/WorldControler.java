@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 import model.Creature;
 import model.grid.Grid;
@@ -17,9 +18,10 @@ public class WorldControler extends Observable{
 		this.grid = new Grid(size,roughness,seed);
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
-		creatureList.add(new Creature(1,0,0));
-		creatureList.add(new Creature(2,0,0));
-		creatureList.add(new Creature(3,0,0));
+		Random rand = new Random();
+		for(int i=0; i<creatureCount;i++){
+			creatureList.add(new Creature(i,rand.nextInt(size*tilesize),rand.nextInt(size*tilesize)));
+		}
 		
 	}
 
