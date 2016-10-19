@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import controler.WorldControler;
 import model.Grid;
 
 public class ViewGrid extends JPanel{
@@ -17,20 +18,20 @@ public class ViewGrid extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Grid grid;
+	private WorldControler wc;
 	private final int TILE_SIZE = 8;
 	
-	public ViewGrid(Grid grid){
-		this.grid = grid;
+	public ViewGrid(WorldControler wc){
+		this.wc = wc;
 		
-		int preferredWidth = grid.getNumCols() * TILE_SIZE;
-        int preferredHeight = grid.getNumRows() * TILE_SIZE;
+		int preferredWidth = wc.getSize() * TILE_SIZE;
+        int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
 	}
 	
 	public Color getTileColor(double d, double e){
-		return grid.getTileColour((int) d/TILE_SIZE,(int) e/TILE_SIZE);
+		return wc.getTileColour((int) d/TILE_SIZE,(int) e/TILE_SIZE);
 	}
 	
 	@Override
@@ -40,15 +41,15 @@ public class ViewGrid extends JPanel{
         // Clear the board
         g.clearRect(0, 0, getWidth(), getHeight());
         // Draw the grid
-        int rectWidth = getWidth() / grid.getNumCols();
-        int rectHeight = getHeight() / grid.getNumRows();
+        int rectWidth = getWidth() / wc.getSize();
+        int rectHeight = getHeight() / wc.getSize();
 
-        for (int i = 0; i < grid.getNumRows(); i++) {
-            for (int j = 0; j < grid.getNumCols(); j++) {
+        for (int i = 0; i < wc.getSize(); i++) {
+            for (int j = 0; j < wc.getSize(); j++) {
                 // Upper left corner of this terrain rect
                 int x = i * rectWidth;
                 int y = j * rectHeight;
-                Color terrainColor = grid.getTileColour(i,j);
+                Color terrainColor = wc.getTileColour(i,j);
                 g.setColor(terrainColor);
                 g.fillRect(x, y, rectWidth, rectHeight);
             }
@@ -57,8 +58,8 @@ public class ViewGrid extends JPanel{
 	
 	public static void main(String[] args) throws InterruptedException {
 		int tick = 1000;
-        Grid grid = new Grid(100,(float)10000,0);
-        ViewGrid vG = new ViewGrid(grid);
+        WorldControler wc = new WorldControler(100,(float)10000,0,60);
+        ViewGrid vG = new ViewGrid(wc);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame("Game");
