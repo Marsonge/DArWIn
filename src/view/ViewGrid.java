@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -10,6 +11,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -25,14 +27,19 @@ public class ViewGrid extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	private WorldControler wc;
 	private final int TILE_SIZE = 8;
+	private int tick;
+	private final Timer timer;
 	
 	public ViewGrid(WorldControler wc){
+		super(null);
 		this.wc = wc;
 		wc.addObserver(this);
-		this.setLayout(null);
+		this.tick = 1000;
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+        this.timer = new Timer(tick, new TimerActionListener(wc));
+
 	}
 	
 	public Color getTileColor(double d, double e){
@@ -74,7 +81,9 @@ public class ViewGrid extends JPanel implements Observer{
 		for(Creature c : cList){
 			ViewCreature vc = new ViewCreature(c);
 			this.add(vc);
-			System.out.println(vc.getIcon());
+			vc.setVisible(true);
+			vc.setSize(32, 32);
+			System.out.println(vc.getX() + " " + vc.getY());
 		}
 	}
 }

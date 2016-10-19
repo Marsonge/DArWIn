@@ -44,7 +44,7 @@ public class MainView extends JFrame {
 		wc.simulateForward();
         
         // Start main timer
-        this.tick = 1000;
+        this.tick = 100;
         this.timer = new Timer(tick, new TimerActionListener(wc));
         this.timer.start();
 	}

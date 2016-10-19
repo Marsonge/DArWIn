@@ -14,7 +14,7 @@ public class Creature {
 		this.x = x;
 		this.y = y;
 		this.foodLevel = 50;
-		this.speed = 2;
+		this.speed = 3;
 	}
 
 	public int getId() {
