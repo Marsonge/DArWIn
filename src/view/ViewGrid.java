@@ -56,7 +56,7 @@ public class ViewGrid extends JPanel{
         }
     }
 	
-	public static void main(String[] args) throws InterruptedException {
+	/*public static void main(String[] args) throws InterruptedException {
 		int tick = 1000;
         WorldControler wc = new WorldControler(100,(float)10000,0,60);
         ViewGrid vG = new ViewGrid(wc);
@@ -76,5 +76,5 @@ public class ViewGrid extends JPanel{
         //    System.out.println(c.getRed() + " " + c.getGreen() + " " + c.getBlue());
         //    Thread.sleep(tick);
        // }
-    }
+    }*/
 }

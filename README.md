@@ -14,3 +14,6 @@ La simulation se fera sur une grille de taille définie par l’utilisateur. Les
 A travers les mutations légères et une fonction de mort pour éliminer les traits négatifs, les créatures devraient rapidement atteindre des performances excellentes sans besoin de  programmer leur cerveau manuellement.
 
 
+![Lake](http://i.imgur.com/ooQRLsR.png)
+
+![Basin](http://i.imgur.com/vqsgVg4.png)
