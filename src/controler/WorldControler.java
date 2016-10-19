@@ -30,10 +30,8 @@ public class WorldControler {
 	public boolean simulateForward() {
 		
 		for(Creature c : creatureList){
-			if (c.move()){
-				return true;
-			}
-			return false;
+			c.move();
 		}
+		return true;
 	}
 } 
