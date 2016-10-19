@@ -9,7 +9,11 @@ import java.util.Random;
 
 import model.Creature;
 import model.grid.Grid;
-
+/**
+ * General Controler
+ * Used to manipulate the model
+ *
+ */
 public class WorldControler extends Observable{
 	private Grid grid;
 	private List<Creature> creatureList;
@@ -24,11 +28,20 @@ public class WorldControler extends Observable{
 		}
 		
 	}
-
+	/**
+	 *  
+	 * @param i
+	 * @param j
+	 * @return the colour of the tile at the position i, j
+	 */
 	public Color getTileColour(int i, int j) {
 		return grid.getTileColour(i, j);
 	}
-
+	
+	/**
+	 * 
+	 * @return size of the map (width, height)
+	 */
 	public int getSize() {
 		return grid.getNumCols();
 	}
