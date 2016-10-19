@@ -1,15 +1,24 @@
-package model;
+package model.grid;
 
 import java.awt.Color;
 import java.util.Random;
-
+/**
+ * The grid which contains all Tiles
+ * Generated with fractals
+ *
+ */
 public class Grid {
 	
 	private final int NUMCOLS;
 	private final int NUMROWS;
 	private final Tile[][] tileGrid;
 	private final NoiseGrid noiseGrid;
-	
+	/**
+	 * 
+	 * @param size number of tiles of the map (height and width)
+	 * @param e roughness parameter (entropy)
+	 * @param seed used to create the map randomly
+	 */
 	public Grid(int size,float e,long seed){
 		this.tileGrid = new Tile[size][size];
 		this.NUMCOLS = size;
@@ -59,7 +68,13 @@ public class Grid {
 	public int getNumRows() {
 		return NUMROWS;
 	}
-
+	
+	/**
+	 *  
+	 * @param i
+	 * @param j
+	 * @return the colour of the tile at the position i, j
+	 */
 	public Color getTileColour(int i, int j) {
 
 		return tileGrid[i][j].getColour();
