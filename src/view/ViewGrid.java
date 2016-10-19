@@ -3,6 +3,8 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,8 +13,12 @@ import javax.swing.SwingUtilities;
 import model.Grid;
 
 public class ViewGrid extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Grid grid;
-	private final int TILE_SIZE = 10;
+	private final int TILE_SIZE = 8;
 	
 	public ViewGrid(Grid grid){
 		this.grid = grid;
@@ -21,6 +27,10 @@ public class ViewGrid extends JPanel{
         int preferredHeight = grid.getNumRows() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
+	}
+	
+	public Color getTileColor(double d, double e){
+		return grid.getTileColour((int) d/TILE_SIZE,(int) e/TILE_SIZE);
 	}
 	
 	@Override
@@ -45,17 +55,25 @@ public class ViewGrid extends JPanel{
         }
     }
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
+		int tick = 1000;
+        Grid grid = new Grid(100,(float)10000,0);
+        ViewGrid vG = new ViewGrid(grid);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JFrame frame = new JFrame("Game");
-                Grid grid = new Grid(75,75,(float)350);
-                ViewGrid vG = new ViewGrid(grid);
                 frame.add(vG);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
                 frame.setVisible(true);
             }
         });
+        //Thread.sleep(tick);
+        //while(true){
+         //   Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+          //  Color c = vG.getTileColor(mouseLoc.getX() - vG.getLocationOnScreen().getX(),(mouseLoc.getY() - vG.getLocationOnScreen().getY()));
+        //    System.out.println(c.getRed() + " " + c.getGreen() + " " + c.getBlue());
+        //    Thread.sleep(tick);
+       // }
     }
 }

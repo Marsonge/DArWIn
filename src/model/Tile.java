@@ -15,5 +15,8 @@ public class Tile {
 	public Color getColour() {
 		return color;
 	}
+	public Terrain getTerrain(){
+		return t;
+	}
 
 }
