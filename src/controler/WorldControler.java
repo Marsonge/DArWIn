@@ -21,4 +21,19 @@ public class WorldControler {
 	public int getSize() {
 		return grid.getNumCols();
 	}
+
+	/**
+	 * Function called every timer tick.
+	 * Represents a "game turn" in which every creature moves forward (for now)/
+	 * @return
+	 */
+	public boolean simulateForward() {
+		
+		for(Creature c : creatureList){
+			if (c.move()){
+				return true;
+			}
+			return false;
+		}
+	}
 } 
