@@ -16,6 +16,7 @@ import model.grid.Grid;
  */
 public class WorldControler extends Observable{
 	private Grid grid;
+	private int tilesize;
 	private List<Creature> creatureList;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
@@ -26,6 +27,7 @@ public class WorldControler extends Observable{
 		for(int i=0; i<creatureCount;i++){
 			creatureList.add(new Creature(i,rand.nextInt(size*tilesize),rand.nextInt(size*tilesize)));
 		}
+		this.tilesize = tilesize;
 		
 	}
 	/**
@@ -70,4 +72,8 @@ public class WorldControler extends Observable{
 	public void addObserver(Observer o){
 		super.addObserver(o);
 	}
+	public int getTileSize() {
+		return tilesize;
+	}
+	
 } 
