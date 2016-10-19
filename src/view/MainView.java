@@ -29,22 +29,23 @@ public class MainView extends JFrame {
 		
 		// Create the main JFrame
 		JFrame mainFrame = new JFrame("Darwin : ARtificial Wildlife Intelligence");
-        
+        mainFrame.setResizable(false);
+
         // main JFrame setting
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
         mainFrame.setBackground(black);
-        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        mainFrame.setExtendedState(JFrame.NORMAL); 
         
         // Add Layout to mainFrame
         mainFrame.setLayout(new BorderLayout());
 		
 		// Create the grid
-		WorldControler wc = new WorldControler(100,5,(float)10000,0,60); 
+		WorldControler wc = new WorldControler(100,7,(float)10000,0,60); 
         ViewGrid vG = new ViewGrid(wc);
         
         
         JPanel jpanel = new JPanel();
-        jpanel.setPreferredSize(new Dimension(1000,1000)); 
+        jpanel.setPreferredSize(new Dimension(300,700)); 
         jpanel.setBackground(black);
         
         // Adding viewGrid to mainFrame
