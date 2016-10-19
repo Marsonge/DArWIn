@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import controler.WorldControler;
 import model.grid.Grid;
@@ -10,6 +11,8 @@ import model.grid.Grid;
 public class MainView extends JFrame {
 	
 	public static final Color black = new Color(0,0,0);
+	private final Timer timer;
+	private int tick;
 	
 	/**
 	 * MainView()
@@ -39,7 +42,11 @@ public class MainView extends JFrame {
         mainFrame.pack();
 		Thread.sleep(1000);
 		wc.simulateForward();
-		
+        
+        // Start main timer
+        this.tick = 1000;
+        this.timer = new Timer(tick, new TimerActionListener(wc));
+        this.timer.start();
 	}
 	
 	/**
