@@ -3,6 +3,7 @@ package controler;
 import java.awt.Color;
 import java.util.List;
 
+import model.Creature;
 import model.Grid;
 
 public class WorldControler {
