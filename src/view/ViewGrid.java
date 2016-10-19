@@ -21,14 +21,17 @@ public class ViewGrid extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private WorldControler wc;
 	private final int TILE_SIZE = 8;
-	private final Timer timer = new Timer(1000, new TimerActionListener(wc));
+	private int tick;
+	private final Timer timer;
 	
 	public ViewGrid(WorldControler wc){
 		this.wc = wc;
 		
+		this.tick = 1000;
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+        this.timer = new Timer(tick, new TimerActionListener(wc));
 
 	}
 	
