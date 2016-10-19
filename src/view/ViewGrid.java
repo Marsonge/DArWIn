@@ -30,11 +30,16 @@ public class ViewGrid extends JPanel implements Observer{
 	private int tick;
 	private final Timer timer;
 	
+	
+	/**
+	 * 
+	 * @param wc
+	 */
 	public ViewGrid(WorldControler wc){
 		super(null);
 		this.wc = wc;
 		wc.addObserver(this);
-		this.tick = 1000;
+		this.tick = 1000; //Is in milliseconds
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
@@ -42,13 +47,18 @@ public class ViewGrid extends JPanel implements Observer{
 
 	}
 	
-	public Color getTileColor(double d, double e){
-		return wc.getTileColour((int) d/TILE_SIZE,(int) e/TILE_SIZE);
+	/**
+	 * 
+	 * @param x : The X coordinate in pixel of the tile
+	 * @param y : The Y coordinate in pixel of the tile
+	 * @return the colour of the tile at pixel coordinates x,y
+	 */
+	public Color getTileColor(double x, double y){
+		return wc.getTileColour((int) x/TILE_SIZE,(int) y/TILE_SIZE);
 	}
 	
 	@Override
     public void paintComponent(Graphics g) {
-        // Important to call super class method
         super.paintComponent(g);
         // Clear the board
         g.clearRect(0, 0, getWidth(), getHeight());
@@ -69,13 +79,17 @@ public class ViewGrid extends JPanel implements Observer{
     }
 	
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(Observable o, Object arg) { //Is ran everytime WorldControler simulates a tick
 		this.removeAll();
 		paintCreatures(arg);
 		this.revalidate();
 		this.repaint();
 	}
 	
+	/**
+	 * 
+	 * @param arg : The LinkedList that notifyObserver passes through in WorldControler
+	 */
 	private void paintCreatures(Object arg){
 		LinkedList<Creature> cList = (LinkedList<Creature>) arg;
 		for(Creature c : cList){
