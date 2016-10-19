@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import model.Creature;
 
 public class ViewCreature extends JLabel {
+
+	private static final long serialVersionUID = 3003074446528565112L;
 	private Creature c;
 	
 	public ViewCreature(Creature c){
