@@ -12,7 +12,7 @@ public class ViewCreature extends JLabel {
 	
 	public ViewCreature(Creature c){
 		this.c = c;
-		ImageIcon img = new ImageIcon("img/creature.png");
+		ImageIcon img = new ImageIcon("resources/img/creature.png");
 		this.setIcon(img);
 	}
 
