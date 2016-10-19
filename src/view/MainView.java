@@ -15,9 +15,10 @@ public class MainView extends JFrame {
 	 * MainView()
 	 * 
 	 * Create the main JFrame and add the ViewGrid 
+	 * @throws InterruptedException 
 	 * 
 	 */
-	public MainView(){
+	public MainView() throws InterruptedException{
 		
 		// Create the main JFrame
 		JFrame mainFrame = new JFrame("Darwin : ARtificial Wildlife Intelligence");
@@ -36,6 +37,9 @@ public class MainView extends JFrame {
         mainFrame.setVisible(true);
         
         mainFrame.pack();
+		Thread.sleep(1000);
+		wc.simulateForward();
+		
 	}
 	
 	/**

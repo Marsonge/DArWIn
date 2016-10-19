@@ -42,6 +42,7 @@ public class WorldControler extends Observable{
 		for(Creature c : creatureList){
 			c.move();
 		}
+		this.notifyObservers(this.creatureList); 
 		return true;
 	}
 	
@@ -51,12 +52,9 @@ public class WorldControler extends Observable{
 		super.notifyObservers(arg); 
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Observable#addObserver(java.util.Observer)
-	 */
+
 	@Override
 	public void addObserver(Observer o){
 		super.addObserver(o);
-		this.notifyObservers(this.creatureList); 
 	}
 } 

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,7 +16,7 @@ import javax.swing.Timer;
 
 import controler.WorldControler;
 import model.Creature;
-import model.Grid;
+import model.grid.Grid;
 
 public class ViewGrid extends JPanel implements Observer{
 	/**
@@ -31,6 +30,7 @@ public class ViewGrid extends JPanel implements Observer{
 	
 	public ViewGrid(WorldControler wc){
 		this.wc = wc;
+		wc.addObserver(this);
 		this.setLayout(null);
 		this.tick = 1000;
 		int preferredWidth = wc.getSize() * TILE_SIZE;
@@ -68,8 +68,10 @@ public class ViewGrid extends JPanel implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		paintComponent(this.getGraphics());
+		this.removeAll();
 		paintCreatures(arg);
+		this.revalidate();
+		this.repaint();
 	}
 	
 	private void paintCreatures(Object arg){
@@ -77,7 +79,7 @@ public class ViewGrid extends JPanel implements Observer{
 		for(Creature c : cList){
 			ViewCreature vc = new ViewCreature(c);
 			this.add(vc);
-			
+			System.out.println(vc.getIcon());
 		}
 	}
 }

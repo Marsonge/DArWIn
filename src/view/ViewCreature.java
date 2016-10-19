@@ -11,9 +11,12 @@ public class ViewCreature extends JLabel {
 	private Creature c;
 	
 	public ViewCreature(Creature c){
+		super();
 		this.c = c;
 		ImageIcon img = new ImageIcon("resources/img/creature.png");
 		this.setIcon(img);
+		this.setLocation(c.getX(), c.getY());
+		this.setSize(5,5);
 	}
 
 	@Override
