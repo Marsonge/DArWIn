@@ -3,6 +3,7 @@ package controler;
 import java.awt.Color;
 import java.util.List;
 
+import model.Creature;
 import model.Grid;
 
 public class WorldControler {
@@ -20,4 +21,4 @@ public class WorldControler {
 	public int getSize() {
 		return grid.getNumCols();
 	}
-}
+} 
