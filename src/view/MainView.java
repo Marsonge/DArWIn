@@ -23,7 +23,7 @@ public class MainView extends JFrame {
 		JFrame mainFrame = new JFrame("Darwin : ARtificial Wildlife Intelligence");
 		
 		// Create the grid
-		WorldControler wc = new WorldControler(100,(float)10000,0,60); 
+		WorldControler wc = new WorldControler(100,8,(float)10000,0,60); 
         ViewGrid vG = new ViewGrid(wc);
 
         // Adding viewGrid to mainFrame
