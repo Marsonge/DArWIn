@@ -45,7 +45,7 @@ public class MainView extends JFrame {
         
         
         JPanel jpanel = new JPanel();
-        jpanel.setPreferredSize(new Dimension(300,700)); 
+        jpanel.setPreferredSize(new Dimension(500,700)); 
         jpanel.setBackground(black);
         
         // Adding viewGrid to mainFrame
