@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.List;
 
 import model.Creature;
-import model.Grid;
+import model.grid.Grid;
 
 public class WorldControler {
 	private Grid grid;

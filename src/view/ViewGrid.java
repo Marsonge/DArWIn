@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import controler.WorldControler;
-import model.Grid;
+import model.grid.Grid;
 
 public class ViewGrid extends JPanel{
 	/**

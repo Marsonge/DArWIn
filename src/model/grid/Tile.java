@@ -1,4 +1,4 @@
-package model;
+package model.grid;
 
 import java.awt.Color;
 
