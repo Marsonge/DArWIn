@@ -7,7 +7,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import model.Creature;
-import model.Grid;
+import model.grid.Grid;
 
 public class WorldControler extends Observable{
 	private Grid grid;
@@ -38,12 +38,9 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		for(Creature c : creatureList){
-			if (c.move()){
-				return true;
-			}
-			return false;
+			c.move();
 		}
-		return false;
+		return true;
 	}
 	
 	@Override

@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import controler.WorldControler;
-import model.Grid;
+import model.grid.Grid;
 
 public class MainView extends JFrame {
 	

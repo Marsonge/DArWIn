@@ -1,4 +1,4 @@
-package model;
+package model.grid;
 
 public enum Terrain {
     OCEAN(0, 0, 255), //Blue
