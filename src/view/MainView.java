@@ -1,7 +1,11 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -25,21 +29,31 @@ public class MainView extends JFrame {
 		
 		// Create the main JFrame
 		JFrame mainFrame = new JFrame("Darwin : ARtificial Wildlife Intelligence");
-		
-		// Create the grid
-		WorldControler wc = new WorldControler(100,8,(float)10000,0,60); 
-        ViewGrid vG = new ViewGrid(wc);
-
-        // Adding viewGrid to mainFrame
-        mainFrame.add(vG);
         
         // main JFrame setting
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
         mainFrame.setBackground(black);
-        mainFrame.setSize(800,600);
-        mainFrame.setVisible(true);
+        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        
+        // Add Layout to mainFrame
+        mainFrame.setLayout(new BorderLayout());
+		
+		// Create the grid
+		WorldControler wc = new WorldControler(100,5,(float)10000,0,60); 
+        ViewGrid vG = new ViewGrid(wc);
+        
+        
+        JPanel jpanel = new JPanel();
+        jpanel.setPreferredSize(new Dimension(1000,1000)); 
+        jpanel.setBackground(black);
+        
+        // Adding viewGrid to mainFrame
+        mainFrame.add(vG, BorderLayout.WEST);
+        mainFrame.add(jpanel, BorderLayout.EAST);
         
         mainFrame.pack();
+        mainFrame.setVisible(true);
+
 		Thread.sleep(1000);
 		wc.simulateForward();
         
