@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,9 +16,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import controler.WorldControler;
+import model.Creature;
 import model.Grid;
 
-public class ViewGrid extends JPanel{
+public class ViewGrid extends JPanel implements Observer{
 	/**
 	 * 
 	 */
@@ -26,7 +31,7 @@ public class ViewGrid extends JPanel{
 	
 	public ViewGrid(WorldControler wc){
 		this.wc = wc;
-		
+		this.setLayout(null);
 		this.tick = 1000;
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
@@ -61,25 +66,18 @@ public class ViewGrid extends JPanel{
         }
     }
 	
-	/*public static void main(String[] args) throws InterruptedException {
-		int tick = 1000;
-        WorldControler wc = new WorldControler(100,(float)10000,0,60);
-        ViewGrid vG = new ViewGrid(wc);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frame = new JFrame("Game");
-                frame.add(vG);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
-            }
-        });
-        //Thread.sleep(tick);
-        //while(true){
-         //   Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
-          //  Color c = vG.getTileColor(mouseLoc.getX() - vG.getLocationOnScreen().getX(),(mouseLoc.getY() - vG.getLocationOnScreen().getY()));
-        //    System.out.println(c.getRed() + " " + c.getGreen() + " " + c.getBlue());
-        //    Thread.sleep(tick);
-       // }
-    }*/
+	@Override
+	public void update(Observable o, Object arg) {
+		paintComponent(this.getGraphics());
+		paintCreatures(arg);
+	}
+	
+	private void paintCreatures(Object arg){
+		LinkedList<Creature> cList = (LinkedList<Creature>) arg;
+		for(Creature c : cList){
+			ViewCreature vc = new ViewCreature(c);
+			this.add(vc);
+			
+		}
+	}
 }

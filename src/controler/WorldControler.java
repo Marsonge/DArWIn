@@ -1,17 +1,28 @@
 package controler;
 
 import java.awt.Color;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
 
 import model.Creature;
-import model.Grid;
+import model.grid.Grid;
 
-public class WorldControler {
+public class WorldControler extends Observable{
 	private Grid grid;
 	private List<Creature> creatureList;
 	
-	public WorldControler(int size,float roughness,long seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.grid = new Grid(size,roughness,seed);
+		this.notifyObservers(this.creatureList); 
+		creatureList = new LinkedList<Creature>();
+		Random rand = new Random();
+		for(int i=0; i<creatureCount;i++){
+			creatureList.add(new Creature(i,rand.nextInt(size*tilesize),rand.nextInt(size*tilesize)));
+		}
+		
 	}
 
 	public Color getTileColour(int i, int j) {
@@ -28,10 +39,24 @@ public class WorldControler {
 	 * @return
 	 */
 	public boolean simulateForward() {
-		
 		for(Creature c : creatureList){
 			c.move();
 		}
 		return true;
+	}
+	
+	@Override
+	public void	notifyObservers(Object arg) {
+		super.setChanged();
+		super.notifyObservers(arg); 
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Observable#addObserver(java.util.Observer)
+	 */
+	@Override
+	public void addObserver(Observer o){
+		super.addObserver(o);
+		this.notifyObservers(this.creatureList); 
 	}
 } 
