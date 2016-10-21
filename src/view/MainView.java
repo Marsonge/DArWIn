@@ -2,26 +2,33 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import controler.WorldControler;
-import model.grid.Grid;
 
+/**
+ * 
+ * MainView
+ * 
+ * main view of the project
+ * 
+ * @author cyril.weller
+ *
+ */
 public class MainView extends JFrame {
-	
+
+	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	private Timer timer;
 	private int tick;
 	WorldControler wc ; 
 	ViewGrid vG ;
+	public boolean simulationLaunched = false;
 	
 	/**
 	 * MainView()
@@ -33,36 +40,69 @@ public class MainView extends JFrame {
 	public MainView() throws InterruptedException {
 		
 		// Create the main JFrame
-		JFrame mainFrame = new JFrame("Darwin : ARtificial Wildlife INtelligence");
-        mainFrame.setResizable(false);
+		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
+		this.setResizable(false);
 
         // main JFrame setting
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
-        mainFrame.setBackground(black);
-        mainFrame.setExtendedState(JFrame.NORMAL); 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
+		this.setBackground(black);
+		this.setExtendedState(JFrame.NORMAL); 
         
         // Add Layout to mainFrame
-        mainFrame.setLayout(new BorderLayout());
-		
-		// Create the grid
-		this.wc = new WorldControler(100,7,(float)10000,0,60); 
-    	this.vG = new ViewGrid(wc);
+		this.setLayout(new BorderLayout());
     	
-    	this.timer = new Timer(tick, new TimerActionListener(wc));
-        
-        JPanel jpanel = new JPanel();
-        jpanel.setPreferredSize(new Dimension(500,700)); 
-        jpanel.setBackground(black);
-
-        // Start Button
-        JButton start = new JButton("Start");
-        
-        
+    	// Add view panel
+    	ViewPanel vp = new ViewPanel();
+    	
+    	this.add(vp, BorderLayout.EAST);
+    	
+    	// Add listeners 
+    	this.setStartButtonListener(vp);
+    	this.setChangeMapButtonListener(vp);
+    	
+    	// Add a map
+    	changeMap();
+	}
+	
+	/**
+	 * Start the timer
+	 */
+	public void startTimer(){
+        this.tick = 100;
+        this.timer = new Timer(tick, new TimerActionListener(wc)); 
+	}
+	
+	
+	/**
+	 * Change the map
+	 */
+	public void changeMap(){
+		
+		// When map is created the first time, vG is null
+		if (vG != null) this.remove(vG);
+		
+		this.wc = new WorldControler(100,7,(float)10000,0,60); 
+		this.vG = new ViewGrid(wc);
+		
+		this.add(vG, BorderLayout.WEST);
+    	this.pack();
+    	this.setVisible(true);
+    	
+		wc.simulateForward();
+		startTimer();
+	}
+	
+	/**
+	 * Will set the start button listener
+	 * @param vp
+	 */
+	public void setStartButtonListener(final ViewPanel vp){
+		
         // When start is clicked, simulation start and button displays stop
         // When it is clicked on stop, simulation pauses
-        start.addActionListener(new ActionListener() {
+        vp.getStartButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
-            {
+           {
                 Object source = e.getSource();
                 if (source instanceof JButton) {
                 	
@@ -71,6 +111,10 @@ public class MainView extends JFrame {
                     if(btn.getText().equals("Start")){
                         timer.start();
                         btn.setText("Pause");
+                        if (simulationLaunched == false) {
+                        	simulationLaunched = true;
+                        	vp.disable(vp.getChangeMapButton());
+                        }
 
                     } else{
                     	timer.stop();
@@ -80,22 +124,25 @@ public class MainView extends JFrame {
                 }
             }
         });
-        
-        // Start button added to JPanel
-        jpanel.add(start);
-        
-        // Adding viewGrid to mainFrame
-        mainFrame.add(jpanel, BorderLayout.EAST);
-        mainFrame.add(vG, BorderLayout.WEST);
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-
-		Thread.sleep(1000);
-		wc.simulateForward();
-        
-        // Start main timer
-        this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc));  
+	}
+	
+	/**
+	 * setChangeMapButtonListener
+	 * 
+	 * Will set the change map button listener 
+	 * 
+	 * @param vp
+	 */
+	public void setChangeMapButtonListener(final ViewPanel vp){
+		
+        vp.getChangeMapButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	if (!simulationLaunched){
+            		changeMap();
+            		}
+            }
+        });
 	}
 	
 	
@@ -106,8 +153,7 @@ public class MainView extends JFrame {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		
-		JFrame mainPanel = new MainView(); 
+		new MainView(); 
 	}
 
 }
