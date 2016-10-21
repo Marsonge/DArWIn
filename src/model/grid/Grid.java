@@ -68,6 +68,10 @@ public class Grid {
 	public int getNumRows() {
 		return NUMROWS;
 	}
+
+	public Tile getTile(int x, int y){
+		return this.tileGrid[y][x];
+	}
 	
 	/**
 	 *  
