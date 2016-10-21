@@ -94,11 +94,11 @@ public class ViewGrid extends JPanel implements Observer{
 	private void paintCreatures(Object arg){
 		LinkedList<Creature> cList = (LinkedList<Creature>) arg;
 		for(Creature c : cList){
-			ViewCreature vc = new ViewCreature(c);
+			ViewCreature vc = new ViewCreature(c,16);
 			this.add(vc);
 			vc.setVisible(true);
-			vc.setSize(32, 32);
-			System.out.println(vc.getX() + " " + vc.getY());
+			vc.setSize(16,16);
+			System.out.println(vc.getX() + " (" +c.getX() + ") " + vc.getY() + " (" +c.getY() + ") " );
 		}
 	}
 }
