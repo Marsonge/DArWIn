@@ -26,6 +26,8 @@ public class MainView extends JFrame {
 	public static final Color black = new Color(0,0,0);
 	private Timer timer;
 	private int tick;
+	private Timer growTimer;
+	private int growTick;
 	WorldControler wc ; 
 	ViewGrid vG ;
 	public boolean simulationLaunched = false;
@@ -71,7 +73,10 @@ public class MainView extends JFrame {
         this.tick = 100;
         this.timer = new Timer(tick, new TimerActionListener(wc)); 
 	}
-	
+	public void startGrowTimer(){
+		this.growTick = 1000;
+		this.growTimer = new Timer(growTick, new GrowTimerActionListener(wc));
+	}
 	
 	/**
 	 * Change the map
@@ -81,7 +86,7 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,60); 
+		this.wc = new WorldControler(100,7,(float)10000,0,90); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
@@ -90,6 +95,7 @@ public class MainView extends JFrame {
     	
 		wc.simulateForward();
 		startTimer();
+		startGrowTimer();
 	}
 	
 	/**
@@ -110,6 +116,7 @@ public class MainView extends JFrame {
                     
                     if(btn.getText().equals("Start")){
                         timer.start();
+                        growTimer.start();
                         btn.setText("Pause");
                         if (simulationLaunched == false) {
                         	simulationLaunched = true;
@@ -118,6 +125,7 @@ public class MainView extends JFrame {
 
                     } else{
                     	timer.stop();
+                        growTimer.stop();
                     	btn.setText("Start");
                     }
 

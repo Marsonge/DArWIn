@@ -50,7 +50,7 @@ public class Creature {
 	}
 
 	public boolean eat(){
-		energy+=10;
+		energy+=3;
 		return true;
 	}
 	
