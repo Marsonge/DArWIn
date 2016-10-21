@@ -50,7 +50,7 @@ public class Creature {
 	}
 
 	public boolean eat(){
-		foodLevel+=2;
+		foodLevel+=10;
 		return true;
 	}
 	

@@ -14,9 +14,9 @@ import view.ViewTile;
  */
 public class UpdateInfoWrapper {
 	private List<Creature> creatureList;
-	private List<ViewTile> tileList;
+	private List<Tile> tileList;
 	
-	public UpdateInfoWrapper (List<Creature> creatureList, List<ViewTile> tileList){
+	public UpdateInfoWrapper (List<Creature> creatureList, List<Tile> tileList){
 		this.creatureList = creatureList;
 		this.tileList = tileList;
 	}
@@ -25,7 +25,7 @@ public class UpdateInfoWrapper {
 		return creatureList;
 	}
 
-	public List<ViewTile> getTileList() {
+	public List<Tile> getTileList() {
 		return tileList;
 	}
 	

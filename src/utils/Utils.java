@@ -12,4 +12,10 @@ public class Utils {
         int x = new Random().nextInt(className.getEnumConstants().length); //Use : Utils.randomEnum(MyClass.class);
         return className.getEnumConstants()[x];
     }
+    
+    public static int borderVar(int var, int min, int max, int offset){
+		if(var<min) return min+offset;
+		if(var>max) return max-offset;
+		return var;
+	}
 }
