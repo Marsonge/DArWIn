@@ -55,10 +55,46 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		for(Creature c : creatureList){
-			c.move();
+			this.move(c);
 		}
 		this.notifyObservers(this.creatureList); 
 		return true;
+	}
+	
+	/**
+	 * Moves a creature and blocks it from going out of the borders
+	 * @param c the creature
+	 * @return true
+	 */
+	public boolean move(Creature c){
+		//TODO : Implement a better move
+		Random rand = new Random();
+		int x = c.getX();
+		int y = c.getY();
+		int speed = c.getSpeed();
+		switch(rand.nextInt(4)){
+			case 0:
+				x-=speed;
+				break;
+			case 1:
+				x+=speed;
+				break;
+			case 2:
+				y-=speed;
+				break;
+			case 3:
+				y+=speed;
+		}
+		x = borderVar(x, 0, grid.getNumCols()*tilesize);
+		y = borderVar(y, 0, grid.getNumRows()*tilesize);
+		c.move(x,y);
+		return true;
+	}
+	
+	private int borderVar(int var, int min, int max){
+		if(var<min) return min;
+		if(var>max) return max;
+		return var;
 	}
 	
 	@Override

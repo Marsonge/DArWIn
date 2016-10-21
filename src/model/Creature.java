@@ -54,22 +54,10 @@ public class Creature {
 		return true;
 	}
 	
-	public boolean move(){
-		//TODO : Implement a better move?
-		Random rand = new Random();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
+	public boolean move(int x, int y){
+		this.x = x;
+		this.y = y;
+		
 		return true;
 	}
 	
