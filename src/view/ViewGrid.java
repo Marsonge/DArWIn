@@ -19,6 +19,8 @@ import javax.swing.Timer;
 import controler.WorldControler;
 import model.Creature;
 import model.grid.Grid;
+import model.grid.Tile;
+import utils.UpdateInfoWrapper;
 
 public class ViewGrid extends JPanel implements Observer{
 	/**
@@ -80,11 +82,21 @@ public class ViewGrid extends JPanel implements Observer{
     }
 	
 	@Override
-	public void update(Observable o, Object arg) { //Is ran everytime WorldControler simulates a tick
+	//Is ran everytime WorldControler simulates a tick
+	public void update(Observable o, Object arg) {
+		UpdateInfoWrapper wrapper = (UpdateInfoWrapper) arg;
+		
+		// update creatures
+
 		this.removeAll();
-		paintCreatures(arg);
+		paintCreatures(wrapper.getCreatureList());
 		this.revalidate();
 		this.repaint();
+		// updates eaten tiles
+		for(Tile t : wrapper.getTileList()){
+			//TODO update tiles : repaint revalidate
+		}
+		
 	}
 	
 	/**
