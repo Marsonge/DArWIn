@@ -92,8 +92,8 @@ public class WorldControler extends Observable{
 	}
 	
 	private int borderVar(int var, int min, int max){
-		if(var<min) return min;
-		if(var>max) return max;
+		if(var<min) return min+1;
+		if(var>max) return max-1;
 		return var;
 	}
 	
