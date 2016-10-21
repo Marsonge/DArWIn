@@ -6,14 +6,14 @@ public class Creature {
 	private int id;
 	private int x;
 	private int y;
-	private int foodLevel;
+	private int energy;
 	private int speed;
 	
 	public Creature(int id, int x, int y){
 		this.id = id;
 		this.x = x;
 		this.y = y;
-		this.foodLevel = 50;
+		this.energy = 50;
 		this.speed = 3;
 	}
 
@@ -29,8 +29,8 @@ public class Creature {
 		return y;
 	}
 
-	public int getFoodLevel() {
-		return foodLevel;
+	public int getEnergy() {
+		return energy;
 	}
 
 	public void setX(int x) {
@@ -50,27 +50,22 @@ public class Creature {
 	}
 
 	public boolean eat(){
-		foodLevel++;
+		energy+=3;
 		return true;
 	}
 	
-	public boolean move(){
-		//TODO : Implement a better move?
-		Random rand = new Random();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
+	public boolean move(int x, int y){
+		this.x = x;
+		this.y = y;
+		this.energy--;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Creature [id=" + id + ", x=" + x + ", y=" + y + ", foodLevel=" + energy + ", speed=" + speed + "]";
+	}
+	
+	
 	
 }
