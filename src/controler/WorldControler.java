@@ -1,6 +1,7 @@
 package controler;
 
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -59,13 +60,20 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
-		for(Creature c : creatureList){
-			this.move(c);
-			Tile t = this.eat(c);
-			if (t!=null){
-				tileList.add(t);
+		for(Iterator<Creature> iterator = this.creatureList.iterator(); iterator.hasNext();){
+			Creature c = iterator.next();
+			if(c.getEnergy() <= 0){
+				// creature dies
+				iterator.remove();
+			} else {
+				this.move(c);
+				Tile t = this.eat(c);
+				if (t!=null){
+					tileList.add(t);
+				}
 			}
 		}
+		
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;
@@ -87,7 +95,7 @@ public class WorldControler extends Observable{
 		Color tileColor = grid.getTileColour((tileX/this.tileSize), (tileY/this.tileSize));
 		// Check if there is still some food on the tile
 		// and that the tile is not sand
-		System.out.print(creature);
+		System.out.print(creature+"\n");
 		if(tileColor.getGreen() > 100 && tileColor.getRed() < 240){
 			creature.eat();
 			System.out.print("   CRUNCH");
