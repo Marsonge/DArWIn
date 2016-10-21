@@ -92,14 +92,18 @@ public class WorldControler extends Observable{
 		int tileY = cy/this.tileSize;
 		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
 		tileY = Utils.borderVar(tileY, 0, grid.getNumRows()-1, 0);
-		Color tileColor = grid.getTileColour((tileX/this.tileSize), (tileY/this.tileSize));
+		Color tileColor = grid.getTileColour((tileX), (tileY));
 		// Check if there is still some food on the tile
 		// and that the tile is not sand
-		System.out.print(creature+"\n");
-		if(tileColor.getGreen() > 100 && tileColor.getRed() < 240){
+		System.out.print(creature);
+		if(tileColor.getGreen() > 100 && tileColor.getRed() < 100){
 			creature.eat();
 			System.out.print("   CRUNCH");
 			// repaint tile with lighter green (means less food !)
+			int r = tileColor.getRed();
+			int g  = tileColor.getGreen() - 2;
+			int b = tileColor.getBlue();
+			grid.getTile(tileX, tileY).setColor(new Color(r,g,b));
 			//return grid.getTile(tileX, tileY);
 			return null;
 		}

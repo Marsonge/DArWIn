@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -90,21 +91,29 @@ public class ViewGrid extends JPanel implements Observer{
 
 		this.removeAll();
 		paintCreatures(wrapper.getCreatureList());
+		paintTiles(wrapper.getTileList());
 		this.revalidate();
-		this.repaint();
-		// updates eaten tiles
-		for(Tile t : wrapper.getTileList()){
-			//TODO update tiles : repaint revalidate
-		}
-		
+		this.repaint();		
 	}
 	
+	private void paintTiles(List<Tile> tileList) {
+		int rectWidth = getWidth() / wc.getSize();
+        int rectHeight = getHeight() / wc.getSize();
+        Graphics g = getGraphics();
+		for(Tile t: tileList){
+			int x = t.getX() * rectWidth;
+            int y = t.getY() * rectHeight;
+            Color terrainColor = wc.getTileColour(x,y);
+            g.setColor(terrainColor);
+            g.fillRect(x, y, rectWidth, rectHeight);
+		}
+	}
+
 	/**
 	 * 
 	 * @param arg : The LinkedList that notifyObserver passes through in WorldControler
 	 */
-	private void paintCreatures(Object arg){
-		LinkedList<Creature> cList = (LinkedList<Creature>) arg;
+	private void paintCreatures(List<Creature> cList){
 		for(Creature c : cList){
 			ViewCreature vc = new ViewCreature(c,16);
 			this.add(vc);
