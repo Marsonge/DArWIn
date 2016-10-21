@@ -33,14 +33,14 @@ public class ViewCreature extends JLabel {
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
-		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH);
+		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 
 	}
 
 	@Override
 	public void setLocation(int x, int y) {
-		super.setLocation(x-(size/2), y-(size/2));
+		super.setLocation(x-(size/2), y-(size/2)); //Offsets the label position so that its center corresponds to the creature's coordinates
 	}
 	@Override
 	public void setLocation(Point p) {

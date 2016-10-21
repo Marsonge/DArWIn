@@ -110,7 +110,6 @@ public class ViewGrid extends JPanel implements Observer{
 			this.add(vc);
 			vc.setVisible(true);
 			vc.setSize(16,16);
-			//System.out.println(vc.getX() + " (" +c.getX() + ") " + vc.getY() + " (" +c.getY() + ") " );
 		}
 	}
 }
