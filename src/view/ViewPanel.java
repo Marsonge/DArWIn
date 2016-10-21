@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -30,7 +31,7 @@ public class ViewPanel extends JPanel{
 	 * @param button
 	 */
 	public void disable(JButton button){
-		//button.setBackground(defaultButtonColorDisabled);
+		
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
 		button.setEnabled(false);
@@ -57,18 +58,26 @@ public class ViewPanel extends JPanel{
 	 * ViewPanel constructor, will build the side panel
 	 */
 	public ViewPanel(){
-
-		//JPanel jpanel = new JPanel();
+		
+		// Set size and color of panel
         this.setPreferredSize(new Dimension(500,700)); 
         this.setBackground(black);
-        
+
+		// Setting the layout
+		FlowLayout theLayout = new FlowLayout();
+		this.setLayout(theLayout);
+
+        // Set size and background color of buttons
         changeMap.setBackground(defaultButtonColor);
-        start.setBackground(defaultButtonColor);
+        changeMap.setPreferredSize(new Dimension(130,30));
         
+        start.setBackground(defaultButtonColor);
+        start.setPreferredSize(new Dimension(130,30));
+
         // Start button added to JPanel
         this.add(changeMap);
         this.add(start);
-
+        
 	}
 
 }
