@@ -1,6 +1,7 @@
 package controler;
 
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -9,25 +10,29 @@ import java.util.Random;
 
 import model.Creature;
 import model.grid.Grid;
+import model.grid.Tile;
+import utils.UpdateInfoWrapper;
+import utils.Utils;
+
 /**
  * General Controler
- * Used to manipulate the model
  *
  */
 public class WorldControler extends Observable{
 	private Grid grid;
-	private int tilesize;
+
 	private List<Creature> creatureList;
+	private int tileSize;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
+		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
-			creatureList.add(new Creature(i,rand.nextInt(size*tilesize),rand.nextInt(size*tilesize)));
+			creatureList.add(new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize)));
 		}
-		this.tilesize = tilesize;
 		
 	}
 	/**
@@ -54,11 +59,56 @@ public class WorldControler extends Observable{
 	 * @return
 	 */
 	public boolean simulateForward() {
-		for(Creature c : creatureList){
-			this.move(c);
+		List<Tile> tileList = new LinkedList<>();
+		for(Iterator<Creature> iterator = this.creatureList.iterator(); iterator.hasNext();){
+			Creature c = iterator.next();
+			if(c.getEnergy() <= 0){
+				// creature dies
+				iterator.remove();
+			} else {
+				this.move(c);
+				Tile t = this.eat(c);
+				if (t!=null){
+					tileList.add(t);
+				}
+			}
 		}
-		this.notifyObservers(this.creatureList); 
+		
+		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
+		this.notifyObservers(wrapper); 
 		return true;
+	}
+	
+	/**
+	 * Eating mechanism : giving a creature, the controller sets
+	 * the color of the associated tile and increments the creature's food level.
+	 * @param Creature : the creature eating
+	 * @return
+	 */
+	public Tile eat(Creature creature){
+		int cx = creature.getX();
+		int cy = creature.getY();
+		int tileX = cx/this.tileSize;
+		int tileY = cy/this.tileSize;
+		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
+		tileY = Utils.borderVar(tileY, 0, grid.getNumRows()-1, 0);
+		Color tileColor = grid.getTileColour((tileX), (tileY));
+		// Check if there is still some food on the tile
+		// and that the tile is not sand
+		System.out.print(creature);
+		if(tileColor.getGreen() > 100 && tileColor.getRed() < 100){
+			creature.eat();
+			System.out.print("   CRUNCH");
+			// repaint tile with lighter green (means less food !)
+			int r = tileColor.getRed();
+			int g  = tileColor.getGreen() - 2;
+			int b = tileColor.getBlue();
+			grid.getTile(tileX, tileY).setColor(new Color(r,g,b));
+			//return grid.getTile(tileX, tileY);
+			return null;
+		}
+		System.out.println();
+		return null;
 	}
 	
 	/**
@@ -85,17 +135,12 @@ public class WorldControler extends Observable{
 			case 3:
 				y+=speed;
 		}
-		x = borderVar(x, 0, grid.getNumCols()*tilesize);
-		y = borderVar(y, 0, grid.getNumRows()*tilesize);
+		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
+		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
 		c.move(x,y);
 		return true;
 	}
 	
-	private int borderVar(int var, int min, int max){
-		if(var<min) return min+1;
-		if(var>max) return max-1;
-		return var;
-	}
 	
 	@Override
 	public void	notifyObservers(Object arg) {
@@ -109,7 +154,7 @@ public class WorldControler extends Observable{
 		super.addObserver(o);
 	}
 	public int getTileSize() {
-		return tilesize;
+		return tileSize;
 	}
 	
 } 
