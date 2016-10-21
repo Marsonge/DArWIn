@@ -18,6 +18,7 @@ public class TimerActionListener implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		System.out.println("TICK");
+		time++;
 		this.wc.simulateForward();
 		
 	}

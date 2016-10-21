@@ -1,14 +1,14 @@
 package controler;
 
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
+import java.awt.Color; 
+import java.util.*;
+
+import javax.swing.JPanel;
 
 import model.Creature;
+import model.grid.Statistique;
 import model.grid.Grid;
+
 /**
  * General Controler
  * Used to manipulate the model
@@ -16,11 +16,13 @@ import model.grid.Grid;
  */
 public class WorldControler extends Observable{
 	private Grid grid;
+	private Statistique statistique;
 	private int tilesize;
 	private List<Creature> creatureList;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.grid = new Grid(size,roughness,seed);
+		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
 		Random rand = new Random();
@@ -47,6 +49,14 @@ public class WorldControler extends Observable{
 	public int getSize() {
 		return grid.getNumCols();
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	public JPanel getStatistique() {
+		return statistique.getStatistique();
+	}
 
 	/**
 	 * Function called every timer tick.
@@ -72,8 +82,13 @@ public class WorldControler extends Observable{
 	public void addObserver(Observer o){
 		super.addObserver(o);
 	}
+	
 	public int getTileSize() {
 		return tilesize;
+	}
+	
+	public int getCountCreature(){
+		return creatureList.size();
 	}
 	
 } 
