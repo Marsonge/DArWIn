@@ -98,7 +98,7 @@ public class ViewPanel extends JPanel {
         	private static final long serialVersionUID = 1L;
 
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660);
+				return new Dimension(280,660); //Utilité ?
         	}
         };
         
@@ -106,13 +106,22 @@ public class ViewPanel extends JPanel {
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
         
-        JLabel time = new JLabel("\nTemps :");
-        JLabel alive = new JLabel("\nNbr bestioles en vie :");
-        JLabel dead = new JLabel("\nNbr bestioles mortes :");
+        //Oui c'est sale
+        //Mais je suis nul en java
+        int time = 12;
+        int alive = 9999;
+        int dead = 1;
+        JLabel stats = new JLabel("<html>Temps : <br>"
+					        		+ "Nbr bestioles en vie : <br>"
+					        		+ "Nbr bestioles crevées : </html>");
         
-        tabStats.add(time);
-        tabStats.add(alive);
-        tabStats.add(dead);
+        JLabel statsValues = new JLabel("<html>"+time+"<br>"
+						        		+ alive + "<br>"
+						        		+ dead + "</html>");
+
+        
+        tabStats.add(stats);
+        tabStats.add(statsValues);
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
