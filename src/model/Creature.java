@@ -10,6 +10,7 @@ public class Creature implements Cloneable{
 	private int y;
 	private int energy;
 	private int speed;
+	private NeuralNetwork nn;
 	private static final int MAXSPEED = 7;
 	private static final int MINSPEED = 1;
 	
@@ -19,11 +20,29 @@ public class Creature implements Cloneable{
 		this.y = y;
 		this.energy = 50;
 		this.speed = 3;
+		this.nn = new NeuralNetwork();
 	}
 	
-	protected Creature(int id, int x, int y, int speed){
+	protected Creature(int id, int x, int y, int speed, NeuralNetwork nn){
 		this(id, x, y);
 		this.speed = speed;
+		this.nn = nn;
+	}
+
+
+	public void initializeNetwork(Random rand){
+		this.nn.initialise(rand);
+	}
+	
+	public void compute(int intput[]){
+		float input[] = new float[3];
+		for(int i=0;i<3;i++){//Normalize input
+			input[i] = ((float)intput[i])/255;
+		}
+		int row = 0;//Compute speed
+		float result = this.nn.compute(input, row);
+		this.speed = (int) Math.round(result*7)%8;
+
 	}
 
 	public int getId() {
@@ -77,13 +96,13 @@ public class Creature implements Cloneable{
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		return new Creature(id, x, y,  speed);
+		return new Creature(id, x, y,  speed, nn);
 	}
 	
 	public Creature reproduce() throws CloneNotSupportedException{
 		if(this.energy>150){
 			Creature c = (Creature)this.clone();
-			c.mutate();
+			//c.mutate();
 			this.energy -=(50+this.energy/5);
 			return c;
 		}else{
