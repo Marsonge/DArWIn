@@ -61,12 +61,14 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
+		
 		for(Iterator<Creature> iterator = this.creatureList.iterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			if(c.getEnergy() <= 0){
 				// creature dies
 				iterator.remove();
 			} else {
+				this.reproduce(c);
 				this.move(c);
 				this.eat(c);
 			}
@@ -75,6 +77,7 @@ public class WorldControler extends Observable{
 		this.notifyObservers(wrapper); 
 		return true;
 	}
+	
 	public void grow(){
 		List<Tile> fertileLand = grid.getFertileLand();
 		for(Tile t : fertileLand){
@@ -155,6 +158,33 @@ public class WorldControler extends Observable{
 		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
 		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
 		c.move(x,y);
+		return true;
+	}
+	
+	/**
+	 * reproduce
+	 * 
+	 * @param creature
+	 * @return
+	 */
+	public boolean reproduce(Creature creature){
+		
+		Creature child;
+		
+		/* Reproduces current creature */
+		try{
+			child = creature.reproduce();
+		} catch(Exception e){
+			return false;
+		}
+		
+		/* If created creature is not null, it's added to the creature list */
+		if (child != null) {
+			creatureList.add(child);
+		} else {
+			return false;
+		}
+		
 		return true;
 	}
 	
