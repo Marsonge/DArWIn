@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -62,13 +63,16 @@ public class WorldControler extends Observable{
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
 		
-		for(Iterator<Creature> iterator = this.creatureList.iterator(); iterator.hasNext();){
+		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			if(c.getEnergy() <= 0){
 				// creature dies
 				iterator.remove();
 			} else {
-				this.reproduce(c);
+				Creature baby = this.reproduce(c);
+				if (baby != null){
+					iterator.add(baby);
+				}
 				this.move(c);
 				this.eat(c);
 			}
@@ -167,7 +171,7 @@ public class WorldControler extends Observable{
 	 * @param creature
 	 * @return
 	 */
-	public boolean reproduce(Creature creature){
+	public Creature reproduce(Creature creature){
 		
 		Creature child;
 		
@@ -175,17 +179,10 @@ public class WorldControler extends Observable{
 		try{
 			child = creature.reproduce();
 		} catch(Exception e){
-			return false;
+			return null;
 		}
 		
-		/* If created creature is not null, it's added to the creature list */
-		if (child != null) {
-			creatureList.add(child);
-		} else {
-			return false;
-		}
-		
-		return true;
+		return child;
 	}
 	
 	
