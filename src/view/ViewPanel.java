@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 /**
  * 
@@ -103,6 +105,14 @@ public class ViewPanel extends JPanel {
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
+        
+        JLabel time = new JLabel("\nTemps :");
+        JLabel alive = new JLabel("\nNbr bestioles en vie :");
+        JLabel dead = new JLabel("\nNbr bestioles mortes :");
+        
+        tabStats.add(time);
+        tabStats.add(alive);
+        tabStats.add(dead);
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
