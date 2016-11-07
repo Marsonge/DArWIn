@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import model.Creature;
 import model.grid.Statistique;
 import model.grid.Grid;
+import model.grid.Terrain;
 import model.grid.Tile;
 import utils.UpdateInfoWrapper;
 import utils.Utils;
@@ -75,16 +76,35 @@ public class WorldControler extends Observable{
 				iterator.remove();
 			} else {
 				this.move(c);
-				Tile t = this.eat(c);
-				if (t!=null){
-					tileList.add(t);
-				}
+				this.eat(c);
 			}
 		}
-		
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;
+	}
+	public void grow(){
+		List<Tile> fertileLand = grid.getFertileLand();
+		for(Tile t : fertileLand){
+			Color colorTile = t.getColor();
+			int r = colorTile.getRed();
+			int g = colorTile.getGreen();
+			int b = colorTile.getBlue();	
+			Random rand = new Random();
+			int grows = rand.nextInt(20);
+			if(Terrain.WOODS.equals(t.getTerrain())){
+				if(g<180 && grows < 5){ //Mountains are harsh places : food doesn't always grow
+					g++;
+				}
+			}
+			else{//Mountain
+				if(g<130 && grows == 19){ //Mountains are harsh places : food doesn't always grow
+					g++;
+				}
+			}
+			t.setColor(new Color(r,g,b));
+
+		}
 	}
 	
 	/**
@@ -93,7 +113,7 @@ public class WorldControler extends Observable{
 	 * @param Creature : the creature eating
 	 * @return
 	 */
-	public Tile eat(Creature creature){
+	public void eat(Creature creature){
 		int cx = creature.getX();
 		int cy = creature.getY();
 		int tileX = cx/this.tileSize;
@@ -104,19 +124,16 @@ public class WorldControler extends Observable{
 		// Check if there is still some food on the tile
 		// and that the tile is not sand
 		System.out.print(creature);
-		if(tileColor.getGreen() > 100 && tileColor.getRed() < 100){
+		if(tileColor.getGreen() > 115 && tileColor.getRed() < 200){
 			creature.eat();
 			System.out.print("   CRUNCH");
 			// repaint tile with lighter green (means less food !)
 			int r = tileColor.getRed();
-			int g  = tileColor.getGreen() - 2;
+			int g  = tileColor.getGreen() - 5;
 			int b = tileColor.getBlue();
 			grid.getTile(tileX, tileY).setColor(new Color(r,g,b));
-			//return grid.getTile(tileX, tileY);
-			return null;
 		}
 		System.out.println();
-		return null;
 	}
 	
 	/**
