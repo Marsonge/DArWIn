@@ -19,7 +19,7 @@ public class Tile {
 	public void setColor(Color c){
 		this.color = c;
 	}
-	public Color getColour() {
+	public Color getColor() {
 		return color;
 	}
 	public Terrain getTerrain(){

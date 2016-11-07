@@ -15,7 +15,7 @@ import view.ViewTile;
 public class UpdateInfoWrapper {
 	private List<Creature> creatureList;
 	private List<Tile> tileList;
-	
+	//TODO : Supprimer tileList, non utilisé
 	public UpdateInfoWrapper (List<Creature> creatureList, List<Tile> tileList){
 		this.creatureList = creatureList;
 		this.tileList = tileList;

@@ -2,21 +2,21 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
  * 
  * ViewPanel
  * 
- * Side panel with options
+ * Side panel with options and stats tab
  * 
  * @author cyril.weller
  *
  */
-public class ViewPanel extends JPanel{
+public class ViewPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -60,24 +60,52 @@ public class ViewPanel extends JPanel{
 	public ViewPanel(){
 		
 		// Set size and color of panel
-        this.setPreferredSize(new Dimension(500,700)); 
+        this.setPreferredSize(new Dimension(300,700)); 
         this.setBackground(black);
-
-		// Setting the layout
-		FlowLayout theLayout = new FlowLayout();
-		this.setLayout(theLayout);
-
-        // Set size and background color of buttons
+		
+        JTabbedPane tabbedPane = new JTabbedPane();
+        
+        // Change map button
         changeMap.setBackground(defaultButtonColor);
         changeMap.setPreferredSize(new Dimension(130,30));
         
+        // Start button
         start.setBackground(defaultButtonColor);
         start.setPreferredSize(new Dimension(130,30));
 
-        // Start button added to JPanel
-        this.add(changeMap);
-        this.add(start);
+        /** Create the tabs **/
         
+        // Options tab
+        JPanel tabOptions = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+			
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660); 
+			}
+
+        };
+        
+        // Add buttons to Option tab
+        tabOptions.add(changeMap);
+        tabOptions.add(start);
+         
+        // Stats tab
+        JPanel tabStats = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660);
+        	}
+        };
+        
+        // Add tabs to tabbedPane
+        tabbedPane.addTab("Options", null, tabOptions);
+        tabbedPane.addTab("Stats", null, tabStats);
+        
+        // Add tabbedPane to viewPanel
+        this.add(tabbedPane);     
 	}
 
 }
