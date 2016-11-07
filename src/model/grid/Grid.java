@@ -36,25 +36,25 @@ public class Grid {
         for (int i = 0; i < NUMROWS; i++) {
             for (int j = 0; j < NUMCOLS; j++) {
             	if(terrainNoiseGrid[i][j] > 1.5*e){
-                    this.tileGrid[i][j] = new Tile(Terrain.SNOW);
+                    this.tileGrid[i][j] = new Tile(Terrain.SNOW,i,j);
             	}
             	else if(terrainNoiseGrid[i][j] > e){
-                    this.tileGrid[i][j] = new Tile(Terrain.MOUNTAINS);
+                    this.tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,i,j);
             	}
             	else if(terrainNoiseGrid[i][j] > e/6){
-                    this.tileGrid[i][j] = new Tile(Terrain.WOODS);
+                    this.tileGrid[i][j] = new Tile(Terrain.WOODS,i,j);
             	}
             	else if (terrainNoiseGrid[i][j] > 0){
-	            		this.tileGrid[i][j] = new Tile(Terrain.SAND);
+	            		this.tileGrid[i][j] = new Tile(Terrain.SAND,i,j);
         		}
             	else if(terrainNoiseGrid[i][j] > -0.3*e){
-                    this.tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER);
+                    this.tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER,i,j);
             	}
             	else if(terrainNoiseGrid[i][j] > -1*e){
-            		this.tileGrid[i][j] = new Tile(Terrain.OCEAN);
+            		this.tileGrid[i][j] = new Tile(Terrain.OCEAN,i,j);
             	}
             	else{
-            		this.tileGrid[i][j] = new Tile(Terrain.DEEP_WATER);
+            		this.tileGrid[i][j] = new Tile(Terrain.DEEP_WATER,i,j);
             	}
             	
             }
@@ -67,6 +67,10 @@ public class Grid {
 
 	public int getNumRows() {
 		return NUMROWS;
+	}
+
+	public Tile getTile(int x, int y){
+		return this.tileGrid[x][y];
 	}
 	
 	/**
