@@ -10,7 +10,7 @@ public class Creature implements Cloneable{
 	private int y;
 	private int energy;
 	private int speed;
-	private static final int MAXSPEED = 6;
+	private static final int MAXSPEED = 7;
 	private static final int MINSPEED = 1;
 	
 	public Creature(int id, int x, int y){
