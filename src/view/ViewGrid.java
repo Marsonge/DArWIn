@@ -31,7 +31,8 @@ public class ViewGrid extends JPanel implements Observer{
 	private WorldControler wc;
 	private final int TILE_SIZE;
 	private int tick;
-	private final Timer timer;
+	//private final Timer timer;
+	private ViewPanel vp;
 	
 	
 	/**
@@ -47,7 +48,7 @@ public class ViewGrid extends JPanel implements Observer{
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
-        this.timer = new Timer(tick, new TimerActionListener(wc));
+        //this.timer = new Timer(tick, new TimerActionListener(wc,vp));
 
 	}
 	
