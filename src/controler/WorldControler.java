@@ -26,6 +26,8 @@ public class WorldControler extends Observable{
 
 	private List<Creature> creatureList;
 	private int tileSize;
+	private int softcap;
+	private int hardcap;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
@@ -38,7 +40,8 @@ public class WorldControler extends Observable{
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
-		
+		this.softcap = 150;
+		this.hardcap = 200;
 	}
 	/**
 	 *  
@@ -65,23 +68,36 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
+		//Minimum energy required to survive depends on softcap
+		int minenergy;
+		int nbCreature = creatureList.size();
+		if(nbCreature>softcap*1.5){ // Really hard to live there huh?
+			minenergy = 30;
+		}else if(nbCreature>softcap){ //Life is tough but fair
+			minenergy = 15;
+		}else{ //Easy mode
+			minenergy = 0;
+		}
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			compute(c);
-			if(c.getEnergy() <= 0){
+			if(c.getEnergy() <= minenergy){
 				// creature dies
 				iterator.remove();
 			} else {
 				Creature baby = this.reproduce(c);
-				if (baby != null){
+				//Babies aren't added to the list if we reached the hardcap
+				if (baby != null && nbCreature<hardcap){
 					iterator.add(baby);
 				}
 				this.move(c);
 				this.eat(c);
 				
 			}
+			
 		}
+		System.out.println("threshold: "+softcap+", nbCreature: "+nbCreature+", minenergy: "+minenergy);
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;
