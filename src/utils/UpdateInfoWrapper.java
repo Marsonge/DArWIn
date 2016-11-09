@@ -1,11 +1,9 @@
 package utils;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import model.Creature;
 import model.grid.Tile;
-import view.ViewTile;
 
 /**
  * Wrapper class for notifying observers with several arguments

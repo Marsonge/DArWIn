@@ -3,8 +3,6 @@ package model;
 import java.awt.Color;
 import java.util.Random;
 
-import utils.Utils;
-
 public class Creature implements Cloneable {
 	
 	Color xminus;
@@ -20,7 +18,6 @@ public class Creature implements Cloneable {
 	private int speed;
 	private NeuralNetwork nn;
 	private static final int MAXSPEED = 7;
-	private static final int MINSPEED = 1;
 	
 	public Creature(int id, int x, int y){
 		this.id = id;
@@ -42,20 +39,21 @@ public class Creature implements Cloneable {
 		this.nn.initialise(rand);
 	}
 	
-	public void compute(int intput[], int inputMinusX[], int inputplusX[], int inputMinusY[], int inputplusY[]){
+	public void compute(int intput[]){
 		
 		current = new Color(intput[0],intput[1],intput[2]); 
-		xminus = new Color(inputMinusX[0], inputMinusX[1], inputMinusX[2]);
-		xplus = new Color(inputplusX[0], inputplusX[1], inputplusX[2]);
-		yminus = new Color(inputMinusY[0], inputMinusY[1], inputMinusY[2]);
-		yplus = new Color(inputplusY[0], inputplusY[1], inputplusY[2]);
+		xminus = new Color(intput[3], intput[4], intput[5]);
+		xplus = new Color(intput[6], intput[7], intput[8]);
+		yminus = new Color(intput[9], intput[10], intput[11]);
+		yplus = new Color(intput[12], intput[13], intput[14]);
 				
-		float input[] = new float[3];
+		float input[] = new float[15];
+		//TODO : Add the other inputs in the loop
 		for(int i=0;i<3;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/255;
 		}
 		float result[] = this.nn.compute(input);
-		this.speed = (int) Math.round((result[0])*(7));
+		this.speed = (int) Math.round((result[0])*(MAXSPEED));
 
 	}
 

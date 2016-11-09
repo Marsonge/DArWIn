@@ -1,10 +1,21 @@
 package model;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import utils.Utils;
 
+
+/**
+ * 
+ * @author Tim
+ * This class represents the brain of a creature.
+ * It is composed of two axioms and a matrix.
+ * The matrix represents the value of the hidden layer of the neural network.
+ * The axioms represent the weight of each link of the neural network.
+ * 
+ * inputAxiom represents the links of the inputs to the hidden layer nodes.
+ * outputAxiom represents the links of the hidden layer nodes to the outputs.
+ */
 public class NeuralNetwork {
 	
 	private final int NB_INPUT = 3;
@@ -22,21 +33,27 @@ public class NeuralNetwork {
 
 		matrix = new float[NB_INPUT];
 	}
+	
+	/**
+	 * Creates a new neural network, using the axioms of the param nn and mutating them slightly.
+	 * @param nn : The neural network to mutate from to create a new one
+	 */
 	public NeuralNetwork(NeuralNetwork nn){
 		this.matrix = new float[NB_INPUT];
-		this.inputAxiom = Utils.deepCopyFloatMatrix(nn.getInputAxiom());
+		this.inputAxiom = Utils.deepCopyFloatMatrix(nn.getInputAxiom()); //Clones properly a 2D array
 		this.outputAxiom = Utils.deepCopyFloatMatrix(nn.getOutputAxiom());
-		mutateInput();
+		mutateInput(); 
 		mutateOutput();
 	}
-	
-	private float[][] getInputAxiom() {
-		return inputAxiom;
-	}
-	private float[][] getOutputAxiom() {
-		return outputAxiom;
-	}
-	private float[][] mutateOutput() {
+
+	/**
+	 * Mutates the output axiom. Three different mutations are possible :
+	 * -> A big mutation, with a 1/10 chance. It changes the axiom by up to 0.5 or -0.5.
+	 * -> A small mutation, with a 3/10 chance. It changes the axiom by up to 0.25 or -0.25.
+	 * -> A benign mutation, with a 6/10 chance. It changes the axiom by up to 0.05 or -0.05.
+	 * 
+	 */
+	private void mutateOutput() {
 		int i,j;
 		for(i=0;i<NB_OUTPUT;i++){
 			for(j=0;j<NB_HIDDENNODES;j++){
@@ -57,9 +74,16 @@ public class NeuralNetwork {
 					outputAxiom[i][j] = 1;
 			}
 		}
-		return outputAxiom;
 	}
-	private float[][] mutateInput() {
+	
+	/**
+	 * Mutates the input axiom. Three different mutations are possible :
+	 * -> A big mutation, with a 1/10 chance. It changes the axiom by up to 0.5 or -0.5.
+	 * -> A small mutation, with a 3/10 chance. It changes the axiom by up to 0.25 or -0.25.
+	 * -> A benign mutation, with a 6/10 chance. It changes the axiom by up to 0.05 or -0.05.
+	 * 
+	 */
+	private void mutateInput() {
 		int i,j;
 		for(i=0;i<NB_HIDDENNODES;i++){
 			for(j=0;j<NB_INPUT;j++){
@@ -80,8 +104,12 @@ public class NeuralNetwork {
 					inputAxiom[i][j] = 1;
 			}
 		}
-		return inputAxiom;
 	}
+	
+	/**
+	 * Initialises the axioms of a neural network with random values, between -1 and 1.
+	 * @param rand : A random seeded once to get different values no matter the time
+	 */
 	public void initialise(Random rand) {
 		int i,j;
 		for(i=0;i<NB_HIDDENNODES;i++){
@@ -96,6 +124,11 @@ public class NeuralNetwork {
 		}
 	}
 	
+	/**
+	 * Compute an input array to return an output array
+	 * @param input : The array of values to input to the neural network
+	 * @return output[] : An array of values representing the answers given by the network
+	 */
 	public float[] compute(float[] input){
 		float output[] = new float[NB_OUTPUT];
 		int i,j;
@@ -117,9 +150,16 @@ public class NeuralNetwork {
 		return output;
 	}
 	
+	/**
+	 * Normalizes a value f between 0 and 1.
+	 * @param f : Value to normalize
+	 * @return A value between 0 and 1.
+	 */
 	private float sigmoid(float f) {
 		return (float) (1/(1+Math.exp(-f)));
 	}
+	
+	
 	@Override
 	public String toString() {
 		String out = "[";
@@ -142,6 +182,13 @@ public class NeuralNetwork {
 		out += "]\n\n";
 		return out;
 	}
+
 	
+	private float[][] getInputAxiom() {
+		return inputAxiom;
+	}
+	private float[][] getOutputAxiom() {
+		return outputAxiom;
+	}
 	
 }
