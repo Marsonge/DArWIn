@@ -3,12 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-
+import javax.swing.*;
 /**
  * 
  * ViewPanel
