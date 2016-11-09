@@ -100,7 +100,7 @@ public class WorldControler extends Observable{
 		input[1] = tileColor.getGreen();
 		input[2] = tileColor.getBlue();
 		
-		int cxminus = creature.getX() - 1;
+		int cxminus = Utils.borderVar(creature.getX() - 1, 0, grid.getNumCols()-1, 0);
 		int tileXminus = cxminus/this.tileSize;
 		Color tileColorMinusX = grid.getTileColour((tileXminus), (tileY));
 		int inputMinusX[] = new int[3];
@@ -108,7 +108,7 @@ public class WorldControler extends Observable{
 		inputMinusX[1] = tileColorMinusX.getGreen();
 		inputMinusX[2] = tileColorMinusX.getBlue();
 		
-		int cxplus = creature.getX() + 1;
+		int cxplus = Utils.borderVar(creature.getX() + 1, 0, grid.getNumCols()-1, 0);
 		int tileXplus = cxplus/this.tileSize;
 		Color tileColorPlusX = grid.getTileColour((tileXplus), (tileY));
 		int inputplusX[] = new int[3];
@@ -116,7 +116,7 @@ public class WorldControler extends Observable{
 		inputplusX[1] = tileColorPlusX.getGreen();
 		inputplusX[2] = tileColorPlusX.getBlue();
 		
-		int cyminus = creature.getY() - 1;
+		int cyminus = Utils.borderVar(creature.getY() - 1, 0, grid.getNumCols()-1, 0);
 		int tileYminus = cyminus/this.tileSize;
 		Color tileColorMinusY = grid.getTileColour((tileX), (tileYminus));
 		int inputMinusY[] = new int[3];
@@ -124,7 +124,7 @@ public class WorldControler extends Observable{
 		inputMinusY[1] = tileColorMinusY.getGreen();
 		inputMinusY[2] = tileColorMinusY.getBlue();
 		
-		int cyplus = creature.getY() + 1;
+		int cyplus = Utils.borderVar(creature.getY() + 1, 0, grid.getNumCols()-1, 0);
 		int tileYplus = cyplus/this.tileSize;
 		Color tileColorPlusY = grid.getTileColour((tileX), (tileYplus));
 		int inputplusY[] = new int[3];
