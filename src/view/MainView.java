@@ -21,6 +21,8 @@ import controler.WorldControler;
  *
  */
 public class MainView extends JFrame {
+	
+	static final int NUMBER_OF_CREATURES = 90;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -86,7 +88,7 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,1); 
+		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
