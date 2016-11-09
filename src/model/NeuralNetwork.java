@@ -156,7 +156,7 @@ public class NeuralNetwork {
 	 * @return A value between 0 and 1.
 	 */
 	private float sigmoid(float f) {
-		return (float) (1/(1+Math.exp(-f)));
+		return (float) (1/(1+Math.exp(-f/1.8)));
 	}
 	
 	
