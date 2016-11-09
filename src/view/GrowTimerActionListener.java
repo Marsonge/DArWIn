@@ -7,12 +7,10 @@ import controler.WorldControler;
 
 public class GrowTimerActionListener implements ActionListener{
 	
-	private int time;
 	private WorldControler wc;
 	
 	public GrowTimerActionListener (WorldControler wc){
 		this.wc = wc;
-		this.time=0;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package controler;
 
 import java.awt.Color;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -21,6 +20,7 @@ import utils.Utils;
  *
  */
 public class WorldControler extends Observable{
+	
 	private Grid grid;
 
 	private List<Creature> creatureList;
@@ -33,7 +33,9 @@ public class WorldControler extends Observable{
 		creatureList = new LinkedList<Creature>();
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
-			creatureList.add(new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize)));
+			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
+			c.initializeNetwork(rand);
+			creatureList.add(c);
 		}
 		
 	}
@@ -41,7 +43,7 @@ public class WorldControler extends Observable{
 	 *  
 	 * @param i
 	 * @param j
-	 * @return the colour of the tile at the position i, j
+	 * @return the color of the tile at the position i, j
 	 */
 	public Color getTileColour(int i, int j) {
 		return grid.getTileColour(i, j);
@@ -65,6 +67,7 @@ public class WorldControler extends Observable{
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
+			compute(c);
 			if(c.getEnergy() <= 0){
 				// creature dies
 				iterator.remove();
@@ -75,6 +78,7 @@ public class WorldControler extends Observable{
 				}
 				this.move(c);
 				this.eat(c);
+				
 			}
 		}
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
@@ -82,6 +86,67 @@ public class WorldControler extends Observable{
 		return true;
 	}
 	
+	private void compute(Creature creature) {
+		int cx = creature.getX();
+		int cy = creature.getY();
+		int tileX = cx/this.tileSize;
+		int tileY = cy/this.tileSize;
+		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
+		tileY = Utils.borderVar(tileY, 0, grid.getNumRows()-1, 0);
+		Color tileColor = grid.getTileColour((tileX), (tileY));
+		int input[] = new int[15];
+		input[0] = tileColor.getRed();
+		input[1] = tileColor.getGreen();
+		input[2] = tileColor.getBlue();
+		
+		int i = 0;
+		int j = 3;
+		
+		int[] inputMinusX = getColorArray(tileX-1, tileY);
+		for(i=0;i<3;i++){
+			input[j] = inputMinusX[i];
+			j++;
+		}
+		int[] inputPlusX = getColorArray(tileX+1,tileY);
+		for(i=0;i<3;i++){
+			input[j] = inputPlusX[i];
+			j++;
+		}
+		int[] inputMinusY = getColorArray(tileX, tileY-1);
+		for(i=0;i<3;i++){
+			input[j] = inputMinusY[i];
+			j++;
+		}
+		int[] inputPlusY = getColorArray(tileX,tileY+1);
+		for(i=0;i<3;i++){
+			input[j] = inputPlusY[i];
+			j++;
+		}
+		creature.compute(input);
+	}
+	
+	/**
+	 * 
+	 * @param tileX The tile coordinate you want to get the colors off
+	 * @param tileY The tile coordinate you want to get the colors off
+	 * @return An int[3] array containing the red, green, and blue value of the tile's color
+	 */
+	private int[] getColorArray(int tileX, int tileY) {
+		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
+		tileX /= this.tileSize;
+		tileY = Utils.borderVar(tileY, 0, grid.getNumCols()-1, 0);
+		tileY /= this.tileSize;
+		Color tileColor = grid.getTileColour((tileX), (tileY));
+		int colorArray[] = new int[3];
+		colorArray[0] = tileColor.getRed();
+		colorArray[1] = tileColor.getGreen();
+		colorArray[2] = tileColor.getBlue();
+		return colorArray;
+	}
+	
+	/**
+	 * Grows food on fertile land, adding more green in the color of the tile.
+	 */
 	public void grow(){
 		List<Tile> fertileLand = grid.getFertileLand();
 		for(Tile t : fertileLand){
@@ -122,17 +187,14 @@ public class WorldControler extends Observable{
 		Color tileColor = grid.getTileColour((tileX), (tileY));
 		// Check if there is still some food on the tile
 		// and that the tile is not sand
-		System.out.print(creature);
 		if(tileColor.getGreen() > 115 && tileColor.getRed() < 200){
 			creature.eat();
-			System.out.print("   CRUNCH");
 			// repaint tile with lighter green (means less food !)
 			int r = tileColor.getRed();
 			int g  = tileColor.getGreen() - 5;
 			int b = tileColor.getBlue();
 			grid.getTile(tileX, tileY).setColor(new Color(r,g,b));
 		}
-		System.out.println();
 	}
 	
 	/**
@@ -179,6 +241,7 @@ public class WorldControler extends Observable{
 		try{
 			child = creature.reproduce();
 		} catch(Exception e){
+			e.printStackTrace();
 			return null;
 		}
 		

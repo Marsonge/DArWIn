@@ -16,6 +16,7 @@ public class Grid {
 	private final Tile[][] tileGrid;
 	private final NoiseGrid noiseGrid;
 	private final List<Tile> fertileLand;
+	
 	/**
 	 * 
 	 * @param size number of tiles of the map (height and width)
@@ -83,12 +84,13 @@ public class Grid {
 	 *  
 	 * @param i
 	 * @param j
-	 * @return the colour of the tile at the position i, j
+	 * @return the colour of the tile at the possition i, j
 	 */
 	public Color getTileColour(int i, int j) {
 
 		return tileGrid[i][j].getColor();
 	}
+	
 	public List<Tile> getFertileLand(){
 		return fertileLand;
 	}

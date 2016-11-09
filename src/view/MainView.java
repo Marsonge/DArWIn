@@ -21,14 +21,16 @@ import controler.WorldControler;
  *
  */
 public class MainView extends JFrame {
+	
+	static int NUMBER_OF_CREATURES = 90;
+	static int TICK_GAMETURN = 100;
+	static int TICK_GROW = 1000;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	private Timer timer;
-	private int tick;
 	private Timer growTimer;
-	private int growTick;
-	WorldControler wc ; 
+	WorldControler wc; 
 	ViewGrid vG ;
 	public boolean simulationLaunched = false;
 	
@@ -70,12 +72,10 @@ public class MainView extends JFrame {
 	 * Start the timer
 	 */
 	public void startTimer(){
-        this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc)); 
+        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc)); 
 	}
 	public void startGrowTimer(){
-		this.growTick = 1000;
-		this.growTimer = new Timer(growTick, new GrowTimerActionListener(wc));
+		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
 	}
 	
 	/**
@@ -86,14 +86,14 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,90); 
+		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
     	this.pack();
     	this.setVisible(true);
-    	
-		wc.simulateForward();
+ 
+    	wc.simulateForward();
 		startTimer();
 		startGrowTimer();
 	}
@@ -113,8 +113,9 @@ public class MainView extends JFrame {
                 if (source instanceof JButton) {
                 	
                     JButton btn = (JButton)source;
-                    
-                    if(btn.getText().equals("Start")){
+          		
+                    if(btn.getText().equals("Start")){ 
+                		
                         timer.start();
                         growTimer.start();
                         btn.setText("Pause");
@@ -161,7 +162,7 @@ public class MainView extends JFrame {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		new MainView(); 
+		new MainView();
 	}
 
 }
