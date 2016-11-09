@@ -18,9 +18,9 @@ import utils.Utils;
  */
 public class NeuralNetwork {
 	
-	private final int NB_INPUT = 15;
+	private final int NB_INPUT = 17;
 	private final int NB_OUTPUT = 3;
-	private final int NB_HIDDENNODES = 15;
+	private final int NB_HIDDENNODES = 17;
 	private float[] matrix;
 	private float[][] inputAxiom;
 	private float[][] outputAxiom;
@@ -145,21 +145,12 @@ public class NeuralNetwork {
 			for(j=0;j<NB_HIDDENNODES;j++){
 				result += this.outputAxiom[i][j]*matrix[j];
 			}
-			output[i] = sigmoid(result);
+			output[i] = result;
 		}
 		return output;
 	}
 	
-	/**
-	 * Normalizes a value f between 0 and 1.
-	 * @param f : Value to normalize
-	 * @return A value between 0 and 1.
-	 */
-	private float sigmoid(float f) {
-		return (float) (1/(1+Math.exp(-f/1.8)));
-	}
-	
-	
+
 	@Override
 	public String toString() {
 		String out = "[";

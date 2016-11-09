@@ -17,8 +17,8 @@ public class Creature implements Cloneable {
 	private int energy;
 	private int speed;
 	private NeuralNetwork nn;
-	private float movex;
-	private float movey;
+	private float movex = 0;
+	private float movey = 0;
 	private static final int MAXSPEED = 7;
 	
 	public Creature(int id, int x, int y){
@@ -49,15 +49,25 @@ public class Creature implements Cloneable {
 		yminus = new Color(intput[9], intput[10], intput[11]);
 		yplus = new Color(intput[12], intput[13], intput[14]);
 				
-		float input[] = new float[15];
+		float input[] = new float[17];
 		//TODO : Normalize correctly ?
 		for(int i=0;i<15;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/(255);
 		}
+		input[15] = this.movex;
+		input[16] = this.movey;
 		float result[] = this.nn.compute(input);
-		this.speed = (int) Math.round((result[0])*(MAXSPEED));
-		this.movex = result[1];
-		this.movey = result[2];
+		this.speed = (int) Math.round((shortSigmoid(result[0]))*(MAXSPEED));
+		this.movex = largeSigmoid(result[1]);
+		this.movey = largeSigmoid(result[2]);
+	}
+
+	private float largeSigmoid(float f) {
+		return (float) (1/(1+Math.exp(-f/-0.8)));
+	}
+
+	private float shortSigmoid(float f) {
+		return (float) (1/(1+Math.exp(-f/2)));
 	}
 
 	public int getId() {
