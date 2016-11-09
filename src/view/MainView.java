@@ -25,6 +25,8 @@ import controler.WorldControler;
 public class MainView extends JFrame {
 	
 	static final int NUMBER_OF_CREATURES = 90;
+	static final int NUMBER_OF_CREATURES_DEAD = 0;
+
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -58,7 +60,7 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	ViewPanel vp = new ViewPanel();
+    	ViewPanel vp = new ViewPanel(NUMBER_OF_CREATURES, NUMBER_OF_CREATURES_DEAD);
     	
     	this.add(vp, BorderLayout.EAST);
     	
@@ -167,6 +169,14 @@ public class MainView extends JFrame {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		new MainView();
+	}
+	
+	public static int getNumberOfCreatures() {
+		return NUMBER_OF_CREATURES;
+	}
+
+	public static int getNumberOfCreaturesDead() {
+		return NUMBER_OF_CREATURES_DEAD;
 	}
 
 }

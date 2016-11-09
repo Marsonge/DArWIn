@@ -54,7 +54,7 @@ public class ViewPanel extends JPanel {
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public ViewPanel(){
+	public ViewPanel(int alive, int dead){
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -103,9 +103,8 @@ public class ViewPanel extends JPanel {
         
         //Oui c'est sale
         //Mais je suis nul en java
-        int time = 12;
-        int alive = 9999;
-        int dead = 1;
+        String time = "00:00";
+
         JLabel stats = new JLabel("<html>Temps : <br>"
 					        		+ "Nbr bestioles en vie : <br>"
 					        		+ "Nbr bestioles crevées : </html>");
