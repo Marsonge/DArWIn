@@ -2,24 +2,15 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 import controler.WorldControler;
 import model.Creature;
-import model.grid.Grid;
 import model.grid.Tile;
 import utils.UpdateInfoWrapper;
 
@@ -30,8 +21,6 @@ public class ViewGrid extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	private WorldControler wc;
 	private final int TILE_SIZE;
-	private int tick;
-	private final Timer timer;
 	
 	
 	/**
@@ -43,11 +32,9 @@ public class ViewGrid extends JPanel implements Observer{
 		this.wc = wc;
 		wc.addObserver(this);
 		TILE_SIZE = wc.getTileSize();
-		this.tick = 1000; //Is in milliseconds
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
-        this.timer = new Timer(tick, new TimerActionListener(wc));
 
 	}
 	

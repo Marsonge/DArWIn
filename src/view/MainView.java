@@ -22,14 +22,14 @@ import controler.WorldControler;
  */
 public class MainView extends JFrame {
 	
-	static final int NUMBER_OF_CREATURES = 90;
+	static int NUMBER_OF_CREATURES = 90;
+	static int TICK_GAMETURN = 100;
+	static int TICK_GROW = 1000;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	private Timer timer;
-	private int tick;
 	private Timer growTimer;
-	private int growTick;
 	WorldControler wc; 
 	ViewGrid vG ;
 	public boolean simulationLaunched = false;
@@ -72,12 +72,10 @@ public class MainView extends JFrame {
 	 * Start the timer
 	 */
 	public void startTimer(){
-        this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc)); 
+        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc)); 
 	}
 	public void startGrowTimer(){
-		this.growTick = 1000;
-		this.growTimer = new Timer(growTick, new GrowTimerActionListener(wc));
+		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
 	}
 	
 	/**
