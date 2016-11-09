@@ -29,7 +29,7 @@ public class ViewCreature extends JLabel {
 		this.setLocation(c.getX(), c.getY());
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature.png"));
+		    img = ImageIO.read(new File("resources/img/creature"+c.getSpeed()+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}

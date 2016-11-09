@@ -1,7 +1,13 @@
 package controler;
 
-import java.awt.Color; 
-import java.util.*;
+import java.awt.Color;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -69,12 +75,17 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
-		for(Iterator<Creature> iterator = this.creatureList.iterator(); iterator.hasNext();){
+		
+		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			if(c.getEnergy() <= 0){
 				// creature dies
 				iterator.remove();
 			} else {
+				Creature baby = this.reproduce(c);
+				if (baby != null){
+					iterator.add(baby);
+				}
 				this.move(c);
 				this.eat(c);
 			}
@@ -83,6 +94,7 @@ public class WorldControler extends Observable{
 		this.notifyObservers(wrapper); 
 		return true;
 	}
+	
 	public void grow(){
 		List<Tile> fertileLand = grid.getFertileLand();
 		for(Tile t : fertileLand){
@@ -94,12 +106,12 @@ public class WorldControler extends Observable{
 			int grows = rand.nextInt(20);
 			if(Terrain.WOODS.equals(t.getTerrain())){
 				if(g<180 && grows < 5){ //Mountains are harsh places : food doesn't always grow
-					g++;
+					g+=3;
 				}
 			}
 			else{//Mountain
 				if(g<130 && grows == 19){ //Mountains are harsh places : food doesn't always grow
-					g++;
+					g+=2;
 				}
 			}
 			t.setColor(new Color(r,g,b));
@@ -164,6 +176,26 @@ public class WorldControler extends Observable{
 		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
 		c.move(x,y);
 		return true;
+	}
+	
+	/**
+	 * reproduce
+	 * 
+	 * @param creature
+	 * @return
+	 */
+	public Creature reproduce(Creature creature){
+		
+		Creature child;
+		
+		/* Reproduces current creature */
+		try{
+			child = creature.reproduce();
+		} catch(Exception e){
+			return null;
+		}
+		
+		return child;
 	}
 	
 	
