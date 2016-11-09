@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import controler.WorldControler;
 
@@ -22,7 +24,6 @@ import controler.WorldControler;
  */
 public class MainView extends JFrame {
 	
-	static int NUMBER_OF_CREATURES = 90;
 	static int TICK_GAMETURN = 100;
 	static int TICK_GROW = 1000;
 	static final int GRID_SIZE = 129;
@@ -33,7 +34,10 @@ public class MainView extends JFrame {
 	private Timer growTimer;
 	WorldControler wc; 
 	ViewGrid vG ;
+	ViewPanel vp = new ViewPanel();
 	public boolean simulationLaunched = false;
+	
+	private int NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();
 	
 	/**
 	 * MainView()
@@ -64,6 +68,7 @@ public class MainView extends JFrame {
     	// Add listeners 
     	this.setStartButtonListener(vp);
     	this.setChangeMapButtonListener(vp);
+    	this.setNbCreaturesListener(vp);
     	
     	// Add a map
     	changeMap();
@@ -75,6 +80,7 @@ public class MainView extends JFrame {
 	public void startTimer(){
         this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc)); 
 	}
+	
 	public void startGrowTimer(){
 		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
 	}
@@ -97,6 +103,22 @@ public class MainView extends JFrame {
     	wc.simulateForward();
 		startTimer();
 		startGrowTimer();
+	}
+	
+	/**
+	 * 
+	 * @param vp
+	 */
+	public void setNbCreaturesListener(final ViewPanel vp){
+		
+		vp.getInitialNbSlider().addChangeListener(new ChangeListener(){
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();			
+			}
+			
+		});
 	}
 	
 	/**
@@ -123,6 +145,8 @@ public class MainView extends JFrame {
                         if (simulationLaunched == false) {
                         	simulationLaunched = true;
                         	vp.disable(vp.getChangeMapButton());
+                        	vp.disable(vp.getInitialNbSlider());
+                        	vp.disable(vp.getInitialNbLabel());
                         }
 
                     } else{

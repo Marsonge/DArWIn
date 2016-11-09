@@ -4,8 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+
+import javafx.beans.value.ChangeListener;
 
 /**
  * 
@@ -18,12 +25,23 @@ import javax.swing.JTabbedPane;
  */
 public class ViewPanel extends JPanel {
 	
+	public static int MIN_CREATURE = 0;
+	public static int MAX_CREATURE = 100;
+	public static int MIN_CRITICAL_CREATURE = 200;
+	public static int CRITICAL_CREATURE = 1000;
+	public static int DEFAULT_CREATURE = 30;
+	public static int DEFAULT_CRITICAL_CREATURE = 400;
+	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
+	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
+	JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
+	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
+	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
 	
 	/**
 	 * Disable a button
@@ -36,6 +54,26 @@ public class ViewPanel extends JPanel {
 		button.setFocusPainted(false);
 		button.setEnabled(false);
 		button.setFocusable(false);
+	}
+	
+	/**
+	 * Disable a slider
+	 * 
+	 * @param slider
+	 */
+	public void disable(JSlider slider){
+		slider.setFocusable(false);
+		slider.setEnabled(false);
+	}
+	
+	/**
+	 * Disable a label
+	 * 
+	 * @param label
+	 */
+	public void disable(JLabel label){
+		label.setFocusable(false);
+		label.setEnabled(false);
 	}
 	
 	/**
@@ -86,7 +124,23 @@ public class ViewPanel extends JPanel {
 
         };
         
+        /** Slider **/
+        nbCreatures.setMinorTickSpacing(5);
+        nbCreatures.setMajorTickSpacing(20);
+        nbCreatures.setPaintTicks(true);
+        nbCreatures.setPaintLabels(true);
+        
+        /** Slider **/
+        nbCreaturesCritical.setMinorTickSpacing(25);
+        nbCreaturesCritical.setMajorTickSpacing(200);
+        nbCreaturesCritical.setPaintTicks(true);
+        nbCreaturesCritical.setPaintLabels(true);
+        
         // Add buttons to Option tab
+        tabOptions.add(nbCreaturesLabel);
+        tabOptions.add(nbCreatures);
+        tabOptions.add(nbCreaturesCriticalLabel);
+        tabOptions.add(nbCreaturesCritical);
         tabOptions.add(changeMap);
         tabOptions.add(start);
          
@@ -108,4 +162,20 @@ public class ViewPanel extends JPanel {
         this.add(tabbedPane);     
 	}
 
+	/**
+	 * getInitialNbSlider
+	 * @return
+	 */
+	public JSlider getInitialNbSlider() {
+		return this.nbCreatures;
+	}
+	
+	/**
+	 * getInitialNbLabel
+	 * @return
+	 */
+	public JLabel getInitialNbLabel() {
+		return this.nbCreaturesLabel;
+	}
+	
 }
