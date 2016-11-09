@@ -67,7 +67,7 @@ public class ViewPanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public ViewPanel(int alive, int dead){
+	public ViewPanel(){
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
