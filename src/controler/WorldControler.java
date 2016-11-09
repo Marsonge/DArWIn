@@ -24,6 +24,7 @@ import utils.Utils;
  *
  */
 public class WorldControler extends Observable{
+	
 	private Grid grid;
 	private Statistique statistique;
 	private int tilesize;
@@ -38,7 +39,9 @@ public class WorldControler extends Observable{
 		creatureList = new LinkedList<Creature>();
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
-			creatureList.add(new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize)));
+			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
+			c.initializeNetwork(rand);
+			creatureList.add(c);
 		}
 		
 	}
@@ -78,6 +81,7 @@ public class WorldControler extends Observable{
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
+			compute(c);
 			if(c.getEnergy() <= 0){
 				// creature dies
 				iterator.remove();
@@ -88,11 +92,61 @@ public class WorldControler extends Observable{
 				}
 				this.move(c);
 				this.eat(c);
+				
 			}
 		}
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;
+	}
+	
+	private void compute(Creature creature) {
+		int cx = creature.getX();
+		int cy = creature.getY();
+		int tileX = cx/this.tileSize;
+		int tileY = cy/this.tileSize;
+		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
+		tileY = Utils.borderVar(tileY, 0, grid.getNumRows()-1, 0);
+		Color tileColor = grid.getTileColour((tileX), (tileY));
+		int input[] = new int[3];
+		input[0] = tileColor.getRed();
+		input[1] = tileColor.getGreen();
+		input[2] = tileColor.getBlue();
+		
+		int cxminus = Utils.borderVar(creature.getX() - 1, 0, grid.getNumCols()-1, 0);
+		int tileXminus = cxminus/this.tileSize;
+		Color tileColorMinusX = grid.getTileColour((tileXminus), (tileY));
+		int inputMinusX[] = new int[3];
+		inputMinusX[0] = tileColorMinusX.getRed();
+		inputMinusX[1] = tileColorMinusX.getGreen();
+		inputMinusX[2] = tileColorMinusX.getBlue();
+		
+		int cxplus = Utils.borderVar(creature.getX() + 1, 0, grid.getNumCols()-1, 0);
+		int tileXplus = cxplus/this.tileSize;
+		Color tileColorPlusX = grid.getTileColour((tileXplus), (tileY));
+		int inputplusX[] = new int[3];
+		inputplusX[0] = tileColorPlusX.getRed();
+		inputplusX[1] = tileColorPlusX.getGreen();
+		inputplusX[2] = tileColorPlusX.getBlue();
+		
+		int cyminus = Utils.borderVar(creature.getY() - 1, 0, grid.getNumCols()-1, 0);
+		int tileYminus = cyminus/this.tileSize;
+		Color tileColorMinusY = grid.getTileColour((tileX), (tileYminus));
+		int inputMinusY[] = new int[3];
+		inputMinusY[0] = tileColorMinusY.getRed();
+		inputMinusY[1] = tileColorMinusY.getGreen();
+		inputMinusY[2] = tileColorMinusY.getBlue();
+		
+		int cyplus = Utils.borderVar(creature.getY() + 1, 0, grid.getNumCols()-1, 0);
+		int tileYplus = cyplus/this.tileSize;
+		Color tileColorPlusY = grid.getTileColour((tileX), (tileYplus));
+		int inputplusY[] = new int[3];
+		inputplusY[0] = tileColorPlusY.getRed();
+		inputplusY[1] = tileColorPlusY.getGreen();
+		inputplusY[2] = tileColorPlusY.getBlue();
+				
+		//creature.compute(input);
+		creature.compute(input, inputMinusX, inputplusX, inputMinusY,  inputplusY);
 	}
 	
 	public void grow(){
@@ -135,17 +189,14 @@ public class WorldControler extends Observable{
 		Color tileColor = grid.getTileColour((tileX), (tileY));
 		// Check if there is still some food on the tile
 		// and that the tile is not sand
-		System.out.print(creature);
 		if(tileColor.getGreen() > 115 && tileColor.getRed() < 200){
 			creature.eat();
-			System.out.print("   CRUNCH");
 			// repaint tile with lighter green (means less food !)
 			int r = tileColor.getRed();
 			int g  = tileColor.getGreen() - 5;
 			int b = tileColor.getBlue();
 			grid.getTile(tileX, tileY).setColor(new Color(r,g,b));
 		}
-		System.out.println();
 	}
 	
 	/**
@@ -192,6 +243,7 @@ public class WorldControler extends Observable{
 		try{
 			child = creature.reproduce();
 		} catch(Exception e){
+			e.printStackTrace();
 			return null;
 		}
 		
