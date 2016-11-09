@@ -30,7 +30,8 @@ public class ViewPanel extends JPanel {
 	public static int MIN_CRITICAL_CREATURE = 200;
 	public static int CRITICAL_CREATURE = 1000;
 	public static int DEFAULT_CREATURE = 30;
-	public static int DEFAULT_CRITICAL_CREATURE = 400;
+	public static int DEFAULT_PREFERRED_CREATURE = 400;
+	public static int DEFAULT_CRITICAL_CREATURE = 550;
 	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -40,6 +41,8 @@ public class ViewPanel extends JPanel {
 	JButton start = new JButton("Start");
 	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
 	JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
+	JLabel nbCreaturesPreferredLabel = new JLabel("Preferred number of creatures");
+	JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
 	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
 	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
 	
@@ -136,9 +139,17 @@ public class ViewPanel extends JPanel {
         nbCreaturesCritical.setPaintTicks(true);
         nbCreaturesCritical.setPaintLabels(true);
         
+        /** Slider **/
+        nbCreaturesPreferred.setMinorTickSpacing(25);
+        nbCreaturesPreferred.setMajorTickSpacing(200);
+        nbCreaturesPreferred.setPaintTicks(true);
+        nbCreaturesPreferred.setPaintLabels(true);
+        
         // Add buttons to Option tab
         tabOptions.add(nbCreaturesLabel);
         tabOptions.add(nbCreatures);
+        tabOptions.add(nbCreaturesPreferredLabel);
+        tabOptions.add(nbCreaturesPreferred);
         tabOptions.add(nbCreaturesCriticalLabel);
         tabOptions.add(nbCreaturesCritical);
         tabOptions.add(changeMap);
