@@ -32,6 +32,7 @@ public class MainView extends JFrame {
 	private int growTick;
 	WorldControler wc ; 
 	ViewGrid vG ;
+	ViewPanel vp;
 	public boolean simulationLaunched = false;
 	
 	/**
@@ -56,7 +57,9 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	ViewPanel vp = new ViewPanel();
+    	vp = new ViewPanel();
+    	
+    	//vp.addPropertyChangeListener();
     	
     	this.add(vp, BorderLayout.EAST);
     	
@@ -73,7 +76,7 @@ public class MainView extends JFrame {
 	 */
 	public void startTimer(){
         this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc)); 
+        this.timer = new Timer(tick, new TimerActionListener(wc,vp)); 
 	}
 	public void startGrowTimer(){
 		this.growTick = 1000;
