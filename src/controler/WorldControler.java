@@ -218,24 +218,13 @@ public class WorldControler extends Observable{
 	 * @return true
 	 */
 	public boolean move(Creature c){
-		//TODO : Implement a better move
-		Random rand = new Random();
 		int x = c.getX();
 		int y = c.getY();
+		float movex = c.getMovex()-0.5f;
+		float movey = c.getMovey()-0.5f;
 		int speed = c.getSpeed();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
+		x = (x+Math.round(movex*speed));
+		y = (y+Math.round(movey*speed));
 		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
 		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
 		c.move(x,y);

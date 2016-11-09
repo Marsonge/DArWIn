@@ -17,6 +17,8 @@ public class Creature implements Cloneable {
 	private int energy;
 	private int speed;
 	private NeuralNetwork nn;
+	private float movex;
+	private float movey;
 	private static final int MAXSPEED = 7;
 	
 	public Creature(int id, int x, int y){
@@ -54,7 +56,8 @@ public class Creature implements Cloneable {
 		}
 		float result[] = this.nn.compute(input);
 		this.speed = (int) Math.round((result[0])*(MAXSPEED));
-
+		this.movex = result[1];
+		this.movey = result[2];
 	}
 
 	public int getId() {
@@ -87,6 +90,22 @@ public class Creature implements Cloneable {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public float getMovex() {
+		return movex;
+	}
+
+	public void setMovex(float movex) {
+		this.movex = movex;
+	}
+
+	public float getMovey() {
+		return movey;
+	}
+
+	public void setMovey(float movey) {
+		this.movey = movey;
 	}
 
 	public boolean eat(){
