@@ -6,70 +6,83 @@ import java.util.*;
 
 // Heavily inspired of http://stackoverflow.com/a/5532726 
 // http://www.redblobgames.com/maps/terrain-from-noise/#demo
+// http://stackoverflow.com/questions/2755750/diamond-square-algorithm
+// https://bitbucket.org/sjl/ymir/src/d9aabdb0ab1057dbd88c495dd2515a7c407022bd/src/ymir/rendering.wisp?at=default&fileviewer=file-view-default
+// http://stevelosh.com/blog/2016/06/diamond-square/
 
 public class NoiseGrid {
 	
-    private float[][] grid;
+    private double[][] data;
     float roughness;
     private Random seed;
+    private int size;
 
 
-    public NoiseGrid(Random seed, float roughness, int width, int height) {
-        this.roughness = roughness / width;
-        this.grid = new float[width][height];
+    public NoiseGrid(Random seed, float roughness, int size) {
+        this.roughness = roughness / size;
+        this.data = new double[size][size];
         this.seed = (seed == null) ? new Random() : seed;
+        this.size = size;
     }
     
     public void initialise() {
-        int xh = this.grid.length - 1;
-        int yh = this.grid[0].length - 1;
+    	//an initial seed value for the corners of the data
+    	final double SEED = seed.nextInt(Math.round(2*roughness));
+    	//seed the data
+    	data[0][0] = data[0][size-1] = data[size-1][0] = 
+    	  data[size-1][size-1] = SEED;
+    	
+    	for(int sideLength = size-1;sideLength >= 2;sideLength /=2, roughness/= 2.0){ //On réduit le carré de recherche et l'entropie plus on avance
+    	  int halfSide = sideLength/2;
 
-        // set the corner points
-        this.grid[0][0] = this.seed.nextFloat() - 0.5f;
-        this.grid[0][yh] = this.seed.nextFloat() - 0.5f;
-        this.grid[xh][0] = this.seed.nextFloat() - 0.5f;
-        this.grid[xh][yh] = this.seed.nextFloat() - 0.5f;
+    	  //Etape carrée : on génère la valeur du centre du carré x,y,x+sideLength,y+sideLength
+    	  for(int x=0;x<size-1;x+=sideLength){
+    	    for(int y=0;y<size-1;y+=sideLength){
+    	      //Calcul du moyen de chaque coin
+    	      double avg = data[x][y] + //top left
+    	      data[x+sideLength][y] +//top right
+    	      data[x][y+sideLength] + //lower left
+    	      data[x+sideLength][y+sideLength];//lower right
+    	      avg /= 4.0;
 
-        // generate the fractal
-        generate(0, 0, xh, yh);
+    	      //On change légèrement la valeur du centre grâce à l'entropie
+    	      data[x+halfSide][y+halfSide] = avg + (seed.nextDouble()*2*roughness) - roughness; //La valeur finale est entre -roughness,roughness
+    	    }
+    	  }
+
+    	  //Etape diamant
+    	  //On calcule le centre des diamants construits à l'étape précédente
+  	      //NOTE: utilisez x-1 pour que les valeurs wrappent around
+    	  for(int x=0;x<size;x+=halfSide){
+    	    //NOTE: utilisez y-1 pour que les valeurs wrappent around
+    	    for(int y=(x+halfSide)%sideLength;y<size;y+=sideLength){
+    	      //x, y est le centre du diamant
+    	      //note : le modulo et l'ajout de la taille sont nécessaires pour utiliser les coins de l'autre côté, si on wrap around
+    	      
+	    	  double avg = 
+	                data[(x-halfSide+size-1)%(size-1)][y] + //left of center
+	                data[(x+halfSide)%(size-1)][y] + //right of center
+	                data[x][(y+halfSide)%(size-1)] + //below center
+	                data[x][(y-halfSide+size-1)%(size-1)]; //above center
+    	      avg /= 4.0;
+    	      
+    	      avg = avg + (seed.nextDouble()*2*roughness) - roughness; //Comme plus haut, entre -roughness et roughness
+
+    	      data[x][y] = avg;
+
+    	      //Décommentez ceci si vous voulez que le monde soit "rond", ou wrap around
+    	      //if(x == 0)  data[size-1][y] = avg;
+    	      //if(y == 0)  data[x][size-1] = avg;
+    	    }
+    	  }
+    	}
     }
+ 
 
 
-    // Changes the value of the tile to something slightly different :
-    // The objective is to blur or roughen the edges of the map, so that it
-    // doesn't look square but natural
-    private float roughen(float v, int l, int h) {
-        return v + this.roughness * (float) (this.seed.nextGaussian() * (h - l));
-    }
-    
-
-    // generate the fractal
-    private void generate(int xl, int yl, int xh, int yh) {
-        int xm = (xl + xh) / 2; // Calculates the middle points
-        int ym = (yl + yh) / 2;
-        if ((xl == xm) && (yl == ym)) return; // If our middle points is our extremity, we've done everything
         
-        this.grid[xm][yl] = 0.49f * (this.grid[xl][yl] + this.grid[xh][yl]); // If you decide to change this value, keep the same
-        this.grid[xm][yh] = 0.49f * (this.grid[xl][yh] + this.grid[xh][yh]); // along those 4 lines, and the value between 0 and 1.
-        this.grid[xl][ym] = 0.49f * (this.grid[xl][yl] + this.grid[xl][yh]); // The higher the value, the higher the terrain (mountains).
-        this.grid[xh][ym] = 0.49f * (this.grid[xh][yl] + this.grid[xh][yh]); // It is EXTREMELY sensitive, so try changing by 0.01 at a time.
-
-        float v = roughen(0.49f * (this.grid[xm][yl] + this.grid[xm][yh]), xl + yl, yh
-                + xh);
-        this.grid[xm][ym] = v;
-        this.grid[xm][yl] = roughen(this.grid[xm][yl], xl, xh);
-        this.grid[xm][yh] = roughen(this.grid[xm][yh], xl, xh);
-        this.grid[xl][ym] = roughen(this.grid[xl][ym], yl, yh);
-        this.grid[xh][ym] = roughen(this.grid[xh][ym], yl, yh);
-
-        generate(xl, yl, xm, ym); // Does the same with 4 squares in our original squares, i.e.
-        generate(xm, yl, xh, ym); // in small parts of our maps.
-        generate(xl, ym, xm, yh);
-        generate(xm, ym, xh, yh);
-    }
-        
-    public float[][] getNoiseGrid(){
-    	return grid;
+    public double[][] getNoiseGrid(){
+    	return data;
     }
     
 }
