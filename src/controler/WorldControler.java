@@ -96,7 +96,6 @@ public class WorldControler extends Observable{
 			}
 			
 		}
-		System.out.println("threshold: "+softcap+", nbCreature: "+nbCreature+", minenergy: "+minenergy);
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;

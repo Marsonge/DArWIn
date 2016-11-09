@@ -18,9 +18,9 @@ import utils.Utils;
  */
 public class NeuralNetwork {
 	
-	private final int NB_INPUT = 3;
-	private final int NB_OUTPUT = 2;
-	private final int NB_HIDDENNODES = 3;
+	private final int NB_INPUT = 15;
+	private final int NB_OUTPUT = 3;
+	private final int NB_HIDDENNODES = 15;
 	private float[] matrix;
 	private float[][] inputAxiom;
 	private float[][] outputAxiom;

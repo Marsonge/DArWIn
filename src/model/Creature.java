@@ -48,9 +48,9 @@ public class Creature implements Cloneable {
 		yplus = new Color(intput[12], intput[13], intput[14]);
 				
 		float input[] = new float[15];
-		//TODO : Add the other inputs in the loop
-		for(int i=0;i<3;i++){//Normalize input : Colors
-			input[i] = ((float)intput[i])/255;
+		//TODO : Normalize correctly ?
+		for(int i=0;i<15;i++){//Normalize input : Colors
+			input[i] = ((float)intput[i])/(255);
 		}
 		float result[] = this.nn.compute(input);
 		this.speed = (int) Math.round((result[0])*(MAXSPEED));
