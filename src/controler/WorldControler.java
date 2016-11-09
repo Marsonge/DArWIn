@@ -195,6 +195,7 @@ public class WorldControler extends Observable{
 		try{
 			child = creature.reproduce();
 		} catch(Exception e){
+			e.printStackTrace();
 			return null;
 		}
 		

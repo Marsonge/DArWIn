@@ -26,7 +26,7 @@ public class Creature implements Cloneable{
 	protected Creature(int id, int x, int y, int speed, NeuralNetwork nn){
 		this(id, x, y);
 		this.speed = speed;
-		this.nn = nn;
+		this.nn = new NeuralNetwork(nn);
 	}
 
 
@@ -36,12 +36,11 @@ public class Creature implements Cloneable{
 	
 	public void compute(int intput[]){
 		float input[] = new float[3];
-		for(int i=0;i<3;i++){//Normalize input
+		for(int i=0;i<3;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/255;
 		}
-		int row = 0;//Compute speed
-		float result = this.nn.compute(input, row);
-		this.speed = (int) Math.round(result*7)%8;
+		float result[] = this.nn.compute(input);
+		this.speed = (int) Math.round((result[0])*(7));
 
 	}
 
@@ -78,7 +77,7 @@ public class Creature implements Cloneable{
 	}
 
 	public boolean eat(){
-		energy+=3;
+		energy+=2;
 		return true;
 	}
 	
@@ -91,7 +90,7 @@ public class Creature implements Cloneable{
 
 	@Override
 	public String toString() {
-		return "Creature [id=" + id + ", x=" + x + ", y=" + y + ", foodLevel=" + energy + ", speed=" + speed + "]";
+		return "Creature [id=" + id + ", x=" + x + ", y=" + y + ", energy=" + energy + ", speed=" + speed + "]";
 	}
 
 	@Override
@@ -102,7 +101,6 @@ public class Creature implements Cloneable{
 	public Creature reproduce() throws CloneNotSupportedException{
 		if(this.energy>150){
 			Creature c = (Creature)this.clone();
-			//c.mutate();
 			this.energy -=(50+this.energy/5);
 			return c;
 		}else{
@@ -111,12 +109,5 @@ public class Creature implements Cloneable{
 		
 	}
 
-	private void mutate() {
-		Random rand = new Random();
-		if(rand.nextInt(10)==0){
-			speed+=rand.nextInt(3)-1;
-			speed = Utils.borderVar(speed, MINSPEED, MAXSPEED, 0);
-		}
-	}
 	
 }
