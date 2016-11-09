@@ -25,6 +25,7 @@ public class MainView extends JFrame {
 	static int NUMBER_OF_CREATURES = 90;
 	static int TICK_GAMETURN = 100;
 	static int TICK_GROW = 1000;
+	static final int GRID_SIZE = 129;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -86,7 +87,7 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
+		this.wc = new WorldControler(GRID_SIZE,6,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
