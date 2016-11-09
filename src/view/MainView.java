@@ -21,6 +21,8 @@ import controler.WorldControler;
  *
  */
 public class MainView extends JFrame {
+	
+	static final int NUMBER_OF_CREATURES = 90;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -28,7 +30,7 @@ public class MainView extends JFrame {
 	private int tick;
 	private Timer growTimer;
 	private int growTick;
-	WorldControler wc ; 
+	WorldControler wc; 
 	ViewGrid vG ;
 	public boolean simulationLaunched = false;
 	
@@ -86,14 +88,14 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,90); 
+		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
     	this.pack();
     	this.setVisible(true);
-    	
-		wc.simulateForward();
+ 
+    	wc.simulateForward();
 		startTimer();
 		startGrowTimer();
 	}
@@ -113,8 +115,9 @@ public class MainView extends JFrame {
                 if (source instanceof JButton) {
                 	
                     JButton btn = (JButton)source;
-                    
-                    if(btn.getText().equals("Start")){
+          		
+                    if(btn.getText().equals("Start")){ 
+                		
                         timer.start();
                         growTimer.start();
                         btn.setText("Pause");
@@ -161,7 +164,7 @@ public class MainView extends JFrame {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		new MainView(); 
+		new MainView();
 	}
 
 }

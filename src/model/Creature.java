@@ -1,10 +1,18 @@
 package model;
 
+import java.awt.Color;
 import java.util.Random;
 
 import utils.Utils;
 
-public class Creature implements Cloneable{
+public class Creature implements Cloneable {
+	
+	Color xminus;
+	Color xplus;
+	Color current;
+	Color yminus;
+	Color yplus;
+	
 	private int id;
 	private int x;
 	private int y;
@@ -34,7 +42,14 @@ public class Creature implements Cloneable{
 		this.nn.initialise(rand);
 	}
 	
-	public void compute(int intput[]){
+	public void compute(int intput[], int inputMinusX[], int inputplusX[], int inputMinusY[], int inputplusY[]){
+		
+		current = new Color(intput[0],intput[1],intput[2]); 
+		xminus = new Color(inputMinusX[0], inputMinusX[1], inputMinusX[2]);
+		xplus = new Color(inputplusX[0], inputplusX[1], inputplusX[2]);
+		yminus = new Color(inputMinusY[0], inputMinusY[1], inputMinusY[2]);
+		yplus = new Color(inputplusY[0], inputplusY[1], inputplusY[2]);
+				
 		float input[] = new float[3];
 		for(int i=0;i<3;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/255;

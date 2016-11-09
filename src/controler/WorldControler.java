@@ -21,6 +21,7 @@ import utils.Utils;
  *
  */
 public class WorldControler extends Observable{
+	
 	private Grid grid;
 
 	private List<Creature> creatureList;
@@ -67,7 +68,6 @@ public class WorldControler extends Observable{
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
-			
 			compute(c);
 			if(c.getEnergy() <= 0){
 				// creature dies
@@ -79,6 +79,7 @@ public class WorldControler extends Observable{
 				}
 				this.move(c);
 				this.eat(c);
+				
 			}
 		}
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
@@ -98,7 +99,41 @@ public class WorldControler extends Observable{
 		input[0] = tileColor.getRed();
 		input[1] = tileColor.getGreen();
 		input[2] = tileColor.getBlue();
-		creature.compute(input);
+		
+		int cxminus = creature.getX() - 1;
+		int tileXminus = cxminus/this.tileSize;
+		Color tileColorMinusX = grid.getTileColour((tileXminus), (tileY));
+		int inputMinusX[] = new int[3];
+		inputMinusX[0] = tileColorMinusX.getRed();
+		inputMinusX[1] = tileColorMinusX.getGreen();
+		inputMinusX[2] = tileColorMinusX.getBlue();
+		
+		int cxplus = creature.getX() + 1;
+		int tileXplus = cxplus/this.tileSize;
+		Color tileColorPlusX = grid.getTileColour((tileXplus), (tileY));
+		int inputplusX[] = new int[3];
+		inputplusX[0] = tileColorPlusX.getRed();
+		inputplusX[1] = tileColorPlusX.getGreen();
+		inputplusX[2] = tileColorPlusX.getBlue();
+		
+		int cyminus = creature.getY() - 1;
+		int tileYminus = cyminus/this.tileSize;
+		Color tileColorMinusY = grid.getTileColour((tileX), (tileYminus));
+		int inputMinusY[] = new int[3];
+		inputMinusY[0] = tileColorMinusY.getRed();
+		inputMinusY[1] = tileColorMinusY.getGreen();
+		inputMinusY[2] = tileColorMinusY.getBlue();
+		
+		int cyplus = creature.getY() + 1;
+		int tileYplus = cyplus/this.tileSize;
+		Color tileColorPlusY = grid.getTileColour((tileX), (tileYplus));
+		int inputplusY[] = new int[3];
+		inputplusY[0] = tileColorPlusY.getRed();
+		inputplusY[1] = tileColorPlusY.getGreen();
+		inputplusY[2] = tileColorPlusY.getBlue();
+				
+		//creature.compute(input);
+		creature.compute(input, inputMinusX, inputplusX, inputMinusY,  inputplusY);
 	}
 	
 	public void grow(){
