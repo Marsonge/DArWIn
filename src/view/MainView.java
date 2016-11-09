@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
+import utils.EndOfGameEvent;
+import utils.EndOfGameEventListener;
 import controler.WorldControler;
 
 /**
@@ -22,7 +25,7 @@ import controler.WorldControler;
  */
 public class MainView extends JFrame {
 	
-	static final int NUMBER_OF_CREATURES = 90;
+	static final int NUMBER_OF_CREATURES = 1;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -31,8 +34,10 @@ public class MainView extends JFrame {
 	private Timer growTimer;
 	private int growTick;
 	WorldControler wc; 
-	ViewGrid vG ;
+	ViewGrid vG;
+	ViewPanel vP;
 	public boolean simulationLaunched = false;
+	private MainView self = this;
 	
 	/**
 	 * MainView()
@@ -56,13 +61,13 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	ViewPanel vp = new ViewPanel();
+    	this.vP = new ViewPanel();
     	
-    	this.add(vp, BorderLayout.EAST);
+    	this.add(this.vP, BorderLayout.EAST);
     	
     	// Add listeners 
-    	this.setStartButtonListener(vp);
-    	this.setChangeMapButtonListener(vp);
+    	this.setStartButtonListener(this.vP);
+    	this.setChangeMapButtonListener(this.vP);
     	
     	// Add a map
     	changeMap();
@@ -71,11 +76,11 @@ public class MainView extends JFrame {
 	/**
 	 * Start the timer
 	 */
-	public void startTimer(){
+	public void initTimer(){
         this.tick = 100;
         this.timer = new Timer(tick, new TimerActionListener(wc)); 
 	}
-	public void startGrowTimer(){
+	public void initGrowTimer(){
 		this.growTick = 1000;
 		this.growTimer = new Timer(growTick, new GrowTimerActionListener(wc));
 	}
@@ -87,17 +92,19 @@ public class MainView extends JFrame {
 		
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
+
 		
 		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
+    	this.setEndOfGameListener(this.vG);
 		
 		this.add(vG, BorderLayout.WEST);
     	this.pack();
     	this.setVisible(true);
  
     	wc.simulateForward();
-		startTimer();
-		startGrowTimer();
+		initTimer();
+		initGrowTimer();
 	}
 	
 	/**
@@ -126,7 +133,7 @@ public class MainView extends JFrame {
                         	vp.disable(vp.getChangeMapButton());
                         }
 
-                    } else{
+                    } else if (btn.getText().equals("Pause")){
                     	timer.stop();
                         growTimer.stop();
                     	btn.setText("Start");
@@ -156,6 +163,28 @@ public class MainView extends JFrame {
         });
 	}
 	
+	public void setEndOfGameListener(final ViewGrid vg){
+		vg.addEndOfGameListener(new EndOfGameEventListener() {
+			public void actionPerformed(EndOfGameEvent evt) {
+		    	
+				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
+				System.out.println("Event triggered");
+				if (choice == JOptionPane.YES_OPTION) {
+		  			// if yes do : changes map once and reset all buttons settings
+		  			self.simulationLaunched = false;
+		  			self.changeMap();
+		  			self.vP.enable(self.vP.getChangeMapButton());
+		  			JButton start = self.vP.getStartButton();
+		  			self.vP.enable(start);
+		  			start.setText("Start");
+		  		} else {
+		  			// if no do : quit game
+		  			// TODO Save results before exit
+		  			System.exit(0);
+		  		}
+		     }
+		});
+	}
 	
 	/**
 	 * main function of the project, will create the view

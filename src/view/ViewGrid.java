@@ -2,25 +2,21 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.EventListenerList;
 
 import controler.WorldControler;
 import model.Creature;
-import model.grid.Grid;
 import model.grid.Tile;
+import utils.EndOfGameEvent;
+import utils.EndOfGameEventListener;
 import utils.UpdateInfoWrapper;
 
 public class ViewGrid extends JPanel implements Observer{
@@ -31,12 +27,12 @@ public class ViewGrid extends JPanel implements Observer{
 	private WorldControler wc;
 	private final int TILE_SIZE;
 	private int tick;
-	private final Timer timer;
-	
+	protected EventListenerList listenerList = new EventListenerList();
+	private boolean endOfGame = false;
 	
 	/**
-	 * 
-	 * @param wc
+	 *  Constructor
+	 * @param wc world controler
 	 */
 	public ViewGrid(WorldControler wc){
 		super(null);
@@ -47,7 +43,6 @@ public class ViewGrid extends JPanel implements Observer{
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));
-        this.timer = new Timer(tick, new TimerActionListener(wc));
 
 	}
 	
@@ -88,14 +83,22 @@ public class ViewGrid extends JPanel implements Observer{
 		UpdateInfoWrapper wrapper = (UpdateInfoWrapper) arg;
 		
 		// update creatures
-
 		this.removeAll();
-		paintCreatures(wrapper.getCreatureList());
-		paintTiles(wrapper.getTileList());
-		this.revalidate();
-		this.repaint();		
+		List<Creature> lc = wrapper.getCreatureList();
+		// checks if there are still creatures on the grid
+		if (lc.isEmpty() && !endOfGame){
+			endOfGame = true;
+			System.out.println("Plus de créatures !");
+			this.fireEndOfGame(new EndOfGameEvent(this));
+			
+		} else {
+			paintCreatures(lc);
+			paintTiles(wrapper.getTileList());
+			this.revalidate();
+			this.repaint();
+		}
 	}
-	
+
 	private void paintTiles(List<Tile> tileList) {
 		int rectWidth = getWidth() / wc.getSize();
         int rectHeight = getHeight() / wc.getSize();
@@ -121,4 +124,26 @@ public class ViewGrid extends JPanel implements Observer{
 			vc.setSize(16,16);
 		}
 	}
+	
+	/**
+	 *  Event management methods
+	 */
+	
+	public void addEndOfGameListener(EndOfGameEventListener listener) {
+	    listenerList.add(EndOfGameEventListener.class, listener);
+	  }
+	
+	public void removeEndOfGameListener(EndOfGameEventListener listener) {
+	    listenerList.remove(EndOfGameEventListener.class, listener);
+	  }
+	
+	void fireEndOfGame(EndOfGameEvent evt) {
+	    Object[] listeners = listenerList.getListenerList();
+	    System.out.println("event fired, listeners : " + listeners.toString());
+	    for (int i = 0; i < listeners.length; i = i+2) {
+	      if (listeners[i] == EndOfGameEventListener.class) {
+	        ((EndOfGameEventListener) listeners[i+1]).actionPerformed(evt);
+	      }
+	    }
+	  }
 }

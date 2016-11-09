@@ -26,16 +26,26 @@ public class ViewPanel extends JPanel {
 	JButton start = new JButton("Start");
 	
 	/**
-	 * Disable a button
+	 * Disables a button
 	 * 
 	 * @param button
 	 */
 	public void disable(JButton button){
-		
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
 		button.setEnabled(false);
 		button.setFocusable(false);
+	}
+	
+	/**
+	 * Enables a button
+	 * @param button
+	 */
+	public void enable(JButton button){
+		button.setBorderPainted(true);
+		button.setFocusPainted(true);
+		button.setEnabled(true);
+		button.setFocusable(true);
 	}
 	
 	/**
