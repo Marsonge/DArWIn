@@ -73,9 +73,11 @@ public class MainView extends JFrame {
     	this.add(sP, BorderLayout.EAST);
     	
     	// Add listeners 
-    	this.setStartButtonListener(sP);
-    	this.setChangeMapButtonListener(sP);
-    	this.setNbCreaturesListener(sP);
+    	this.setStartButtonListener(vp);
+    	this.setChangeMapButtonListener(vp);
+    	this.setNbCreaturesListener(vp);
+    	this.setNbCreaturesSoftCapListener(vp);
+    	this.setNbCreaturesHardCapListener(vp);
     	
     	// Add a map
     	changeMap();
@@ -101,6 +103,9 @@ public class MainView extends JFrame {
 		if (vG != null) this.remove(vG);
 		
 		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
+		this.wc.setSoftCap(vp.getSoftCapSlider().getValue());
+		this.wc.setHardCap(vp.getHardCapSlider().getValue());
+		
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
@@ -123,6 +128,38 @@ public class MainView extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();			
+			}
+			
+		});
+	}
+	
+	/**
+	 * 
+	 * @param vp
+	 */
+	public void setNbCreaturesSoftCapListener(final ViewPanel vp){
+		
+		vp.getSoftCapSlider().addChangeListener(new ChangeListener(){
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wc.setSoftCap(vp.getSoftCapSlider().getValue());			
+			}
+			
+		});
+	}
+	
+	/**
+	 * 
+	 * @param vp
+	 */
+	public void setNbCreaturesHardCapListener(final ViewPanel vp){
+		
+		vp.getHardCapSlider().addChangeListener(new ChangeListener(){
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				wc.setHardCap(vp.getHardCapSlider().getValue());			
 			}
 			
 		});
