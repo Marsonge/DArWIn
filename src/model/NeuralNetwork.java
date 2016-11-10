@@ -18,9 +18,9 @@ import utils.Utils;
  */
 public class NeuralNetwork {
 	
-	private final int NB_INPUT = 17;
-	private final int NB_OUTPUT = 3;
-	private final int NB_HIDDENNODES = 17;
+	private final int NB_INPUT = 16;
+	private final int NB_OUTPUT = 2;
+	private final int NB_HIDDENNODES = 16;
 	private float[] matrix;
 	private float[][] inputAxiom;
 	private float[][] outputAxiom;
@@ -138,7 +138,6 @@ public class NeuralNetwork {
 				result += this.inputAxiom[i][j]*input[j];
 			}
 			matrix[i] =  result;
-
 		}
 		for(i=0;i<NB_OUTPUT;i++){
 			float result = 0;
@@ -174,6 +173,9 @@ public class NeuralNetwork {
 		return out;
 	}
 
+	private float sigmoid(float f){
+		return (float) (1/(1+Math.exp(-f/10)));
+	}
 	
 	private float[][] getInputAxiom() {
 		return inputAxiom;

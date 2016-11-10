@@ -52,9 +52,9 @@ public class NoiseGrid {
 
     	  //Etape diamant
     	  //On calcule le centre des diamants construits à l'étape précédente
-  	      //NOTE: utilisez x-1 pour que les valeurs wrappent around
+  	      //NOTE: utilisez x-1 pour que les valeurs wrappent around, x pour que ça ne soit pas le cas
     	  for(int x=0;x<size;x+=halfSide){
-    	    //NOTE: utilisez y-1 pour que les valeurs wrappent around
+    	    //NOTE: utilisez y-1 pour que les valeurs wrappent around, y pour que ça ne soit pas le cas
     	    for(int y=(x+halfSide)%sideLength;y<size;y+=sideLength){
     	      //x, y est le centre du diamant
     	      //note : le modulo et l'ajout de la taille sont nécessaires pour utiliser les coins de l'autre côté, si on wrap around
@@ -71,8 +71,8 @@ public class NoiseGrid {
     	      data[x][y] = avg;
 
     	      //Décommentez ceci si vous voulez que le monde soit "rond", ou wrap around
-    	      //if(x == 0)  data[size-1][y] = avg;
-    	      //if(y == 0)  data[x][size-1] = avg;
+    	      if(x == 0)  data[size-1][y] = avg;
+    	      if(y == 0)  data[x][size-1] = avg;
     	    }
     	  }
     	}

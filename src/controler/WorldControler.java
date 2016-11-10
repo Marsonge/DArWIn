@@ -220,14 +220,14 @@ public class WorldControler extends Observable{
 	public boolean move(Creature c){
 		int x = c.getX();
 		int y = c.getY();
-		float movex = c.getMovex()-0.5f;
-		float movey = c.getMovey()-0.5f;
-		int speed = c.getSpeed();
-		x = (x+Math.round(movex*speed));
-		y = (y+Math.round(movey*speed));
-		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
-		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
-		c.move(x,y);
+		int rot = c.getRot();
+		double rad = Math.toRadians(rot);
+		float speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad)*speed + x));
+		int newY = (int) Math.round((Math.sin(rad)*speed + y));
+		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols()*tileSize, 5);
+		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows()*tileSize, 5);
+		c.move(newX,newY);
 		return true;
 	}
 	
