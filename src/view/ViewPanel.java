@@ -34,7 +34,7 @@ public class ViewPanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
-	public static int MIN_CRITICAL_CREATURE = 200;
+	public static int MIN_CRITICAL_CREATURE = 0;
 	public static int CRITICAL_CREATURE = 1000;
 	public static int DEFAULT_CREATURE = 30;
 	public static int DEFAULT_PREFERRED_CREATURE = 400;
@@ -90,6 +90,22 @@ public class ViewPanel extends JPanel implements Observer{
 	public void disable(JLabel label){
 		label.setFocusable(false);
 		label.setEnabled(false);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getSoftCapSlider(){
+		return this.nbCreaturesPreferred;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getHardCapSlider(){
+		return this.nbCreaturesCritical;
 	}
 	
 	/**

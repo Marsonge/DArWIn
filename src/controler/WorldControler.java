@@ -46,8 +46,8 @@ public class WorldControler extends Observable{
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
-		this.softcap = 150;
-		this.hardcap = 200;
+		/*this.softcap = 150;
+		this.hardcap = 200;*/
 	}
 	/**
 	 *  
@@ -291,5 +291,13 @@ public class WorldControler extends Observable{
 	
 	public int getDeadCountCreature(){
 		return this.nbdead;
+	}
+	
+	public void setSoftCap(int val){
+		this.softcap = val;
+	}
+	
+	public void setHardCap(int val){
+		this.hardcap = val;
 	}
 } 
