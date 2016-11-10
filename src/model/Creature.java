@@ -15,8 +15,9 @@ public class Creature implements Cloneable {
 	private int x;
 	private int y;
 	private int energy;
-	private int speed;
+	private float speed;
 	private NeuralNetwork nn;
+	private int rot = 0;
 	private static final int MAXSPEED = 7;
 	
 	public Creature(int id, int x, int y){
@@ -28,7 +29,7 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 	
-	protected Creature(int id, int x, int y, int speed, NeuralNetwork nn){
+	protected Creature(int id, int x, int y, float speed, NeuralNetwork nn){
 		this(id, x, y);
 		this.speed = speed;
 		this.nn = new NeuralNetwork(nn);
@@ -47,16 +48,25 @@ public class Creature implements Cloneable {
 		yminus = new Color(intput[9], intput[10], intput[11]);
 		yplus = new Color(intput[12], intput[13], intput[14]);
 				
-		float input[] = new float[15];
-		//TODO : Add the other inputs in the loop
-		for(int i=0;i<3;i++){//Normalize input : Colors
-			input[i] = ((float)intput[i])/255;
+		float input[] = new float[17];
+		//TODO : Normalize correctly ?
+		for(int i=0;i<15;i++){//Normalize input : Colors
+			input[i] = ((float)intput[i])/(255);
 		}
+		input[15] = this.rot/360;
 		float result[] = this.nn.compute(input);
-		this.speed = (int) Math.round((result[0])*(MAXSPEED));
-
+		this.speed = getShortSigmoid(result[0])*MAXSPEED;
+		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
 	}
 
+	
+	private float getShortSigmoid(float f){
+		return (float) (1/(1+Math.exp(-f/3)));
+	}
+	
+	private float getLargeSigmoid(float f){
+		return (float) (1/(1+Math.exp(-f/10)));
+	}
 	public int getId() {
 		return id;
 	}
@@ -81,17 +91,21 @@ public class Creature implements Cloneable {
 		this.y = y;
 	}
 	
-	public int getSpeed() {
+	public float getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
 
 	public boolean eat(){
 		energy+=2;
 		return true;
+	}
+	
+	public int getRot(){
+		return rot;
 	}
 	
 	public boolean move(int x, int y){

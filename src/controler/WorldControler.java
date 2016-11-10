@@ -8,7 +8,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
+import javax.swing.JPanel;
+
 import model.Creature;
+import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
 import model.grid.Tile;
@@ -22,22 +25,29 @@ import utils.Utils;
 public class WorldControler extends Observable{
 	
 	private Grid grid;
-
+	private Statistique statistique;
+	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
+	private int nbdead;
+	private int softcap;
+	private int hardcap;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
+		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
+		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
 			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
-		
+		/*this.softcap = 150;
+		this.hardcap = 200;*/
 	}
 	/**
 	 *  
@@ -56,6 +66,14 @@ public class WorldControler extends Observable{
 	public int getSize() {
 		return grid.getNumCols();
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	public JPanel getStatistique() {
+		return statistique.getStatistique();
+	}
 
 	/**
 	 * Function called every timer tick.
@@ -64,22 +82,35 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
+		//Minimum energy required to survive depends on softcap
+		int minenergy;
+		int nbCreature = creatureList.size();
+		if(nbCreature>softcap*1.5){ // Really hard to live there huh?
+			minenergy = 30;
+		}else if(nbCreature>softcap){ //Life is tough but fair
+			minenergy = 15;
+		}else{ //Easy mode
+			minenergy = 0;
+		}
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			compute(c);
-			if(c.getEnergy() <= 0){
+			if(c.getEnergy() <= minenergy){
 				// creature dies
+				this.nbdead++;
 				iterator.remove();
 			} else {
 				Creature baby = this.reproduce(c);
-				if (baby != null){
+				//Babies aren't added to the list if we reached the hardcap
+				if (baby != null && nbCreature<hardcap){
 					iterator.add(baby);
 				}
 				this.move(c);
 				this.eat(c);
 				
 			}
+			
 		}
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
@@ -203,27 +234,16 @@ public class WorldControler extends Observable{
 	 * @return true
 	 */
 	public boolean move(Creature c){
-		//TODO : Implement a better move
-		Random rand = new Random();
 		int x = c.getX();
 		int y = c.getY();
-		int speed = c.getSpeed();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
-		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
-		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
-		c.move(x,y);
+		int rot = c.getRot();
+		double rad = Math.toRadians(rot);
+		float speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad)*speed + x));
+		int newY = (int) Math.round((Math.sin(rad)*speed + y));
+		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols()*tileSize, 5);
+		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows()*tileSize, 5);
+		c.move(newX,newY);
 		return true;
 	}
 	
@@ -260,8 +280,24 @@ public class WorldControler extends Observable{
 	public void addObserver(Observer o){
 		super.addObserver(o);
 	}
+	
 	public int getTileSize() {
 		return tileSize;
 	}
 	
+	public int getCountCreature(){
+		return creatureList.size();
+	}
+	
+	public int getDeadCountCreature(){
+		return this.nbdead;
+	}
+	
+	public void setSoftCap(int val){
+		this.softcap = val;
+	}
+	
+	public void setHardCap(int val){
+		this.hardcap = val;
+	}
 } 
