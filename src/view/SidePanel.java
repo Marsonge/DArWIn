@@ -30,7 +30,7 @@ import javafx.beans.value.ChangeListener;
  * @author cyril.weller
  *
  */
-public class ViewPanel extends JPanel implements Observer{
+public class SidePanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
@@ -128,7 +128,7 @@ public class ViewPanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public ViewPanel(){
+	public SidePanel(){
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 

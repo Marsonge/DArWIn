@@ -73,11 +73,11 @@ public class MainView extends JFrame {
     	this.add(sP, BorderLayout.EAST);
     	
     	// Add listeners 
-    	this.setStartButtonListener(vp);
-    	this.setChangeMapButtonListener(vp);
-    	this.setNbCreaturesListener(vp);
-    	this.setNbCreaturesSoftCapListener(vp);
-    	this.setNbCreaturesHardCapListener(vp);
+    	this.setStartButtonListener(sP);
+    	this.setChangeMapButtonListener(sP);
+    	this.setNbCreaturesListener(sP);
+    	this.setNbCreaturesSoftCapListener(sP);
+    	this.setNbCreaturesHardCapListener(sP);
     	
     	// Add a map
     	changeMap();
@@ -103,8 +103,8 @@ public class MainView extends JFrame {
 		if (vG != null) this.remove(vG);
 		
 		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
-		this.wc.setSoftCap(vp.getSoftCapSlider().getValue());
-		this.wc.setHardCap(vp.getHardCapSlider().getValue());
+		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
+		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		
 		this.vG = new ViewGrid(wc);
 		
@@ -137,7 +137,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param vp
 	 */
-	public void setNbCreaturesSoftCapListener(final ViewPanel vp){
+	public void setNbCreaturesSoftCapListener(final SidePanel vp){
 		
 		vp.getSoftCapSlider().addChangeListener(new ChangeListener(){
 
@@ -153,7 +153,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param vp
 	 */
-	public void setNbCreaturesHardCapListener(final ViewPanel vp){
+	public void setNbCreaturesHardCapListener(final SidePanel vp){
 		
 		vp.getHardCapSlider().addChangeListener(new ChangeListener(){
 

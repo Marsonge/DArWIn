@@ -8,19 +8,19 @@ import controler.WorldControler;
 public class TimerActionListener implements ActionListener{
 	
 	private WorldControler wc;
-	private SidePanel vp;
+	private SidePanel sp;
 	
-	public TimerActionListener (WorldControler wc,SidePanel vp){
+	public TimerActionListener (WorldControler wc,SidePanel sp){
 		this.wc = wc;
-		this.vp = vp;
+		this.sp = sp;
 	}
 	
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.wc.simulateForward();
-		this.vp.tick();
-		this.vp.NbCreatureUpdate(wc.getCountCreature(),wc.getDeadCountCreature());
+		this.sp.tick();
+		this.sp.NbCreatureUpdate(wc.getCountCreature(),wc.getDeadCountCreature());
 	}
 
 }
