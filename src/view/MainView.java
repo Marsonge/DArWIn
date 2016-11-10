@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import controler.WorldControler;
 
@@ -24,20 +26,23 @@ import controler.WorldControler;
  */
 public class MainView extends JFrame {
 	
-	static final int NUMBER_OF_CREATURES = 90;
 	static final int NUMBER_OF_CREATURES_DEAD = 0;
+	static int TICK_GAMETURN = 100;
+	static int TICK_GROW = 1000;
+	static final int GRID_SIZE = 129;
+	static final int TILE_SIZE = 6;
 
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	private Timer timer;
-	private int tick;
 	private Timer growTimer;
-	private int growTick;
 	WorldControler wc; 
 	ViewGrid vG ;
-	ViewPanel vp;
+	ViewPanel vp = new ViewPanel();
 	public boolean simulationLaunched = false;
+	
+	private int NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();
 	
 	/**
 	 * MainView()
@@ -70,6 +75,7 @@ public class MainView extends JFrame {
     	// Add listeners 
     	this.setStartButtonListener(vp);
     	this.setChangeMapButtonListener(vp);
+    	this.setNbCreaturesListener(vp);
     	
     	// Add a map
     	changeMap();
@@ -79,12 +85,11 @@ public class MainView extends JFrame {
 	 * Start the timer
 	 */
 	public void startTimer(){
-        this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc,vp)); 
+        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc,vp)); 
 	}
+	
 	public void startGrowTimer(){
-		this.growTick = 1000;
-		this.growTimer = new Timer(growTick, new GrowTimerActionListener(wc));
+		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
 	}
 	
 	/**
@@ -95,7 +100,7 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
 		
-		this.wc = new WorldControler(100,7,(float)10000,0,NUMBER_OF_CREATURES); 
+		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);
@@ -105,6 +110,22 @@ public class MainView extends JFrame {
     	wc.simulateForward();
 		startTimer();
 		startGrowTimer();
+	}
+	
+	/**
+	 * 
+	 * @param vp
+	 */
+	public void setNbCreaturesListener(final ViewPanel vp){
+		
+		vp.getInitialNbSlider().addChangeListener(new ChangeListener(){
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();			
+			}
+			
+		});
 	}
 	
 	/**
@@ -131,6 +152,8 @@ public class MainView extends JFrame {
                         if (simulationLaunched == false) {
                         	simulationLaunched = true;
                         	vp.disable(vp.getChangeMapButton());
+                        	vp.disable(vp.getInitialNbSlider());
+                        	vp.disable(vp.getInitialNbLabel());
                         }
 
                     } else{
@@ -174,9 +197,6 @@ public class MainView extends JFrame {
 		new MainView();
 	}
 	
-	public static int getNumberOfCreatures() {
-		return NUMBER_OF_CREATURES;
-	}
 
 	public static int getNumberOfCreaturesDead() {
 		return NUMBER_OF_CREATURES_DEAD;

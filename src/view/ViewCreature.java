@@ -1,16 +1,12 @@
 package view;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import model.Creature;
@@ -18,18 +14,16 @@ import model.Creature;
 public class ViewCreature extends JLabel {
 
 	private static final long serialVersionUID = 3003074446528565112L;
-	private Creature c;
 	private Image img;
 	private int size;
 	
 	public ViewCreature(Creature c,int size){
 		super();
 		this.size = size;
-		this.c = c;
 		this.setLocation(c.getX(), c.getY());
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature"+c.getSpeed()+".png"));
+		    img = ImageIO.read(new File("resources/img/creature"+Math.round(c.getSpeed())+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
