@@ -105,7 +105,7 @@ public class MainView extends JFrame {
 		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
-		
+		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
 		this.vG = new ViewGrid(wc);
 		
 		this.add(vG, BorderLayout.WEST);

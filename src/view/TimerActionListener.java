@@ -20,7 +20,7 @@ public class TimerActionListener implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		this.wc.simulateForward();
 		this.sp.tick();
-		this.sp.NbCreatureUpdate(wc.getCountCreature(),wc.getDeadCountCreature());
+		this.sp.updateNbCreature(wc.getCountCreature(),wc.getDeadCountCreature());
 	}
 
 }
