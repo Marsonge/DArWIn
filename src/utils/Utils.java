@@ -19,6 +19,12 @@ public class Utils {
 		return var;
 	}
     
+    public static int wrappingBorderVar(int var, int min, int max, int offset){
+    	if(var<min) return max-Math.abs(var)+1;
+    	if(var>max) return min+(Math.abs(var)-max)-1;
+    	return var;
+    }
+    
     /**
      * 
      * @param input : The 2D array you want to clone

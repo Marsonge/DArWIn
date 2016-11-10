@@ -96,7 +96,6 @@ public class WorldControler extends Observable{
 			}
 			
 		}
-		System.out.println("threshold: "+softcap+", nbCreature: "+nbCreature+", minenergy: "+minenergy);
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
 		return true;
@@ -219,27 +218,16 @@ public class WorldControler extends Observable{
 	 * @return true
 	 */
 	public boolean move(Creature c){
-		//TODO : Implement a better move
-		Random rand = new Random();
 		int x = c.getX();
 		int y = c.getY();
-		int speed = c.getSpeed();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
-		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
-		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
-		c.move(x,y);
+		int rot = c.getRot();
+		double rad = Math.toRadians(rot);
+		float speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad)*speed + x));
+		int newY = (int) Math.round((Math.sin(rad)*speed + y));
+		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols()*tileSize, 5);
+		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows()*tileSize, 5);
+		c.move(newX,newY);
 		return true;
 	}
 	
