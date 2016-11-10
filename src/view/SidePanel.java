@@ -212,7 +212,7 @@ public class SidePanel extends JPanel implements Observer{
         JLabel lbAlive = new JLabel("Alive creatures:");
         JLabel lbDead = new JLabel("Death count:");
         
-        nbTime = new JLabel(Integer.toString(time));
+        nbTime = new JLabel(Integer.toString(Math.round(time/10)));
         nbAlive = new JLabel(Integer.toString(alive));
         nbDead = new JLabel(Integer.toString(dead));
         
@@ -233,7 +233,7 @@ public class SidePanel extends JPanel implements Observer{
 	
 	public void tick(){
 		time++;
-		nbTime.setText(Integer.toString(time));
+		nbTime.setText(Integer.toString(Math.round(time/10)));
 		this.revalidate();
 		this.repaint();
 	}
