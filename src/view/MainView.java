@@ -26,7 +26,6 @@ import controler.WorldControler;
  */
 public class MainView extends JFrame {
 	
-	static final int NUMBER_OF_CREATURES = 90;
 	static final int NUMBER_OF_CREATURES_DEAD = 0;
 	static int TICK_GAMETURN = 100;
 	static int TICK_GROW = 1000;
@@ -86,9 +85,7 @@ public class MainView extends JFrame {
 	 * Start the timer
 	 */
 	public void startTimer(){
-        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc)); 
-        this.tick = 100;
-        this.timer = new Timer(tick, new TimerActionListener(wc,vp)); 
+        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc,vp)); 
 	}
 	
 	public void startGrowTimer(){
@@ -200,9 +197,6 @@ public class MainView extends JFrame {
 		new MainView();
 	}
 	
-	public static int getNumberOfCreatures() {
-		return NUMBER_OF_CREATURES;
-	}
 
 	public static int getNumberOfCreaturesDead() {
 		return NUMBER_OF_CREATURES_DEAD;
