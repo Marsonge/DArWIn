@@ -8,9 +8,9 @@ import controler.WorldControler;
 public class TimerActionListener implements ActionListener{
 	
 	private WorldControler wc;
-	private ViewPanel vp;
+	private SidePanel vp;
 	
-	public TimerActionListener (WorldControler wc,ViewPanel vp){
+	public TimerActionListener (WorldControler wc,SidePanel vp){
 		this.wc = wc;
 		this.vp = vp;
 	}

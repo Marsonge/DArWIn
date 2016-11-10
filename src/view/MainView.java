@@ -39,10 +39,10 @@ public class MainView extends JFrame {
 	private Timer growTimer;
 	WorldControler wc; 
 	ViewGrid vG ;
-	ViewPanel vp = new ViewPanel();
+	SidePanel sP = new SidePanel();
 	public boolean simulationLaunched = false;
 	
-	private int NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();
+	private int NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();
 	
 	/**
 	 * MainView()
@@ -66,16 +66,16 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	vp = new ViewPanel();
+    	sP = new SidePanel();
     	
-    	//vp.addPropertyChangeListener();
+    	//sP.addPropertyChangeListener();
     	
-    	this.add(vp, BorderLayout.EAST);
+    	this.add(sP, BorderLayout.EAST);
     	
     	// Add listeners 
-    	this.setStartButtonListener(vp);
-    	this.setChangeMapButtonListener(vp);
-    	this.setNbCreaturesListener(vp);
+    	this.setStartButtonListener(sP);
+    	this.setChangeMapButtonListener(sP);
+    	this.setNbCreaturesListener(sP);
     	
     	// Add a map
     	changeMap();
@@ -85,7 +85,7 @@ public class MainView extends JFrame {
 	 * Start the timer
 	 */
 	public void startTimer(){
-        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc,vp)); 
+        this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc,sP)); 
 	}
 	
 	public void startGrowTimer(){
@@ -114,15 +114,15 @@ public class MainView extends JFrame {
 	
 	/**
 	 * 
-	 * @param vp
+	 * @param sP
 	 */
-	public void setNbCreaturesListener(final ViewPanel vp){
+	public void setNbCreaturesListener(final SidePanel sP){
 		
-		vp.getInitialNbSlider().addChangeListener(new ChangeListener(){
+		sP.getInitialNbSlider().addChangeListener(new ChangeListener(){
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				NUMBER_OF_CREATURES = vp.getInitialNbSlider().getValue();			
+				NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();			
 			}
 			
 		});
@@ -130,13 +130,13 @@ public class MainView extends JFrame {
 	
 	/**
 	 * Will set the start button listener
-	 * @param vp
+	 * @param sP
 	 */
-	public void setStartButtonListener(final ViewPanel vp){
+	public void setStartButtonListener(final SidePanel sP){
 		
         // When start is clicked, simulation start and button displays stop
         // When it is clicked on stop, simulation pauses
-        vp.getStartButton().addActionListener(new ActionListener() {
+        sP.getStartButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
            {
                 Object source = e.getSource();
@@ -151,9 +151,9 @@ public class MainView extends JFrame {
                         btn.setText("Pause");
                         if (simulationLaunched == false) {
                         	simulationLaunched = true;
-                        	vp.disable(vp.getChangeMapButton());
-                        	vp.disable(vp.getInitialNbSlider());
-                        	vp.disable(vp.getInitialNbLabel());
+                        	sP.disable(sP.getChangeMapButton());
+                        	sP.disable(sP.getInitialNbSlider());
+                        	sP.disable(sP.getInitialNbLabel());
                         }
 
                     } else{
@@ -172,11 +172,11 @@ public class MainView extends JFrame {
 	 * 
 	 * Will set the change map button listener 
 	 * 
-	 * @param vp
+	 * @param sP
 	 */
-	public void setChangeMapButtonListener(final ViewPanel vp){
+	public void setChangeMapButtonListener(final SidePanel sP){
 		
-        vp.getChangeMapButton().addActionListener(new ActionListener() {
+        sP.getChangeMapButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
            {
             	if (!simulationLaunched){

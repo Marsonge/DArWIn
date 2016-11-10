@@ -30,7 +30,7 @@ import javafx.beans.value.ChangeListener;
  * @author cyril.weller
  *
  */
-public class ViewPanel extends JPanel implements Observer{
+public class SidePanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
@@ -112,7 +112,7 @@ public class ViewPanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public ViewPanel(){
+	public SidePanel(){
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -192,11 +192,11 @@ public class ViewPanel extends JPanel implements Observer{
         JPanel Values = new JPanel(new GridLayout(7,2));
         JPanel Ligne = new JPanel (new FlowLayout(4));
         
-        JLabel LbTime = new JLabel("Temps :");
-        JLabel LbAlive = new JLabel("Nbr bestioles en vie :");
-        JLabel LbDead = new JLabel("Nbr bestioles mortes :");
+        JLabel LbTime = new JLabel("Time:");
+        JLabel LbAlive = new JLabel("Alive creatures:");
+        JLabel LbDead = new JLabel("Death count:");
         
-        NbTime = new JLabel(Integer.toString(time));
+        NbTime = new JLabel(Integer.toString(Math.round(time/10f)));
         NbAlive = new JLabel(Integer.toString(alive));
         NbDead = new JLabel(Integer.toString(dead));
         
@@ -217,7 +217,7 @@ public class ViewPanel extends JPanel implements Observer{
 	
 	public void tick(){
 		time++;
-		NbTime.setText(Integer.toString(time));
+		NbTime.setText(Integer.toString(Math.round(time/10f)));
 		this.revalidate();
 		this.repaint();
 	}
