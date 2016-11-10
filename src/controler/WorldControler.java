@@ -8,7 +8,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
+import javax.swing.JPanel;
+
 import model.Creature;
+import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
 import model.grid.Tile;
@@ -22,17 +25,21 @@ import utils.Utils;
 public class WorldControler extends Observable{
 	
 	private Grid grid;
-
+	private Statistique statistique;
+	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
+	private int nbdead;
 	private int softcap;
 	private int hardcap;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
+		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
+		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
 			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
@@ -59,6 +66,14 @@ public class WorldControler extends Observable{
 	public int getSize() {
 		return grid.getNumCols();
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	public JPanel getStatistique() {
+		return statistique.getStatistique();
+	}
 
 	/**
 	 * Function called every timer tick.
@@ -83,6 +98,7 @@ public class WorldControler extends Observable{
 			compute(c);
 			if(c.getEnergy() <= minenergy){
 				// creature dies
+				this.nbdead++;
 				iterator.remove();
 			} else {
 				Creature baby = this.reproduce(c);
@@ -264,8 +280,16 @@ public class WorldControler extends Observable{
 	public void addObserver(Observer o){
 		super.addObserver(o);
 	}
+	
 	public int getTileSize() {
 		return tileSize;
 	}
 	
+	public int getCountCreature(){
+		return creatureList.size();
+	}
+	
+	public int getDeadCountCreature(){
+		return this.nbdead;
+	}
 } 

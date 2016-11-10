@@ -2,7 +2,14 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Observable;
+import java.util.Observer;
 
+import javax.swing.*;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,7 +30,7 @@ import javafx.beans.value.ChangeListener;
  * @author cyril.weller
  *
  */
-public class ViewPanel extends JPanel {
+public class ViewPanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
@@ -36,6 +43,12 @@ public class ViewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
+	private JLabel NbTime;
+	private JLabel NbAlive;
+	private JLabel NbDead;
+	private int time;
+	private int alive;
+	private int dead;
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
@@ -95,6 +108,7 @@ public class ViewPanel extends JPanel {
 		return this.changeMap;
 	}
 
+	
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
@@ -161,7 +175,7 @@ public class ViewPanel extends JPanel {
         	private static final long serialVersionUID = 1L;
 
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660);
+				return new Dimension(280,660); //Utilité ?
         	}
         };
         
@@ -169,10 +183,56 @@ public class ViewPanel extends JPanel {
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
         
+
+        time = 0;
+        alive = 90;
+        dead = 0;
+        
+        JPanel Titres = new JPanel(new GridLayout(7,2));
+        JPanel Values = new JPanel(new GridLayout(7,2));
+        JPanel Ligne = new JPanel (new FlowLayout(4));
+        
+        JLabel LbTime = new JLabel("Temps :");
+        JLabel LbAlive = new JLabel("Nbr bestioles en vie :");
+        JLabel LbDead = new JLabel("Nbr bestioles mortes :");
+        
+        NbTime = new JLabel(Integer.toString(time));
+        NbAlive = new JLabel(Integer.toString(alive));
+        NbDead = new JLabel(Integer.toString(dead));
+        
+        Titres.add(LbTime);
+        Titres.add(LbAlive);
+        Titres.add(LbDead);
+        Values.add(NbTime);
+        Values.add(NbAlive);
+        Values.add(NbDead);
+        Ligne.add(Titres);
+        Ligne.add(Values);
+
+        tabStats.add(Ligne);
+        
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
 	}
+	
+	public void tick(){
+		time++;
+		NbTime.setText(Integer.toString(time));
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void NbCreatureUpdate(int nbAlive,int nbDead){
+		
+		NbAlive.setText(Integer.toString(nbAlive));
+		NbDead.setText(Integer.toString(nbDead));
+	}
 
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
+	}
 	/**
 	 * getInitialNbSlider
 	 * @return
