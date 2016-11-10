@@ -22,6 +22,7 @@ public class ViewCreature extends JLabel {
 	private WorldControler wc;
 	private int x;
 	private int y;
+	private ViewCreature self = this;
 	
 	public ViewCreature(int size, int x, int y, int speed, WorldControler wc){
 		super();
@@ -68,6 +69,7 @@ public class ViewCreature extends JLabel {
 	   }
 
 	   public void mouseEntered(MouseEvent e) {
+		   self.setToolTipText("X: " + x + " Y: " + y);
 	   }
 
 	   public void mouseExited(MouseEvent e) {
