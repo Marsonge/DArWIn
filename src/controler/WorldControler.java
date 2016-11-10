@@ -30,6 +30,7 @@ public class WorldControler extends Observable{
 	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
+	private int nbdead;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
@@ -37,6 +38,7 @@ public class WorldControler extends Observable{
 		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
+		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
 			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
@@ -84,6 +86,7 @@ public class WorldControler extends Observable{
 			compute(c);
 			if(c.getEnergy() <= 0){
 				// creature dies
+				this.nbdead++;
 				iterator.remove();
 			} else {
 				Creature baby = this.reproduce(c);
@@ -271,4 +274,7 @@ public class WorldControler extends Observable{
 		return creatureList.size();
 	}
 	
+	public int getDeadCountCreature(){
+		return this.nbdead;
+	}
 } 

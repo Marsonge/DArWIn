@@ -24,7 +24,7 @@ public class TimerActionListener implements ActionListener{
 		time++;
 		this.wc.simulateForward();
 		this.vp.tick();
-		this.vp.NbCreatureUpdate(wc.getCountCreature());
+		this.vp.NbCreatureUpdate(wc.getCountCreature(),wc.getDeadCountCreature());
 	}
 
 }

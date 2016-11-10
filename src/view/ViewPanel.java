@@ -116,8 +116,8 @@ public class ViewPanel extends JPanel implements Observer{
         
 
         time = 0;
-        alive = 9999;
-        dead = 1;
+        alive = 90;
+        dead = 0;
         
         JPanel Titres = new JPanel(new GridLayout(7,2));
         JPanel Values = new JPanel(new GridLayout(7,2));
@@ -153,9 +153,10 @@ public class ViewPanel extends JPanel implements Observer{
 		this.repaint();
 	}
 	
-	public void NbCreatureUpdate(int nbAlive){
+	public void NbCreatureUpdate(int nbAlive,int nbDead){
 		
 		NbAlive.setText(Integer.toString(nbAlive));
+		NbDead.setText(Integer.toString(nbDead));
 	}
 
 	@Override
