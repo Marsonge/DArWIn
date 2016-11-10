@@ -59,7 +59,7 @@ public class ViewCreature extends JLabel {
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
 		   //TODO display creature info
-		   wc.getCreatureInfo(x, y);
+		   wc.getCreatureNn(x, y);
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -69,7 +69,8 @@ public class ViewCreature extends JLabel {
 	   }
 
 	   public void mouseEntered(MouseEvent e) {
-		   self.setToolTipText("X: " + x + " Y: " + y);
+		   // TODO opti ?
+		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x, y) + " Speed: " + wc.getCreatureSpeed(x, y));
 	   }
 
 	   public void mouseExited(MouseEvent e) {

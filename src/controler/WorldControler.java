@@ -10,6 +10,7 @@ import java.util.Observer;
 import java.util.Random;
 
 import model.Creature;
+import model.NeuralNetwork;
 import model.grid.Grid;
 import model.grid.Terrain;
 import model.grid.Tile;
@@ -236,12 +237,33 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
-	public void getCreatureInfo(int x, int y) {
+	public NeuralNetwork getCreatureNn(int x, int y) {
 		for (Creature c : creatureList){
 			if (c.getX() == x && c.getY() == y){
-				System.out.println("Creature clicked : " + c.getNeuralNetwork());
+				return c.getNeuralNetwork();
 			}
 		}
+		return null;
+	}
+	
+	//TODO opti ?
+	public int getCreatureEnergy(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getEnergy();
+			}
+		}
+		return 0;
+	}
+	
+	//TODO opti ?
+	public int getCreatureSpeed(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getSpeed();
+			}
+		}
+		return 0;
 	}
 	
 	@Override

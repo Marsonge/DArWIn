@@ -2,8 +2,11 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -109,6 +112,35 @@ public class ViewPanel extends JPanel {
 				return new Dimension(280,660);
         	}
         };
+        
+        JPanel creaturesInfoPanel = new JPanel(){
+
+			private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(140,330);
+        	}
+        };
+        
+        JPanel creaturesInfoTitles = new JPanel(new GridLayout(7,2));
+        JPanel creaturesInfoValues = new JPanel(new GridLayout(7,2));
+        JPanel creaturesInfoLines = new JPanel(new FlowLayout(4));
+        
+        JLabel creatureSpeedLabel = new JLabel("Speed : ");
+        JLabel creatureEnergyLabel = new JLabel("Energy : ");
+        JLabel creatureSpeedValue = new JLabel("10");
+        JLabel creatureEnergyValue = new JLabel("50");
+        
+        creaturesInfoTitles.add(creatureSpeedLabel);
+        creaturesInfoTitles.add(creatureEnergyLabel);
+        creaturesInfoValues.add(creatureSpeedValue);
+        creaturesInfoValues.add(creatureEnergyValue);
+        creaturesInfoLines.add(creaturesInfoTitles);
+        creaturesInfoLines.add(creaturesInfoValues);
+        
+        creaturesInfoPanel.add(creaturesInfoLines);
+        
+        tabStats.add(creaturesInfoPanel);
         
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
