@@ -74,21 +74,13 @@ public class Creature implements Cloneable {
 	public int getEnergy() {
 		return energy;
 	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
 	
 	public int getSpeed() {
 		return speed;
 	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	
+	public NeuralNetwork getNeuralNetwork() {
+		return nn;
 	}
 
 	public boolean eat(){

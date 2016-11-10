@@ -23,7 +23,6 @@ import utils.Utils;
 public class WorldControler extends Observable{
 	
 	private Grid grid;
-
 	private List<Creature> creatureList;
 	private int tileSize;
 	
@@ -237,18 +236,25 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
+	public void getCreatureInfo(int x, int y) {
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				System.out.println("Creature clicked : " + c.getNeuralNetwork());
+			}
+		}
+	}
 	
 	@Override
 	public void	notifyObservers(Object arg) {
 		super.setChanged();
 		super.notifyObservers(arg); 
 	}
-
-
+	
 	@Override
 	public void addObserver(Observer o){
 		super.addObserver(o);
 	}
+	
 	public int getTileSize() {
 		return tileSize;
 	}

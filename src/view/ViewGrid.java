@@ -88,7 +88,6 @@ public class ViewGrid extends JPanel implements Observer{
 		// checks if there are still creatures on the grid
 		if (lc.isEmpty() && !endOfGame){
 			endOfGame = true;
-			System.out.println("Plus de créatures !");
 			this.fireEndOfGame(new EndOfGameEvent(this));
 			
 		} else {
@@ -118,7 +117,7 @@ public class ViewGrid extends JPanel implements Observer{
 	 */
 	private void paintCreatures(List<Creature> cList){
 		for(Creature c : cList){
-			ViewCreature vc = new ViewCreature(c,16);
+			ViewCreature vc = new ViewCreature(16, c.getX(), c.getY(), c.getSpeed(), this.wc);
 			this.add(vc);
 			vc.setVisible(true);
 			vc.setSize(16,16);
@@ -139,7 +138,6 @@ public class ViewGrid extends JPanel implements Observer{
 	
 	void fireEndOfGame(EndOfGameEvent evt) {
 	    Object[] listeners = listenerList.getListenerList();
-	    System.out.println("event fired, listeners : " + listeners.toString());
 	    for (int i = 0; i < listeners.length; i = i+2) {
 	      if (listeners[i] == EndOfGameEventListener.class) {
 	        ((EndOfGameEventListener) listeners[i+1]).actionPerformed(evt);
