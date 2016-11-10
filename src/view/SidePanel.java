@@ -43,9 +43,9 @@ public class SidePanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
-	private JLabel NbTime;
-	private JLabel NbAlive;
-	private JLabel NbDead;
+	private JLabel nbTime;
+	private JLabel nbAlive;
+	private JLabel nbDead;
 	private int time;
 	private int alive;
 	private int dead;
@@ -204,28 +204,28 @@ public class SidePanel extends JPanel implements Observer{
         alive = 90;
         dead = 0;
         
-        JPanel Titres = new JPanel(new GridLayout(7,2));
-        JPanel Values = new JPanel(new GridLayout(7,2));
-        JPanel Ligne = new JPanel (new FlowLayout(4));
+        JPanel titres = new JPanel(new GridLayout(7,2));
+        JPanel values = new JPanel(new GridLayout(7,2));
+        JPanel ligne = new JPanel (new FlowLayout(4));
         
-        JLabel LbTime = new JLabel("Time:");
-        JLabel LbAlive = new JLabel("Alive creatures:");
-        JLabel LbDead = new JLabel("Death count:");
+        JLabel lbTime = new JLabel("Time:");
+        JLabel lbAlive = new JLabel("Alive creatures:");
+        JLabel lbDead = new JLabel("Death count:");
         
-        NbTime = new JLabel(Integer.toString(time));
-        NbAlive = new JLabel(Integer.toString(alive));
-        NbDead = new JLabel(Integer.toString(dead));
+        nbTime = new JLabel(Integer.toString(Math.round(time/10)));
+        nbAlive = new JLabel(Integer.toString(alive));
+        nbDead = new JLabel(Integer.toString(dead));
         
-        Titres.add(LbTime);
-        Titres.add(LbAlive);
-        Titres.add(LbDead);
-        Values.add(NbTime);
-        Values.add(NbAlive);
-        Values.add(NbDead);
-        Ligne.add(Titres);
-        Ligne.add(Values);
+        titres.add(lbTime);
+        titres.add(lbAlive);
+        titres.add(lbDead);
+        values.add(nbTime);
+        values.add(nbAlive);
+        values.add(nbDead);
+        ligne.add(titres);
+        ligne.add(values);
 
-        tabStats.add(Ligne);
+        tabStats.add(ligne);
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
@@ -233,15 +233,14 @@ public class SidePanel extends JPanel implements Observer{
 	
 	public void tick(){
 		time++;
-		NbTime.setText(Integer.toString(time));
+		nbTime.setText(Integer.toString(Math.round(time/10)));
 		this.revalidate();
 		this.repaint();
 	}
 	
-	public void NbCreatureUpdate(int nbAlive,int nbDead){
-		
-		NbAlive.setText(Integer.toString(nbAlive));
-		NbDead.setText(Integer.toString(nbDead));
+	public void updateNbCreature(int nbAlive,int nbDead){
+		this.nbAlive.setText(Integer.toString(nbAlive));
+		this.nbDead.setText(Integer.toString(nbDead));
 	}
 
 	@Override
