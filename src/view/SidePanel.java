@@ -208,9 +208,9 @@ public class SidePanel extends JPanel implements Observer{
         JPanel Values = new JPanel(new GridLayout(7,2));
         JPanel Ligne = new JPanel (new FlowLayout(4));
         
-        JLabel LbTime = new JLabel("Temps :");
-        JLabel LbAlive = new JLabel("Nbr bestioles en vie :");
-        JLabel LbDead = new JLabel("Nbr bestioles mortes :");
+        JLabel LbTime = new JLabel("Time:");
+        JLabel LbAlive = new JLabel("Alive creatures:");
+        JLabel LbDead = new JLabel("Death count:");
         
         NbTime = new JLabel(Integer.toString(time));
         NbAlive = new JLabel(Integer.toString(alive));
