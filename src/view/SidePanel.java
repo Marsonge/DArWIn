@@ -30,11 +30,11 @@ import javafx.beans.value.ChangeListener;
  * @author cyril.weller
  *
  */
-public class SidePanel extends JPanel implements Observer{
+public class ViewPanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
-	public static int MIN_CRITICAL_CREATURE = 200;
+	public static int MIN_CRITICAL_CREATURE = 0;
 	public static int CRITICAL_CREATURE = 1000;
 	public static int DEFAULT_CREATURE = 30;
 	public static int DEFAULT_PREFERRED_CREATURE = 400;
@@ -93,6 +93,22 @@ public class SidePanel extends JPanel implements Observer{
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getSoftCapSlider(){
+		return this.nbCreaturesPreferred;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getHardCapSlider(){
+		return this.nbCreaturesCritical;
+	}
+	
+	/**
 	 * get the start button
 	 * @return
 	 */
@@ -112,7 +128,7 @@ public class SidePanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public SidePanel(){
+	public ViewPanel(){
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -192,11 +208,11 @@ public class SidePanel extends JPanel implements Observer{
         JPanel Values = new JPanel(new GridLayout(7,2));
         JPanel Ligne = new JPanel (new FlowLayout(4));
         
-        JLabel LbTime = new JLabel("Time:");
-        JLabel LbAlive = new JLabel("Alive creatures:");
-        JLabel LbDead = new JLabel("Death count:");
+        JLabel LbTime = new JLabel("Temps :");
+        JLabel LbAlive = new JLabel("Nbr bestioles en vie :");
+        JLabel LbDead = new JLabel("Nbr bestioles mortes :");
         
-        NbTime = new JLabel(Integer.toString(Math.round(time/10f)));
+        NbTime = new JLabel(Integer.toString(time));
         NbAlive = new JLabel(Integer.toString(alive));
         NbDead = new JLabel(Integer.toString(dead));
         
@@ -217,7 +233,7 @@ public class SidePanel extends JPanel implements Observer{
 	
 	public void tick(){
 		time++;
-		NbTime.setText(Integer.toString(Math.round(time/10f)));
+		NbTime.setText(Integer.toString(time));
 		this.revalidate();
 		this.repaint();
 	}
