@@ -27,7 +27,6 @@ public class WorldControler extends Observable{
 	
 	private Grid grid;
 	private Statistique statistique;
-	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
 	private int nbdead;
