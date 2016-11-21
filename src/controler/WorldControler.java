@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import model.Creature;
+import model.NeuralNetwork;
 import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
@@ -268,14 +269,41 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
+	public NeuralNetwork getCreatureNn(int x, int y) {
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getNeuralNetwork();
+			}
+		}
+		return null;
+	}
+	
+	//TODO opti ?
+	public int getCreatureEnergy(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getEnergy();
+			}
+		}
+		return 0;
+	}
+	
+	//TODO opti ?
+	public int getCreatureSpeed(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getSpeed();
+			}
+		}
+		return 0;
+	}
 	
 	@Override
 	public void	notifyObservers(Object arg) {
 		super.setChanged();
 		super.notifyObservers(arg); 
 	}
-
-
+	
 	@Override
 	public void addObserver(Observer o){
 		super.addObserver(o);

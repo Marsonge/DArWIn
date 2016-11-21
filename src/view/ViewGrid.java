@@ -7,11 +7,16 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.event.EventListenerList;
 
 import controler.WorldControler;
 import model.Creature;
 import model.grid.Tile;
+import utils.EndOfGameEvent;
+import utils.EndOfGameEventListener;
 import utils.UpdateInfoWrapper;
 
 public class ViewGrid extends JPanel implements Observer{
@@ -21,11 +26,13 @@ public class ViewGrid extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	private WorldControler wc;
 	private final int TILE_SIZE;
-	
+	private int tick;
+	protected EventListenerList listenerList = new EventListenerList();
+	private boolean endOfGame = false;
 	
 	/**
-	 * 
-	 * @param wc
+	 *  Constructor
+	 * @param wc world controler
 	 */
 	public ViewGrid(WorldControler wc){
 		super(null);
@@ -75,14 +82,21 @@ public class ViewGrid extends JPanel implements Observer{
 		UpdateInfoWrapper wrapper = (UpdateInfoWrapper) arg;
 		
 		// update creatures
-
 		this.removeAll();
-		paintCreatures(wrapper.getCreatureList());
-		paintTiles(wrapper.getTileList());
-		this.revalidate();
-		this.repaint();		
+		List<Creature> lc = wrapper.getCreatureList();
+		// checks if there are still creatures on the grid
+		if (lc.isEmpty() && !endOfGame){
+			endOfGame = true;
+			this.fireEndOfGame(new EndOfGameEvent(this));
+			
+		} else {
+			paintCreatures(lc);
+			paintTiles(wrapper.getTileList());
+			this.revalidate();
+			this.repaint();
+		}
 	}
-	
+
 	private void paintTiles(List<Tile> tileList) {
 		int rectWidth = getWidth() / wc.getSize();
         int rectHeight = getHeight() / wc.getSize();
@@ -102,10 +116,31 @@ public class ViewGrid extends JPanel implements Observer{
 	 */
 	private void paintCreatures(List<Creature> cList){
 		for(Creature c : cList){
-			ViewCreature vc = new ViewCreature(c,16);
+			ViewCreature vc = new ViewCreature(16, c.getX(), c.getY(), c.getSpeed(), this.wc);
 			this.add(vc);
 			vc.setVisible(true);
 			vc.setSize(16,16);
 		}
 	}
+	
+	/**
+	 *  Event management methods
+	 */
+	
+	public void addEndOfGameListener(EndOfGameEventListener listener) {
+	    listenerList.add(EndOfGameEventListener.class, listener);
+	  }
+	
+	public void removeEndOfGameListener(EndOfGameEventListener listener) {
+	    listenerList.remove(EndOfGameEventListener.class, listener);
+	  }
+	
+	void fireEndOfGame(EndOfGameEvent evt) {
+	    Object[] listeners = listenerList.getListenerList();
+	    for (int i = 0; i < listeners.length; i = i+2) {
+	      if (listeners[i] == EndOfGameEventListener.class) {
+	        ((EndOfGameEventListener) listeners[i+1]).actionPerformed(evt);
+	      }
+	    }
+	  }
 }

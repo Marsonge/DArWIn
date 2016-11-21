@@ -9,10 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import utils.EndOfGameEvent;
+import utils.EndOfGameEventListener;
 import controler.WorldControler;
 
 /**
@@ -31,6 +34,7 @@ public class MainView extends JFrame {
 	static int TICK_GROW = 1000;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
+	static final int NUMBER_OF_CREATURES = 1;
 
 
 	private static final long serialVersionUID = 1L;
@@ -41,6 +45,7 @@ public class MainView extends JFrame {
 	ViewGrid vG ;
 	SidePanel sP = new SidePanel();
 	public boolean simulationLaunched = false;
+	private MainView self = this;
 	
 	private int NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();
 	
@@ -101,20 +106,22 @@ public class MainView extends JFrame {
 		
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
+
 		
 		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
 		this.vG = new ViewGrid(wc);
+    	this.setEndOfGameListener(this.vG);
 		
 		this.add(vG, BorderLayout.WEST);
     	this.pack();
     	this.setVisible(true);
  
     	wc.simulateForward();
-		startTimer();
-		startGrowTimer();
+		initTimer();
+		initGrowTimer();
 	}
 	
 	/**
@@ -193,7 +200,7 @@ public class MainView extends JFrame {
                         	sP.disable(sP.getInitialNbLabel());
                         }
 
-                    } else{
+                    } else if (btn.getText().equals("Pause")){
                     	timer.stop();
                         growTimer.stop();
                     	btn.setText("Start");
@@ -223,6 +230,28 @@ public class MainView extends JFrame {
         });
 	}
 	
+	public void setEndOfGameListener(final ViewGrid vg){
+		vg.addEndOfGameListener(new EndOfGameEventListener() {
+			public void actionPerformed(EndOfGameEvent evt) {
+		    	
+				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
+				System.out.println("Event triggered");
+				if (choice == JOptionPane.YES_OPTION) {
+		  			// if yes do : changes map once and reset all buttons settings
+		  			self.simulationLaunched = false;
+		  			self.changeMap();
+		  			self.vP.enable(self.vP.getChangeMapButton());
+		  			JButton start = self.vP.getStartButton();
+		  			self.vP.enable(start);
+		  			start.setText("Start");
+		  		} else {
+		  			// if no do : quit game
+		  			// TODO Save results before exit
+		  			System.exit(0);
+		  		}
+		     }
+		});
+	}
 	
 	/**
 	 * main function of the project, will create the view
