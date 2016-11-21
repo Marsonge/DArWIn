@@ -336,8 +336,15 @@ public class SidePanel extends JPanel implements Observer{
 		this.cSeed.setText(Integer.toString(i));
 	}
 	public int getSeed(){
-		if((textSeed.getText() != null) && !(textSeed.getText().equals("")))
-			return Integer.parseInt(this.textSeed.getText());
+		if((textSeed.getText() != null) && !(textSeed.getText().equals(""))){
+			try{
+				return Integer.parseInt(this.textSeed.getText());
+			}
+			catch(NumberFormatException e){
+				textSeed.setText("");
+				return 0;
+			}
+		}
 		return 0;
 	}
 	@Override

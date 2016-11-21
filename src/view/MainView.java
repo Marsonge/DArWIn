@@ -16,6 +16,7 @@ import javax.swing.event.ChangeListener;
 
 import utils.EndOfGameEvent;
 import utils.EndOfGameEventListener;
+import utils.Utils;
 import controler.WorldControler;
 
 /**
@@ -106,7 +107,7 @@ public class MainView extends JFrame {
 		if (vG != null) this.remove(vG);
 		int seed = 0;
 		if(this.sP.getSeed() != 0){
-			seed = this.sP.getSeed();
+			seed = Utils.borderVar(this.sP.getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
 		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,seed,NUMBER_OF_CREATURES); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
