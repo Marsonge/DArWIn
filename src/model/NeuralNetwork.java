@@ -95,7 +95,7 @@ public class NeuralNetwork {
 						inputAxiom[i][j] += (float) ((rand.nextFloat()/2 - 0.25)); //Petite mutation
 					}
 					else{
-						inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
+						//inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
 					}
 				}
 				if(inputAxiom[i][j]<-1)
