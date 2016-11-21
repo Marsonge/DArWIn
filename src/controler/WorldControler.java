@@ -32,10 +32,12 @@ public class WorldControler extends Observable{
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
+	private int seed;
 	
-	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
+		this.seed = grid.getSeed();
 		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
@@ -326,5 +328,8 @@ public class WorldControler extends Observable{
 	
 	public void setHardCap(int val){
 		this.hardcap = val;
+	}
+	public int getSeed() {
+		return seed;
 	}
 } 

@@ -14,20 +14,29 @@ public class NoiseGrid {
 	
     private double[][] data;
     float roughness;
-    private Random seed;
+    private Random randomSeed;
+    private int seed;
     private int size;
 
 
-    public NoiseGrid(Random seed, float roughness, int size) {
+    public NoiseGrid(Random rSeed, float roughness, int size) {
         this.roughness = roughness / size;
         this.data = new double[size][size];
-        this.seed = (seed == null) ? new Random() : seed;
+        if(rSeed != null){
+        	this.seed = 0;
+        	this.randomSeed = rSeed;
+        }
+        else{
+        	Random r = new Random();
+        	this.seed = Math.abs(r.nextInt());
+            this.randomSeed = new Random(this.seed);
+        }
         this.size = size;
     }
     
     public void initialise() {
     	//an initial seed value for the corners of the data
-    	final double SEED = seed.nextInt(Math.round(2*roughness));
+    	final double SEED = randomSeed.nextInt(Math.round(2*roughness));
     	//seed the data
     	data[0][0] = data[0][size-1] = data[size-1][0] = 
     	  data[size-1][size-1] = SEED;
@@ -46,7 +55,7 @@ public class NoiseGrid {
     	      avg /= 4.0;
 
     	      //On change légèrement la valeur du centre grâce à l'entropie
-    	      data[x+halfSide][y+halfSide] = avg + (seed.nextDouble()*2*roughness) - roughness; //La valeur finale est entre -roughness,roughness
+    	      data[x+halfSide][y+halfSide] = avg + (randomSeed.nextDouble()*2*roughness) - roughness; //La valeur finale est entre -roughness,roughness
     	    }
     	  }
 
@@ -66,7 +75,7 @@ public class NoiseGrid {
 	                data[x][(y-halfSide+size-1)%(size-1)]; //above center
     	      avg /= 4.0;
     	      
-    	      avg = avg + (seed.nextDouble()*2*roughness) - roughness; //Comme plus haut, entre -roughness et roughness
+    	      avg = avg + (randomSeed.nextDouble()*2*roughness) - roughness; //Comme plus haut, entre -roughness et roughness
 
     	      data[x][y] = avg;
 
@@ -84,5 +93,9 @@ public class NoiseGrid {
     public double[][] getNoiseGrid(){
     	return data;
     }
+
+	public int getSeed() {
+		return this.seed;
+	}
     
 }

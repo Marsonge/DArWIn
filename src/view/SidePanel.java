@@ -19,7 +19,10 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 
+
 import javafx.beans.value.ChangeListener;
+
+
 
 /**
  * 
@@ -58,6 +61,10 @@ public class SidePanel extends JPanel implements Observer{
 	JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
 	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
 	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
+	JTextField textSeed = new JTextField(9);
+	JLabel labelCSeed = new JLabel("Current seed:");
+	JLabel cSeed = new JLabel("");
+	JLabel labelSeed = new JLabel("Input seed for generation:");
 	
 	/**
 	 * Disable a button
@@ -184,6 +191,10 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(nbCreaturesCritical);
         tabOptions.add(changeMap);
         tabOptions.add(start);
+        tabOptions.add(labelCSeed);
+        tabOptions.add(cSeed);
+        tabOptions.add(labelSeed);
+        tabOptions.add(textSeed);
          
         // Stats tab
         JPanel tabStats = new JPanel(){
@@ -243,6 +254,14 @@ public class SidePanel extends JPanel implements Observer{
 		this.nbDead.setText(Integer.toString(nbDead));
 	}
 
+	public void updateSeed(int i){
+		this.cSeed.setText(Integer.toString(i));
+	}
+	public int getSeed(){
+		if((textSeed.getText() != null) && !(textSeed.getText().equals("")))
+			return Integer.parseInt(this.textSeed.getText());
+		return 0;
+	}
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub

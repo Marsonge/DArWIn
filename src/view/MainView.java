@@ -104,19 +104,22 @@ public class MainView extends JFrame {
 		
 		// When map is created the first time, vG is null
 		if (vG != null) this.remove(vG);
-
-		
-		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
+		int seed = 0;
+		if(this.sP.getSeed() != 0){
+			seed = this.sP.getSeed();
+		}
+		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,seed,NUMBER_OF_CREATURES); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
+		this.sP.updateSeed(this.wc.getSeed());
 		this.vG = new ViewGrid(wc);
     	this.setEndOfGameListener(this.vG);
 		
 		this.add(vG, BorderLayout.WEST);
     	this.pack();
     	this.setVisible(true);
- 
+    	
     	wc.simulateForward();
     	initTimer();
     	initGrowTimer();
