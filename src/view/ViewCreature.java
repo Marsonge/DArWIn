@@ -27,13 +27,10 @@ public class ViewCreature extends JLabel {
 	public ViewCreature(int size, int x, int y, int speed, WorldControler wc){
 		super();
 		this.size = size;
-		this.wc = wc;
-		this.setLocation(x, y);
-		this.x = x;
-		this.y = y;
+		this.setLocation(c.getX(), c.getY());
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature"+speed+".png"));
+		    img = ImageIO.read(new File("resources/img/creature"+Math.round(c.getSpeed())+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
@@ -59,7 +56,7 @@ public class ViewCreature extends JLabel {
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
 		   //TODO display creature info
-		   wc.getCreatureInfo(x, y);
+		   wc.getCreatureNn(x, y);
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -69,7 +66,8 @@ public class ViewCreature extends JLabel {
 	   }
 
 	   public void mouseEntered(MouseEvent e) {
-		   self.setToolTipText("X: " + x + " Y: " + y);
+		   // TODO opti ?
+		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x, y) + " Speed: " + wc.getCreatureSpeed(x, y));
 	   }
 
 	   public void mouseExited(MouseEvent e) {

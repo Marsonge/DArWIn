@@ -39,7 +39,6 @@ public class ViewGrid extends JPanel implements Observer{
 		this.wc = wc;
 		wc.addObserver(this);
 		TILE_SIZE = wc.getTileSize();
-		this.tick = 1000; //Is in milliseconds
 		int preferredWidth = wc.getSize() * TILE_SIZE;
         int preferredHeight = wc.getSize() * TILE_SIZE;
         setPreferredSize(new Dimension(preferredWidth, preferredHeight));

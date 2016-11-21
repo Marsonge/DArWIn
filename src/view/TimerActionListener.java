@@ -7,17 +7,20 @@ import controler.WorldControler;
 
 public class TimerActionListener implements ActionListener{
 	
-	private int time;
 	private WorldControler wc;
+	private SidePanel sp;
 	
-	public TimerActionListener (WorldControler wc){
+	public TimerActionListener (WorldControler wc,SidePanel sp){
 		this.wc = wc;
-		this.time=0;
+		this.sp = sp;
 	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		this.wc.simulateForward();		
+		this.wc.simulateForward();
+		this.sp.tick();
+		this.sp.updateNbCreature(wc.getCountCreature(),wc.getDeadCountCreature());
 	}
 
 }

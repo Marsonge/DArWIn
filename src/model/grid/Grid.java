@@ -1,6 +1,7 @@
 package model.grid;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -35,29 +36,33 @@ public class Grid {
 		else{
 			r = null;
 		}
-		noiseGrid = new NoiseGrid(r, e, size, size);
+		noiseGrid = new NoiseGrid(r, e, size);
 		noiseGrid.initialise();
-		float[][] terrainNoiseGrid = noiseGrid.getNoiseGrid();
+		double[][] terrainNoiseGrid = noiseGrid.getNoiseGrid();
+		double max = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).max().getAsDouble();
+		double min = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).min().getAsDouble();
+
         for (int i = 0; i < NUMROWS; i++) {
             for (int j = 0; j < NUMCOLS; j++) {
-            	if(terrainNoiseGrid[i][j] > 1.5*e){
+            	double result = (terrainNoiseGrid[i][j] - min)/(max-min);
+            	if(result > 0.88){
                     this.tileGrid[i][j] = new Tile(Terrain.SNOW,i,j);
             	}
-            	else if(terrainNoiseGrid[i][j] > e){
+            	else if(result > 0.75){
                     this.tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,i,j);
                     fertileLand.add(this.tileGrid[i][j]);
             	}
-            	else if(terrainNoiseGrid[i][j] > e/6){
+            	else if(result > 0.52){
                     this.tileGrid[i][j] = new Tile(Terrain.WOODS,i,j);
                     fertileLand.add(this.tileGrid[i][j]);
             	}
-            	else if (terrainNoiseGrid[i][j] > 0){
+            	else if (result > 0.43){
 	            		this.tileGrid[i][j] = new Tile(Terrain.SAND,i,j);
         		}
-            	else if(terrainNoiseGrid[i][j] > -0.3*e){
+            	else if(result > 0.3){
                     this.tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER,i,j);
             	}
-            	else if(terrainNoiseGrid[i][j] > -1*e){
+            	else if(result > 0.15){
             		this.tileGrid[i][j] = new Tile(Terrain.OCEAN,i,j);
             	}
             	else{

@@ -1,7 +1,6 @@
 package controler;
 
 import java.awt.Color;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -9,7 +8,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
+import javax.swing.JPanel;
+
 import model.Creature;
+import model.NeuralNetwork;
+import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
 import model.grid.Tile;
@@ -23,27 +26,35 @@ import utils.Utils;
 public class WorldControler extends Observable{
 	
 	private Grid grid;
+	private Statistique statistique;
+	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
+	private int nbdead;
+	private int softcap;
+	private int hardcap;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
+		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
+		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
 			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
-		
+		/*this.softcap = 150;
+		this.hardcap = 200;*/
 	}
 	/**
 	 *  
 	 * @param i
 	 * @param j
-	 * @return the colour of the tile at the position i, j
+	 * @return the color of the tile at the position i, j
 	 */
 	public Color getTileColour(int i, int j) {
 		return grid.getTileColour(i, j);
@@ -56,6 +67,14 @@ public class WorldControler extends Observable{
 	public int getSize() {
 		return grid.getNumCols();
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	public JPanel getStatistique() {
+		return statistique.getStatistique();
+	}
 
 	/**
 	 * Function called every timer tick.
@@ -64,22 +83,35 @@ public class WorldControler extends Observable{
 	 */
 	public boolean simulateForward() {
 		List<Tile> tileList = new LinkedList<>();
+		//Minimum energy required to survive depends on softcap
+		int minenergy;
+		int nbCreature = creatureList.size();
+		if(nbCreature>softcap*1.5){ // Really hard to live there huh?
+			minenergy = 30;
+		}else if(nbCreature>softcap){ //Life is tough but fair
+			minenergy = 15;
+		}else{ //Easy mode
+			minenergy = 0;
+		}
 		
 		for(ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();){
 			Creature c = iterator.next();
 			compute(c);
-			if(c.getEnergy() <= 0){
+			if(c.getEnergy() <= minenergy){
 				// creature dies
+				this.nbdead++;
 				iterator.remove();
 			} else {
 				Creature baby = this.reproduce(c);
-				if (baby != null){
+				//Babies aren't added to the list if we reached the hardcap
+				if (baby != null && nbCreature<hardcap){
 					iterator.add(baby);
 				}
 				this.move(c);
 				this.eat(c);
 				
 			}
+			
 		}
 		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList,tileList);
 		this.notifyObservers(wrapper); 
@@ -94,47 +126,59 @@ public class WorldControler extends Observable{
 		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
 		tileY = Utils.borderVar(tileY, 0, grid.getNumRows()-1, 0);
 		Color tileColor = grid.getTileColour((tileX), (tileY));
-		int input[] = new int[3];
+		int input[] = new int[15];
 		input[0] = tileColor.getRed();
 		input[1] = tileColor.getGreen();
 		input[2] = tileColor.getBlue();
 		
-		int cxminus = Utils.borderVar(creature.getX() - 1, 0, grid.getNumCols()-1, 0);
-		int tileXminus = cxminus/this.tileSize;
-		Color tileColorMinusX = grid.getTileColour((tileXminus), (tileY));
-		int inputMinusX[] = new int[3];
-		inputMinusX[0] = tileColorMinusX.getRed();
-		inputMinusX[1] = tileColorMinusX.getGreen();
-		inputMinusX[2] = tileColorMinusX.getBlue();
+		int i = 0;
+		int j = 3;
 		
-		int cxplus = Utils.borderVar(creature.getX() + 1, 0, grid.getNumCols()-1, 0);
-		int tileXplus = cxplus/this.tileSize;
-		Color tileColorPlusX = grid.getTileColour((tileXplus), (tileY));
-		int inputplusX[] = new int[3];
-		inputplusX[0] = tileColorPlusX.getRed();
-		inputplusX[1] = tileColorPlusX.getGreen();
-		inputplusX[2] = tileColorPlusX.getBlue();
-		
-		int cyminus = Utils.borderVar(creature.getY() - 1, 0, grid.getNumCols()-1, 0);
-		int tileYminus = cyminus/this.tileSize;
-		Color tileColorMinusY = grid.getTileColour((tileX), (tileYminus));
-		int inputMinusY[] = new int[3];
-		inputMinusY[0] = tileColorMinusY.getRed();
-		inputMinusY[1] = tileColorMinusY.getGreen();
-		inputMinusY[2] = tileColorMinusY.getBlue();
-		
-		int cyplus = Utils.borderVar(creature.getY() + 1, 0, grid.getNumCols()-1, 0);
-		int tileYplus = cyplus/this.tileSize;
-		Color tileColorPlusY = grid.getTileColour((tileX), (tileYplus));
-		int inputplusY[] = new int[3];
-		inputplusY[0] = tileColorPlusY.getRed();
-		inputplusY[1] = tileColorPlusY.getGreen();
-		inputplusY[2] = tileColorPlusY.getBlue();
-				
-		//creature.compute(input);
-		creature.compute(input, inputMinusX, inputplusX, inputMinusY,  inputplusY);
+		int[] inputMinusX = getColorArray(tileX-1, tileY);
+		for(i=0;i<3;i++){
+			input[j] = inputMinusX[i];
+			j++;
+		}
+		int[] inputPlusX = getColorArray(tileX+1,tileY);
+		for(i=0;i<3;i++){
+			input[j] = inputPlusX[i];
+			j++;
+		}
+		int[] inputMinusY = getColorArray(tileX, tileY-1);
+		for(i=0;i<3;i++){
+			input[j] = inputMinusY[i];
+			j++;
+		}
+		int[] inputPlusY = getColorArray(tileX,tileY+1);
+		for(i=0;i<3;i++){
+			input[j] = inputPlusY[i];
+			j++;
+		}
+		creature.compute(input);
 	}
 	
+	/**
+	 * 
+	 * @param tileX The tile coordinate you want to get the colors off
+	 * @param tileY The tile coordinate you want to get the colors off
+	 * @return An int[3] array containing the red, green, and blue value of the tile's color
+	 */
+	private int[] getColorArray(int tileX, int tileY) {
+		tileX = Utils.borderVar(tileX, 0, grid.getNumCols()-1, 0);
+		tileX /= this.tileSize;
+		tileY = Utils.borderVar(tileY, 0, grid.getNumCols()-1, 0);
+		tileY /= this.tileSize;
+		Color tileColor = grid.getTileColour((tileX), (tileY));
+		int colorArray[] = new int[3];
+		colorArray[0] = tileColor.getRed();
+		colorArray[1] = tileColor.getGreen();
+		colorArray[2] = tileColor.getBlue();
+		return colorArray;
+	}
+	
+	/**
+	 * Grows food on fertile land, adding more green in the color of the tile.
+	 */
 	public void grow(){
 		List<Tile> fertileLand = grid.getFertileLand();
 		for(Tile t : fertileLand){
@@ -191,27 +235,16 @@ public class WorldControler extends Observable{
 	 * @return true
 	 */
 	public boolean move(Creature c){
-		//TODO : Implement a better move
-		Random rand = new Random();
 		int x = c.getX();
 		int y = c.getY();
-		int speed = c.getSpeed();
-		switch(rand.nextInt(4)){
-			case 0:
-				x-=speed;
-				break;
-			case 1:
-				x+=speed;
-				break;
-			case 2:
-				y-=speed;
-				break;
-			case 3:
-				y+=speed;
-		}
-		x = Utils.borderVar(x, 0, grid.getNumCols()*tileSize, 5);
-		y = Utils.borderVar(y, 0, grid.getNumRows()*tileSize, 5);
-		c.move(x,y);
+		int rot = c.getRot();
+		double rad = Math.toRadians(rot);
+		float speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad)*speed + x));
+		int newY = (int) Math.round((Math.sin(rad)*speed + y));
+		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols()*tileSize, 5);
+		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows()*tileSize, 5);
+		c.move(newX,newY);
 		return true;
 	}
 	
@@ -236,12 +269,33 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
-	public void getCreatureInfo(int x, int y) {
+	public NeuralNetwork getCreatureNn(int x, int y) {
 		for (Creature c : creatureList){
 			if (c.getX() == x && c.getY() == y){
-				System.out.println("Creature clicked : " + c.getNeuralNetwork());
+				return c.getNeuralNetwork();
 			}
 		}
+		return null;
+	}
+	
+	//TODO opti ?
+	public int getCreatureEnergy(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getEnergy();
+			}
+		}
+		return 0;
+	}
+	
+	//TODO opti ?
+	public int getCreatureSpeed(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getSpeed();
+			}
+		}
+		return 0;
 	}
 	
 	@Override
@@ -259,4 +313,19 @@ public class WorldControler extends Observable{
 		return tileSize;
 	}
 	
+	public int getCountCreature(){
+		return creatureList.size();
+	}
+	
+	public int getDeadCountCreature(){
+		return this.nbdead;
+	}
+	
+	public void setSoftCap(int val){
+		this.softcap = val;
+	}
+	
+	public void setHardCap(int val){
+		this.hardcap = val;
+	}
 } 

@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 
 public class ViewTile extends JComponent{
 	
+	private static final long serialVersionUID = -4020756606710478263L;
 	private Color color;
 	private int x;
 	private int y;
