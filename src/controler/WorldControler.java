@@ -289,7 +289,7 @@ public class WorldControler extends Observable{
 	}
 	
 	//TODO opti ?
-	public int getCreatureSpeed(int x, int y){
+	public float getCreatureSpeed(int x, int y){
 		for (Creature c : creatureList){
 			if (c.getX() == x && c.getY() == y){
 				return c.getSpeed();

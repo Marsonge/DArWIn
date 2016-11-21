@@ -24,19 +24,23 @@ public class ViewCreature extends JLabel {
 	private int y;
 	private ViewCreature self = this;
 	
-	public ViewCreature(int size, int x, int y, int speed, WorldControler wc){
+	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
 		super();
 		this.size = size;
-		this.setLocation(c.getX(), c.getY());
+		this.setLocation(x,y);
+		this.x = x;
+		this.y = y;
+		this.wc = wc;
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature"+Math.round(c.getSpeed())+".png"));
+		    img = ImageIO.read(new File("resources/img/creature"+Math.round(speed)+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
 		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
+
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public class ViewCreature extends JLabel {
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
 		   //TODO display creature info
-		   wc.getCreatureNn(x, y);
+		   System.out.println(self.wc.getCreatureNn(x, y));
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -67,7 +71,7 @@ public class ViewCreature extends JLabel {
 
 	   public void mouseEntered(MouseEvent e) {
 		   // TODO opti ?
-		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x, y) + " Speed: " + wc.getCreatureSpeed(x, y));
+		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x,y) + " Speed: " + wc.getCreatureSpeed(x,y));
 	   }
 
 	   public void mouseExited(MouseEvent e) {

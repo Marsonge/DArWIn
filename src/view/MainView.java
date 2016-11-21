@@ -34,8 +34,6 @@ public class MainView extends JFrame {
 	static int TICK_GROW = 1000;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
-	static final int NUMBER_OF_CREATURES = 1;
-
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -91,11 +89,11 @@ public class MainView extends JFrame {
 	/**
 	 * Start the timer
 	 */
-	public void startTimer(){
+	public void initTimer(){
         this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc,sP)); 
 	}
 	
-	public void startGrowTimer(){
+	public void initGrowTimer(){
 		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
 	}
 	
@@ -120,8 +118,8 @@ public class MainView extends JFrame {
     	this.setVisible(true);
  
     	wc.simulateForward();
-		initTimer();
-		initGrowTimer();
+    	initTimer();
+    	initGrowTimer();
 	}
 	
 	/**
@@ -240,10 +238,9 @@ public class MainView extends JFrame {
 		  			// if yes do : changes map once and reset all buttons settings
 		  			self.simulationLaunched = false;
 		  			self.changeMap();
-		  			self.vP.enable(self.vP.getChangeMapButton());
-		  			JButton start = self.vP.getStartButton();
-		  			self.vP.enable(start);
-		  			start.setText("Start");
+		  			self.sP.getChangeMapButton().setEnabled(true);
+		  			self.sP.getStartButton().setEnabled(true);
+		  			self.sP.getStartButton().setText("Start");
 		  		} else {
 		  			// if no do : quit game
 		  			// TODO Save results before exit

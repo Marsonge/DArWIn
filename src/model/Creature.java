@@ -91,7 +91,8 @@ public class Creature implements Cloneable {
 	
 	public NeuralNetwork getNeuralNetwork() {
 		return nn;
-
+	}
+	
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
