@@ -8,9 +8,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.naming.InitialContext;
 import javax.swing.*;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -43,6 +46,15 @@ public class SidePanel extends JPanel implements Observer{
 	public static int DEFAULT_CREATURE = 30;
 	public static int DEFAULT_PREFERRED_CREATURE = 400;
 	public static int DEFAULT_CRITICAL_CREATURE = 550;
+	public static int MIN_DEPTH = 0;
+	public static int MAX_DEPTH = 100;
+	public static int DEEP_WATER = 0;
+	public static int OCEAN = 15;
+	public static int SHALLOW_WATER = 30;
+	public static int SAND = 43;
+	public static int WOOD = 52;
+	public static int MOUNTAIN = 75;
+	public static int SNOW = 88;
 	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
@@ -53,7 +65,8 @@ public class SidePanel extends JPanel implements Observer{
 	private int time;
 	private int alive;
 	private int dead;
-
+	private List<JSlider> depthSliders;
+	
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
 	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
@@ -64,11 +77,26 @@ public class SidePanel extends JPanel implements Observer{
 	JTextField nbCreaturesPreferredTextField = new JTextField(4);
 	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
 	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
+	JLabel deepOceanLabel = new JLabel("Deep ocean");
+	JSlider deepOceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, DEEP_WATER);
+	JLabel oceanLabel = new JLabel("Ocean");
+	JSlider oceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, OCEAN);
+	JLabel waterLabel = new JLabel("Coast");
+	JSlider waterSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SHALLOW_WATER);
+	JLabel sandLabel = new JLabel("Sand");
+	JSlider sandSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SAND);
+	JLabel woodLabel = new JLabel("Woods");
+	JSlider woodSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, WOOD);
+	JLabel mountainsLabel = new JLabel("Mountains");
+	JSlider mountainsSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, MOUNTAIN);
+	JLabel snowLabel = new JLabel("Snow");
+	JSlider snowSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SNOW);
 	JTextField nbCreaturesCriticalTextField = new JTextField(4);
 	JTextField textSeed = new JTextField(9);
 	JLabel labelCSeed = new JLabel("Current seed:");
 	JLabel cSeed = new JLabel("");
 	JLabel labelSeed = new JLabel("Input seed for generation:");
+	JLabel custLabel = new JLabel("Customize map depths");
 	
 	/**
 	 * Disable a button
@@ -91,6 +119,17 @@ public class SidePanel extends JPanel implements Observer{
 	public void disable(JSlider slider){
 		slider.setFocusable(false);
 		slider.setEnabled(false);
+	}
+	
+	public void disableLabels(){
+		this.disable(snowLabel);
+		this.disable(mountainsLabel);
+		this.disable(woodLabel);
+		this.disable(sandLabel);
+		this.disable(waterLabel);
+		this.disable(oceanLabel);
+		this.disable(deepOceanLabel);
+		this.disable(nbCreaturesLabel);
 	}
 	
 	/**
@@ -119,6 +158,10 @@ public class SidePanel extends JPanel implements Observer{
 		return this.nbCreaturesCritical;
 	}
 	
+	public List<JSlider> getDepthSliders(){
+		return this.depthSliders;
+	}
+	
 	/**
 	 * get the start button
 	 * @return
@@ -137,7 +180,7 @@ public class SidePanel extends JPanel implements Observer{
 
 	
 	/**
-	 * ViewPanel constructor, will build the side panel
+	 * SidePanel constructor, will build the side panel
 	 */
 	public SidePanel(){
 		
@@ -167,6 +210,8 @@ public class SidePanel extends JPanel implements Observer{
 			}
 
         };
+        
+        initDepthSliders();
         
         /** Slider **/
         nbCreatures.setMinorTickSpacing(5);
@@ -204,6 +249,16 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(nbCreaturesCriticalTextField);
         tabOptions.add(nbCreaturesCritical);
         
+        Dimension d = new Dimension(80,15);
+        cSeed.setMinimumSize(d);
+        cSeed.setPreferredSize(d);
+        cSeed.setMaximumSize(d);
+        Dimension d1 = new Dimension(100,15);
+        labelCSeed.setMinimumSize(d1);
+        labelCSeed.setPreferredSize(d1);
+        labelCSeed.setMaximumSize(d1);
+        
+        
         // Add buttons to Option tab
         tabOptions.add(changeMap);
         tabOptions.add(start);
@@ -211,6 +266,27 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(cSeed);
         tabOptions.add(labelSeed);
         tabOptions.add(textSeed);
+        
+        tabOptions.add(deepOceanLabel);
+        tabOptions.add(deepOceanSlider);
+
+        tabOptions.add(oceanLabel);
+        tabOptions.add(oceanSlider);
+
+        tabOptions.add(waterLabel);
+        tabOptions.add(waterSlider);
+
+        tabOptions.add(sandLabel);
+        tabOptions.add(sandSlider);
+
+        tabOptions.add(woodLabel);
+        tabOptions.add(woodSlider);
+
+        tabOptions.add(mountainsLabel);
+        tabOptions.add(mountainsSlider);
+        
+        tabOptions.add(snowLabel);
+        tabOptions.add(snowSlider);
          
         // Stats tab
         JPanel tabStats = new JPanel(){
@@ -258,6 +334,80 @@ public class SidePanel extends JPanel implements Observer{
         this.add(tabbedPane);     
 	}
 	
+	private void initDepthSliders() {
+		int width = 70;
+		int height = 15;
+		Dimension d = new Dimension(width,height);
+		
+        this.depthSliders = new ArrayList<JSlider>();
+        deepOceanSlider.setMinorTickSpacing(5);
+        deepOceanSlider.setMajorTickSpacing(20);
+        deepOceanSlider.setPaintTicks(true);
+        deepOceanSlider.setPaintLabels(true);
+        deepOceanLabel.setMinimumSize(d);
+        deepOceanLabel.setPreferredSize(d);
+        deepOceanLabel.setMaximumSize(d);
+        
+        oceanSlider.setMinorTickSpacing(5);
+        oceanSlider.setMajorTickSpacing(20);
+        oceanSlider.setPaintTicks(true);
+        oceanSlider.setPaintLabels(true);
+        oceanLabel.setMinimumSize(d);
+        oceanLabel.setPreferredSize(d);
+        oceanLabel.setMaximumSize(d);
+        
+        waterSlider.setMinorTickSpacing(5);
+        waterSlider.setMajorTickSpacing(20);
+        waterSlider.setPaintTicks(true);
+        waterSlider.setPaintLabels(true);
+        waterLabel.setMinimumSize(d);
+        waterLabel.setPreferredSize(d);
+        waterLabel.setMaximumSize(d);
+        
+        sandSlider.setMinorTickSpacing(5);
+        sandSlider.setMajorTickSpacing(20);
+        sandSlider.setPaintTicks(true);
+        sandSlider.setPaintLabels(true);
+        sandLabel.setMinimumSize(d);
+        sandLabel.setPreferredSize(d);
+        sandLabel.setMaximumSize(d);
+        
+        woodSlider.setMinorTickSpacing(5);
+        woodSlider.setMajorTickSpacing(20);
+        woodSlider.setPaintTicks(true);
+        woodSlider.setPaintLabels(true);
+        woodLabel.setMinimumSize(d);
+        woodLabel.setPreferredSize(d);
+        woodLabel.setMaximumSize(d);
+        
+        mountainsSlider.setMinorTickSpacing(5);
+        mountainsSlider.setMajorTickSpacing(20);
+        mountainsSlider.setPaintTicks(true);
+        mountainsSlider.setPaintLabels(true);
+        mountainsLabel.setMinimumSize(d);
+        mountainsLabel.setPreferredSize(d);
+        mountainsLabel.setMaximumSize(d);
+        
+        snowSlider.setMinorTickSpacing(5);
+        snowSlider.setMajorTickSpacing(20);
+        snowSlider.setPaintTicks(true);
+        snowSlider.setPaintLabels(true);
+        snowLabel.setMinimumSize(d);
+        snowLabel.setPreferredSize(d);
+        snowLabel.setMaximumSize(d);
+        
+        
+        
+        depthSliders.add(snowSlider);
+        depthSliders.add(mountainsSlider);
+        depthSliders.add(woodSlider);
+        depthSliders.add(sandSlider);
+        depthSliders.add(waterSlider);
+        depthSliders.add(oceanSlider);
+        depthSliders.add(deepOceanSlider);
+
+	}
+
 	public void addSliderListeners(){
 		//nbCreatures
 		nbCreatures.addChangeListener(new ChangeListener(){
@@ -316,6 +466,84 @@ public class SidePanel extends JPanel implements Observer{
                 }
                 int value = Integer.parseInt(typed);
                 nbCreaturesCritical.setValue(value);
+            }
+        });
+        //Deep Ocean
+        deepOceanSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(deepOceanSlider.getValue() > oceanSlider.getValue()){
+            		oceanSlider.setValue(deepOceanSlider.getValue());
+            	}
+            }
+        });
+        //Ocean
+        oceanSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(oceanSlider.getValue() > waterSlider.getValue()){
+            		waterSlider.setValue(oceanSlider.getValue());
+            	}
+            	if(oceanSlider.getValue() < deepOceanSlider.getValue()){
+            		deepOceanSlider.setValue(oceanSlider.getValue());
+            	}
+            }
+        });
+       //Shallow water
+        waterSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(waterSlider.getValue() > sandSlider.getValue()){
+            		sandSlider.setValue(waterSlider.getValue());
+            	}
+            	if(waterSlider.getValue() < oceanSlider.getValue()){
+            		oceanSlider.setValue(waterSlider.getValue());
+            	}
+            }
+        });
+      //Sand
+        sandSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(sandSlider.getValue() > woodSlider.getValue()){
+            		woodSlider.setValue(sandSlider.getValue());
+            	}
+            	if(sandSlider.getValue() < waterSlider.getValue()){
+            		waterSlider.setValue(sandSlider.getValue());
+            	}
+            }
+        });
+      //Woods
+        woodSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(woodSlider.getValue() > mountainsSlider.getValue()){
+            		mountainsSlider.setValue(woodSlider.getValue());
+            	}
+            	if(woodSlider.getValue() < sandSlider.getValue()){
+            		sandSlider.setValue(woodSlider.getValue());
+            	}
+            }
+        });
+      //Mountains
+        mountainsSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(mountainsSlider.getValue() > snowSlider.getValue()){
+            		snowSlider.setValue(mountainsSlider.getValue());
+            	}
+            	if(mountainsSlider.getValue() < woodSlider.getValue()){
+            		woodSlider.setValue(mountainsSlider.getValue());
+            	}
+            }
+        });
+      //Snow
+        snowSlider.addChangeListener(new ChangeListener(){
+        	@Override
+            public void stateChanged(ChangeEvent e) {
+            	if(snowSlider.getValue() < mountainsSlider.getValue()){
+            		mountainsSlider.setValue(snowSlider.getValue());
+            	}
             }
         });
 	}

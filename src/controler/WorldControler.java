@@ -34,9 +34,9 @@ public class WorldControler extends Observable{
 	private int hardcap;
 	private int seed;
 	
-	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
 		this.tileSize = tilesize;
-		this.grid = new Grid(size,roughness,seed);
+		this.grid = new Grid(size,roughness,seed,depths);
 		this.seed = grid.getSeed();
 		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
