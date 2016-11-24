@@ -17,14 +17,14 @@ public class Grid {
 	private final Tile[][] tileGrid;
 	private final NoiseGrid noiseGrid;
 	private final List<Tile> fertileLand;
-	
+	private int seed;
 	/**
 	 * 
 	 * @param size number of tiles of the map (height and width)
 	 * @param e roughness parameter (entropy)
 	 * @param seed used to create the map randomly
 	 */
-	public Grid(int size,float e,long seed){
+	public Grid(int size,float e,int seed,Float[] depths){
 		this.tileGrid = new Tile[size][size];
 		this.fertileLand = new LinkedList<Tile>();
 		this.NUMCOLS = size;
@@ -38,6 +38,12 @@ public class Grid {
 		}
 		noiseGrid = new NoiseGrid(r, e, size);
 		noiseGrid.initialise();
+		if(noiseGrid.getSeed()!=0){
+			this.seed = noiseGrid.getSeed();
+		}
+		else{
+			this.seed = seed;
+		}
 		double[][] terrainNoiseGrid = noiseGrid.getNoiseGrid();
 		double max = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).max().getAsDouble();
 		double min = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).min().getAsDouble();
@@ -45,28 +51,31 @@ public class Grid {
         for (int i = 0; i < NUMROWS; i++) {
             for (int j = 0; j < NUMCOLS; j++) {
             	double result = (terrainNoiseGrid[i][j] - min)/(max-min);
-            	if(result > 0.88){
+            	if(result > depths[0]){
                     this.tileGrid[i][j] = new Tile(Terrain.SNOW,i,j);
             	}
-            	else if(result > 0.75){
+            	else if(result > depths[1]){
                     this.tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,i,j);
                     fertileLand.add(this.tileGrid[i][j]);
             	}
-            	else if(result > 0.52){
+            	else if(result > depths[2]){
                     this.tileGrid[i][j] = new Tile(Terrain.WOODS,i,j);
                     fertileLand.add(this.tileGrid[i][j]);
             	}
-            	else if (result > 0.43){
+            	else if (result > depths[3]){
 	            		this.tileGrid[i][j] = new Tile(Terrain.SAND,i,j);
         		}
-            	else if(result > 0.3){
+            	else if(result > depths[4]){
                     this.tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER,i,j);
             	}
-            	else if(result > 0.15){
+            	else if(result > depths[5]){
             		this.tileGrid[i][j] = new Tile(Terrain.OCEAN,i,j);
             	}
-            	else{
+            	else if(result > depths[6] || depths[6] == 0){
             		this.tileGrid[i][j] = new Tile(Terrain.DEEP_WATER,i,j);
+            	}
+            	else{
+            		this.tileGrid[i][j] = new Tile(Terrain.ETHER,i,j);
             	}
             	
             }
@@ -98,6 +107,10 @@ public class Grid {
 	
 	public List<Tile> getFertileLand(){
 		return fertileLand;
+	}
+
+	public int getSeed() {
+		return seed;
 	}
 
 }

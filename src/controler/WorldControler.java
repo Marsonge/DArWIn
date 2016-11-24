@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import model.Creature;
+import model.NeuralNetwork;
 import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
@@ -26,16 +27,17 @@ public class WorldControler extends Observable{
 	
 	private Grid grid;
 	private Statistique statistique;
-	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
+	private int seed;
 	
-	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
 		this.tileSize = tilesize;
-		this.grid = new Grid(size,roughness,seed);
+		this.grid = new Grid(size,roughness,seed,depths);
+		this.seed = grid.getSeed();
 		this.statistique = new Statistique();
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
@@ -268,14 +270,41 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
+	public NeuralNetwork getCreatureNn(int x, int y) {
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getNeuralNetwork();
+			}
+		}
+		return null;
+	}
+	
+	//TODO opti ?
+	public int getCreatureEnergy(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getEnergy();
+			}
+		}
+		return 0;
+	}
+	
+	//TODO opti ?
+	public float getCreatureSpeed(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getSpeed();
+			}
+		}
+		return 0;
+	}
 	
 	@Override
 	public void	notifyObservers(Object arg) {
 		super.setChanged();
 		super.notifyObservers(arg); 
 	}
-
-
+	
 	@Override
 	public void addObserver(Observer o){
 		super.addObserver(o);
@@ -299,5 +328,8 @@ public class WorldControler extends Observable{
 	
 	public void setHardCap(int val){
 		this.hardcap = val;
+	}
+	public int getSeed() {
+		return seed;
 	}
 } 
