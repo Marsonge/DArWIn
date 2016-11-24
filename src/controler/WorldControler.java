@@ -33,11 +33,13 @@ public class WorldControler extends Observable{
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
+	private Creature currentCreature;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
 		this.statistique = new Statistique();
+		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
 		this.nbdead=0;
@@ -327,5 +329,17 @@ public class WorldControler extends Observable{
 	
 	public void setHardCap(int val){
 		this.hardcap = val;
+	}
+	
+	public void setCurrentCreature(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				this.currentCreature = c;
+			}
+		}
+	}
+	
+	public Creature getCurrentCreature(){
+		return this.currentCreature;
 	}
 } 

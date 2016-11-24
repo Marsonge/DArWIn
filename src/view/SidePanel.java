@@ -4,22 +4,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
 
-import javafx.beans.value.ChangeListener;
+import controler.WorldControler;
 
 /**
  * 
@@ -49,6 +47,9 @@ public class SidePanel extends JPanel implements Observer{
 	private int time;
 	private int alive;
 	private int dead;
+	private WorldControler wc;
+	private MainView parent;
+	//private SidePanel self = this;
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
@@ -128,7 +129,9 @@ public class SidePanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public SidePanel(){
+	public SidePanel(MainView mv){
+		
+		this.parent = mv;
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -191,7 +194,7 @@ public class SidePanel extends JPanel implements Observer{
         	private static final long serialVersionUID = 1L;
 
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); //Utilité ?
+				return new Dimension(280,660); // Utilite ?
         	}
         };
         
@@ -199,7 +202,6 @@ public class SidePanel extends JPanel implements Observer{
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
         
-
         time = 0;
         alive = 90;
         dead = 0;
@@ -226,6 +228,31 @@ public class SidePanel extends JPanel implements Observer{
         ligne.add(values);
 
         tabStats.add(ligne);
+        
+        // Add neural network view button to Stats tab
+        JButton viewNnButton = new JButton("View creature's neural network");
+        viewNnButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// We set the value of SidePanel's wc once the button is clicked.
+        		 if (wc == null) wc = parent.getWorldControler();
+        		 
+        		 // NeuralNetwork view is created with current creature's NN.
+        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+        		 JOptionPane optionPane = new JOptionPane("Neural Network display",
+        				 JOptionPane.INFORMATION_MESSAGE,
+        				 JOptionPane.DEFAULT_OPTION,
+        				 null,
+        				 new Object[]{}, // No buttons available other than 'close cross'
+        				 null);
+
+        		 nnView.setContentPane(optionPane);
+        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		 nnView.pack();
+        		 nnView.setVisible(true);
+        	}
+        });
+        tabStats.add(viewNnButton);
+        
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     

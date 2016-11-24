@@ -1,9 +1,10 @@
-package view;
+package utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import controler.WorldControler;
+import view.SidePanel;
 
 public class TimerActionListener implements ActionListener{
 	

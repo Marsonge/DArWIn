@@ -72,6 +72,8 @@ public class ViewCreature extends JLabel {
 	   public void mouseEntered(MouseEvent e) {
 		   // TODO opti ?
 		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x,y) + " Speed: " + wc.getCreatureSpeed(x,y));
+		   wc.setCurrentCreature(x, y);
+		   System.out.println("CREATURE CURRENT : " + wc.getCurrentCreature().getId());
 	   }
 
 	   public void mouseExited(MouseEvent e) {
