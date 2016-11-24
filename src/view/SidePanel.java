@@ -1,6 +1,8 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,8 +10,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
 
 import javax.swing.*;
 import javax.swing.JButton;
@@ -138,8 +146,9 @@ public class SidePanel extends JPanel implements Observer{
 	
 	/**
 	 * ViewPanel constructor, will build the side panel
+	 * @throws IOException 
 	 */
-	public SidePanel(){
+	public SidePanel() throws IOException{
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -265,11 +274,19 @@ public class SidePanel extends JPanel implements Observer{
 
         tabStats.add(ligne);
         
-        
         // Tab Help
-        JLabel version = new JLabel("version 0.5.3");
-  
-        tabHelp.add(version);
+        
+        tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
+        Scanner sc = new Scanner(new File("help.txt"));
+        
+        while (sc.hasNextLine()){
+        	JLabel label = new JLabel(sc.nextLine());
+
+        	label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        	tabHelp.add(label);
+        }
+        
+        sc.close();
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     

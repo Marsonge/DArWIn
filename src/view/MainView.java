@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -53,9 +54,10 @@ public class MainView extends JFrame {
 	 * 
 	 * Create the main JFrame and add the ViewGrid 
 	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * 
 	 */
-	public MainView() throws InterruptedException {
+	public MainView() throws InterruptedException, IOException {
 		
 		// Create the main JFrame
 		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
@@ -259,8 +261,9 @@ public class MainView extends JFrame {
 	 * 
 	 * @param args
 	 * @throws InterruptedException
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		new MainView();
 	}
 	
