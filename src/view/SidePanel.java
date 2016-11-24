@@ -265,6 +265,12 @@ public class SidePanel extends JPanel implements Observer{
 
         tabStats.add(ligne);
         
+        
+        // Tab Help
+        JLabel version = new JLabel("version 0.5.3");
+  
+        tabHelp.add(version);
+        
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
 	}
