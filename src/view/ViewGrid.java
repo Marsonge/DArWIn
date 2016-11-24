@@ -87,6 +87,8 @@ public class ViewGrid extends JPanel implements Observer{
 		// checks if there are still creatures on the grid
 		if (lc.isEmpty() && !endOfGame){
 			endOfGame = true;
+			this.revalidate();
+			this.repaint();
 			this.fireEndOfGame(new EndOfGameEvent(this));
 			
 		} else {

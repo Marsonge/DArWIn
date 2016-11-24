@@ -1,6 +1,7 @@
 package model.grid;
 
 public enum Terrain {
+	ETHER(0,0,0), //Pure death
     OCEAN(0, 0, 255), //Blue
 	MOUNTAINS(130,120,95), //Brownish
 	SAND(245,231,117), //Yellowish

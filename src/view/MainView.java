@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -109,7 +112,14 @@ public class MainView extends JFrame {
 		if(this.sP.getSeed() != 0){
 			seed = Utils.borderVar(this.sP.getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
-		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,seed,NUMBER_OF_CREATURES); 
+		Float[] depths = new Float[7];
+		int i = 0;
+		List<JSlider> depthSliders = this.sP.getDepthSliders();
+		for(JSlider j : depthSliders){
+			depths[i] = j.getValue()/(float) 100;
+			i++;
+		}
+		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,seed,NUMBER_OF_CREATURES,depths); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
@@ -199,7 +209,10 @@ public class MainView extends JFrame {
                         	simulationLaunched = true;
                         	sP.disable(sP.getChangeMapButton());
                         	sP.disable(sP.getInitialNbSlider());
-                        	sP.disable(sP.getInitialNbLabel());
+                        	for(JSlider j : sP.getDepthSliders()){
+                        		sP.disable(j);
+                        	}
+                        	sP.disableLabels();
                         }
 
                     } else if (btn.getText().equals("Pause")){
@@ -235,7 +248,6 @@ public class MainView extends JFrame {
 	public void setEndOfGameListener(final ViewGrid vg){
 		vg.addEndOfGameListener(new EndOfGameEventListener() {
 			public void actionPerformed(EndOfGameEvent evt) {
-		    	
 				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
 				System.out.println("Event triggered");
 				if (choice == JOptionPane.YES_OPTION) {
