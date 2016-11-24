@@ -34,6 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import controler.WorldControler;
 

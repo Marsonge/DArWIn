@@ -328,6 +328,22 @@ public class WorldControler extends Observable{
 		this.softcap = val;
 	}
 	
+	public int getSeed() { 
+	    return seed; 
+	  } 
+	
+	public Creature getCurrentCreature() {
+		return currentCreature;
+	}
+	
+	public void setCurrentCreature(int x, int y){
+        for (Creature c : creatureList){
+            if (c.getX() == x && c.getY() == y){
+                this.currentCreature = c;
+            }
+        }
+    }
+	
 	public void setHardCap(int val){
 		this.hardcap = val;
 	}
