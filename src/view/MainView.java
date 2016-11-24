@@ -235,7 +235,6 @@ public class MainView extends JFrame {
 			public void actionPerformed(EndOfGameEvent evt) {
 		    	
 				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
-				System.out.println("Event triggered");
 				if (choice == JOptionPane.YES_OPTION) {
 		  			// if yes do : changes map once and reset all buttons settings
 		  			self.simulationLaunched = false;

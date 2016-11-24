@@ -60,7 +60,8 @@ public class ViewCreature extends JLabel {
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
 		   //TODO display creature info
-		   System.out.println(self.wc.getCreatureNn(x, y));
+		   wc.setCurrentCreature(x, y);
+		   System.out.println("current creature : " + wc.getCurrentCreature().getX() + " " + wc.getCurrentCreature().getY());
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -72,8 +73,6 @@ public class ViewCreature extends JLabel {
 	   public void mouseEntered(MouseEvent e) {
 		   // TODO opti ?
 		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x,y) + " Speed: " + wc.getCreatureSpeed(x,y));
-		   wc.setCurrentCreature(x, y);
-		   System.out.println("CREATURE CURRENT : " + wc.getCurrentCreature().getId());
 	   }
 
 	   public void mouseExited(MouseEvent e) {
