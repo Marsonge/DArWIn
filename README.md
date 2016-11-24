@@ -19,4 +19,4 @@ A travers les mutations légères et une fonction de mort pour éliminer les tra
 ![Stats](http://i.imgur.com/y4cpY20.png)
 
 
-## Last stable version : 0.5.3
+## Last stable version : 0.6.0
