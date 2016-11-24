@@ -138,6 +138,9 @@ public class SidePanel extends JPanel implements Observer{
 		this.disable(oceanLabel);
 		this.disable(deepOceanLabel);
 		this.disable(nbCreaturesLabel);
+		this.disable(labelSeed);
+		textSeed.setFocusable(false);
+		textSeed.setEnabled(false);
 	}
 	
 	/**
