@@ -222,9 +222,20 @@ public class SidePanel extends JPanel implements Observer{
         	}
         };
         
+        // Help tab
+        JPanel tabHelp = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660); //Utilité ?
+        	}
+        };
+        
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
+        tabbedPane.addTab("Help", null, tabHelp);
         
 
         time = 0;
