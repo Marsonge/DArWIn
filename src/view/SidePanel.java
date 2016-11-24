@@ -49,7 +49,7 @@ public class SidePanel extends JPanel implements Observer{
 	private int dead;
 	private WorldControler wc;
 	private MainView parent;
-	//private SidePanel self = this;
+	private SidePanel self = this;
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
@@ -238,17 +238,10 @@ public class SidePanel extends JPanel implements Observer{
         		 
         		 // NeuralNetwork view is created with current creature's NN.
         		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
-//        		 JOptionPane optionPane = new JOptionPane("Neural Network display",
-//        				 JOptionPane.INFORMATION_MESSAGE,
-//        				 JOptionPane.DEFAULT_OPTION,
-//        				 null,
-//        				 new Object[]{}, // No buttons available other than 'close cross'
-//        				 null);
-//
-//        		 nnView.setContentPane(optionPane);
-//        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		 //nnView.pack();
-        		 //nnView.setVisible(true);
+
+        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		 nnView.pack();
+        		 nnView.setVisible(true);
         	}
         });
         tabStats.add(viewNnButton);
