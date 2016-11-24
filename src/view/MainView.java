@@ -20,7 +20,8 @@ import javax.swing.event.ChangeListener;
 
 import utils.EndOfGameEvent;
 import utils.EndOfGameEventListener;
-import utils.Utils;
+import utils.GrowTimerActionListener;
+import utils.TimerActionListener;
 import controler.WorldControler;
 
 /**
@@ -46,7 +47,7 @@ public class MainView extends JFrame {
 	private Timer growTimer;
 	WorldControler wc; 
 	ViewGrid vG ;
-	SidePanel sP = new SidePanel();
+	SidePanel sP = new SidePanel(this);
 	public boolean simulationLaunched = false;
 	private MainView self = this;
 	
@@ -75,7 +76,7 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	sP = new SidePanel();
+    	sP = new SidePanel(this);
     	
     	//sP.addPropertyChangeListener();
     	
@@ -251,7 +252,6 @@ public class MainView extends JFrame {
 		vg.addEndOfGameListener(new EndOfGameEventListener() {
 			public void actionPerformed(EndOfGameEvent evt) {
 				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
-				System.out.println("Event triggered");
 				if (choice == JOptionPane.YES_OPTION) {
 		  			// if yes do : changes map once and reset all buttons settings
 		  			self.simulationLaunched = false;
@@ -282,6 +282,10 @@ public class MainView extends JFrame {
 
 	public static int getNumberOfCreaturesDead() {
 		return NUMBER_OF_CREATURES_DEAD;
+	}
+	
+	public WorldControler getWorldControler(){
+		return wc;
 	}
 
 }

@@ -17,22 +17,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
-import javax.naming.InitialContext;
 import javax.swing.*;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
+import controler.WorldControler;
 
 
 
@@ -75,6 +78,10 @@ public class SidePanel extends JPanel implements Observer{
 	private int dead;
 	private List<JSlider> depthSliders;
 	
+	private WorldControler wc;
+	private MainView parent;
+	private SidePanel self = this;
+
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
 	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
@@ -194,7 +201,9 @@ public class SidePanel extends JPanel implements Observer{
 	 * SidePanel constructor, will build the side panel
 	 * @throws IOException 
 	 */
-	public SidePanel() throws IOException{
+	public SidePanel(MainView mv) throws IOException{
+		
+		this.parent = mv;
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -306,7 +315,7 @@ public class SidePanel extends JPanel implements Observer{
         	private static final long serialVersionUID = 1L;
 
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); //Utilité ?
+				return new Dimension(280,660); // Utilite ?
         	}
         };
         
@@ -325,7 +334,6 @@ public class SidePanel extends JPanel implements Observer{
         tabbedPane.addTab("Stats", null, tabStats);
         tabbedPane.addTab("Help", null, tabHelp);
         
-
         time = 0;
         alive = 90;
         dead = 0;
@@ -366,6 +374,24 @@ public class SidePanel extends JPanel implements Observer{
         }
         
         sc.close();
+        
+        // Add neural network view button to Stats tab
+        JButton viewNnButton = new JButton("View creature's neural network");
+        viewNnButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// We set the value of SidePanel's wc once the button is clicked.
+        		 if (wc == null) wc = parent.getWorldControler();
+        		 
+        		 // NeuralNetwork view is created with current creature's NN.
+        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+
+        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		 nnView.pack();
+        		 nnView.setVisible(true);
+        	}
+        });
+        tabStats.add(viewNnButton);
+        
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
