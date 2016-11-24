@@ -1,6 +1,8 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,10 +10,16 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
 
 import javax.naming.InitialContext;
 import javax.swing.*;
@@ -181,8 +189,9 @@ public class SidePanel extends JPanel implements Observer{
 	
 	/**
 	 * SidePanel constructor, will build the side panel
+	 * @throws IOException 
 	 */
-	public SidePanel(){
+	public SidePanel() throws IOException{
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -298,9 +307,20 @@ public class SidePanel extends JPanel implements Observer{
         	}
         };
         
+        // Help tab
+        JPanel tabHelp = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660); //Utilité ?
+        	}
+        };
+        
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
+        tabbedPane.addTab("Help", null, tabHelp);
         
 
         time = 0;
@@ -329,6 +349,20 @@ public class SidePanel extends JPanel implements Observer{
         ligne.add(values);
 
         tabStats.add(ligne);
+        
+        // Tab Help
+        
+        tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
+        Scanner sc = new Scanner(new File("help.txt"));
+        
+        while (sc.hasNextLine()){
+        	JLabel label = new JLabel(sc.nextLine());
+
+        	label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        	tabHelp.add(label);
+        }
+        
+        sc.close();
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
