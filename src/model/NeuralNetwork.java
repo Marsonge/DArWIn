@@ -177,10 +177,10 @@ public class NeuralNetwork {
 		return (float) (1/(1+Math.exp(-f/10)));
 	}
 	
-	private float[][] getInputAxiom() {
+	public float[][] getInputAxiom() {
 		return inputAxiom;
 	}
-	private float[][] getOutputAxiom() {
+	public float[][] getOutputAxiom() {
 		return outputAxiom;
 	}
 	

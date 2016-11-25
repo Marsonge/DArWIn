@@ -21,7 +21,6 @@ import model.NeuralNetwork;
 @SuppressWarnings("serial")
 public class ViewNeuralNetwork extends JDialog{
 
-	//private List<NodeView> nodeList;
 	private final int COLUMN_NUMBER = 3;
 	private final int NB_INPUT = 16;
 	private final int NB_OUTPUT = 2;
@@ -32,10 +31,13 @@ public class ViewNeuralNetwork extends JDialog{
 	
 	public ViewNeuralNetwork(NeuralNetwork nn){
 		
-		this.setPreferredSize(new Dimension(500,500));
+		this.setPreferredSize(new Dimension(700,850));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
+		
+		float[][] inputAxiom = nn.getInputAxiom();
+		float[][] outputAxiom = nn.getOutputAxiom();
 		
 		// graph settings
 		mxGraph graph = new mxGraph();
@@ -66,8 +68,10 @@ public class ViewNeuralNetwork extends JDialog{
 					break;
 				case 1: // Hidden nodes
 					for (int j = 0; j<NB_HIDDENNODES; j++){
+						
 						graph.getModel().beginUpdate();
 						try {
+							// Nodes creation
 							Object node = graph.insertVertex(parent,
 									null,
 									null,
@@ -80,6 +84,7 @@ public class ViewNeuralNetwork extends JDialog{
 							graph.getModel().endUpdate();
 						}
 					}
+					
 					break;
 				case 2: // Output nodes
 					for (int j = 0; j<NB_OUTPUT; j++){
@@ -99,6 +104,30 @@ public class ViewNeuralNetwork extends JDialog{
 						
 					}
 					break;
+			}
+		}
+		
+		
+		// Edges creation (inputAxiom)
+		for (Object hidden : hiddenNodeList) {
+			for (Object input : inputNodeList){
+				graph.getModel().beginUpdate();
+				try {
+					graph.insertEdge(parent, null, null, hidden, input);
+				} finally {
+					graph.getModel().endUpdate();
+				}
+			}
+		}
+		
+		for (Object output : outputNodeList) {
+			for (Object hidden : hiddenNodeList){
+				graph.getModel().beginUpdate();
+				try {
+					graph.insertEdge(parent, null, null, hidden, output);
+				} finally {
+					graph.getModel().endUpdate();
+				}
 			}
 		}
 		
