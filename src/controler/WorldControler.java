@@ -192,13 +192,13 @@ public class WorldControler extends Observable{
 			Random rand = new Random();
 			int grows = rand.nextInt(20);
 			if(Terrain.WOODS.equals(t.getTerrain())){
-				if(g<180 && grows < 5){ //Mountains are harsh places : food doesn't always grow
-					g+=3;
+				if(g<180 && grows < 2){ //Mountains are harsh places : food doesn't always grow
+					g+=2;
 				}
 			}
 			else{//Mountain
 				if(g<130 && grows == 19){ //Mountains are harsh places : food doesn't always grow
-					g+=2;
+					g++;
 				}
 			}
 			t.setColor(new Color(r,g,b));

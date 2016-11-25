@@ -38,7 +38,11 @@ public class MainView extends JFrame {
 	
 	static final int NUMBER_OF_CREATURES_DEAD = 0;
 	static int TICK_GAMETURN = 100;
+	static final int TICK_GAMETURN_MAX = 5000;
+	static final int TICK_GAMETURN_MIN = 10;
 	static int TICK_GROW = 1000;
+	static final int TICK_GROW_MAX = 50000;
+	static final int TICK_GROW_MIN = 100;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
 
@@ -89,11 +93,13 @@ public class MainView extends JFrame {
     	this.setNbCreaturesListener(sP);
     	this.setNbCreaturesSoftCapListener(sP);
     	this.setNbCreaturesHardCapListener(sP);
+    	this.setTimeControlListener(sP);
     	
     	// Add a map
     	changeMap();
 	}
-	
+
+
 	/**
 	 * Start the timer
 	 */
@@ -213,10 +219,9 @@ public class MainView extends JFrame {
                         	simulationLaunched = true;
                         	sP.disable(sP.getChangeMapButton());
                         	sP.disable(sP.getInitialNbSlider());
-                        	for(JSlider j : sP.getDepthSliders()){
-                        		sP.disable(j);
-                        	}
+                        	sP.disableSliders();
                         	sP.disableLabels();
+                        	sP.addTimeControl();
                         }
 
                     } else if (btn.getText().equals("Pause")){
@@ -260,6 +265,8 @@ public class MainView extends JFrame {
 		  			self.sP.getChangeMapButton().setEnabled(true);
 		  			self.sP.getStartButton().setEnabled(true);
 		  			self.sP.getStartButton().setText("Start");
+		  			self.sP.removeTimeControl();
+		  			self.sP.enableDepthTailoring();
 		  		} else {
 		  			// if no do : quit game
 		  			// TODO Save results before exit
@@ -269,6 +276,95 @@ public class MainView extends JFrame {
 		});
 	}
 	
+	private void setTimeControlListener(SidePanel sP2) {
+		sP.getSlow2Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(-2);
+            }
+        });
+		sP.getSlow1Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(-1);
+            }
+        });
+		sP.getRegularButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(0);
+            }
+        });
+		sP.getFast1Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(1);
+            }
+        });
+		sP.getFast2Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(2);
+            }
+        });
+	}
+	
+	protected void changeSpeed(int i) {
+		timer.stop();
+        growTimer.stop();
+        switch (i){
+        	case 1:
+        		sP.enableDecceleration();
+        		TICK_GAMETURN -= 10;
+        		if(TICK_GAMETURN < TICK_GAMETURN_MIN){
+        			TICK_GAMETURN = TICK_GAMETURN_MIN;
+        			sP.disableAcceleration();
+        			sP.enableDecceleration();
+        		}
+        		TICK_GROW -= 100;
+        		if(TICK_GROW < TICK_GROW_MIN){
+        			TICK_GROW = TICK_GROW_MIN;
+        		}
+    		break;
+        	case 2:
+        		TICK_GAMETURN = TICK_GAMETURN_MIN;
+        		TICK_GROW = TICK_GROW_MIN;
+        		sP.disableAcceleration();
+    			sP.enableDecceleration();
+    		break;
+        	case 0:
+        		TICK_GAMETURN = 100;
+        		TICK_GROW = 1000;
+        		sP.enableAcceleration();
+    			sP.enableDecceleration();
+			break;
+        	case -1:
+        		sP.enableAcceleration();
+        		TICK_GAMETURN += 10;
+        		if(TICK_GAMETURN > TICK_GAMETURN_MAX){
+        			TICK_GAMETURN = TICK_GAMETURN_MAX;
+        			sP.enableAcceleration();
+        			sP.disableDecceleration();
+        		}
+        		TICK_GROW += 100;
+        		if(TICK_GROW > TICK_GROW_MAX){
+        			TICK_GROW = TICK_GROW_MAX;
+        		}
+    		break;
+        	case -2:
+        		TICK_GAMETURN = TICK_GAMETURN_MAX;
+        		TICK_GROW = TICK_GROW_MAX;
+        		sP.enableAcceleration();
+    			sP.disableDecceleration();
+			break;
+        }
+        timer.setDelay(TICK_GAMETURN);
+        growTimer.setDelay(TICK_GROW);
+        timer.start();
+        growTimer.start();
+	}
+
+
 	/**
 	 * main function of the project, will create the view
 	 * 

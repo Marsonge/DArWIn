@@ -24,15 +24,6 @@ import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.*;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -84,9 +75,16 @@ public class SidePanel extends JPanel implements Observer{
 	private WorldControler wc;
 	private MainView parent;
 	private SidePanel self = this;
+	private JPanel tabOptions;
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
+	JButton timeSlow2 = new JButton("<<");
+	JButton timeSlow1 = new JButton("<");
+	JButton timeRegular = new JButton("*");
+	JButton timeFast1 = new JButton(">");
+	JButton timeFast2 = new JButton(">>");
+	
 	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
 	JTextField nbCreaturesTextField = new JTextField(4);
 	JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
@@ -140,19 +138,66 @@ public class SidePanel extends JPanel implements Observer{
 	}
 	
 	public void disableLabels(){
-		this.disable(snowLabel);
-		this.disable(mountainsLabel);
-		this.disable(woodLabel);
-		this.disable(sandLabel);
-		this.disable(waterLabel);
-		this.disable(oceanLabel);
-		this.disable(deepOceanLabel);
+		this.tabOptions.remove(snowLabel);
+		this.tabOptions.remove(mountainsLabel);
+		this.tabOptions.remove(woodLabel);
+		this.tabOptions.remove(sandLabel);
+		this.tabOptions.remove(waterLabel);
+		this.tabOptions.remove(oceanLabel);
+		this.tabOptions.remove(deepOceanLabel);
 		this.disable(nbCreaturesLabel);
-		this.disable(labelSeed);
-		textSeed.setFocusable(false);
-		textSeed.setEnabled(false);
+		this.tabOptions.remove(labelSeed);
+		this.tabOptions.remove(textSeed);
+		this.revalidate();
+		this.repaint();
+	}
+	public void disableSliders(){
+		for(JSlider j : depthSliders){
+			this.tabOptions.remove(j);
+		}
+	}
+	public void enableDepthTailoring(){
+        tabOptions.add(labelSeed);
+        tabOptions.add(textSeed);
+        
+        tabOptions.add(deepOceanLabel);
+        tabOptions.add(deepOceanSlider);
+
+        tabOptions.add(oceanLabel);
+        tabOptions.add(oceanSlider);
+
+        tabOptions.add(waterLabel);
+        tabOptions.add(waterSlider);
+
+        tabOptions.add(sandLabel);
+        tabOptions.add(sandSlider);
+
+        tabOptions.add(woodLabel);
+        tabOptions.add(woodSlider);
+
+        tabOptions.add(mountainsLabel);
+        tabOptions.add(mountainsSlider);
+        
+        tabOptions.add(snowLabel);
+        tabOptions.add(snowSlider);
+         
+	}
+	public void removeTimeControl(){
+		this.tabOptions.remove(timeSlow2);
+		this.tabOptions.remove(timeSlow1);
+		this.tabOptions.remove(timeRegular);
+		this.tabOptions.remove(timeFast1);
+		this.tabOptions.remove(timeFast2);
+	}
+	public void addTimeControl(){
+		this.tabOptions.add(timeSlow2);
+		this.tabOptions.add(timeSlow1);
+		this.tabOptions.add(timeRegular);
+		this.tabOptions.add(timeFast1);
+		this.tabOptions.add(timeFast2);
 	}
 	
+
 	/**
 	 * Disable a label
 	 * 
@@ -225,7 +270,7 @@ public class SidePanel extends JPanel implements Observer{
         /** Create the tabs **/
         
         // Options tab
-        JPanel tabOptions = new JPanel(){
+        tabOptions = new JPanel(){
 			
         	private static final long serialVersionUID = 1L;
 			
@@ -237,6 +282,13 @@ public class SidePanel extends JPanel implements Observer{
         
         initDepthSliders();
         
+        timeSlow2.setPreferredSize(new Dimension(48,30));
+        timeSlow1.setPreferredSize(new Dimension(42,30));
+        timeRegular.setPreferredSize(new Dimension(42,30));
+        timeFast1.setPreferredSize(new Dimension(42,30));
+        timeFast2.setPreferredSize(new Dimension(48,30));
+        
+
         /** Slider **/
         nbCreatures.setMinorTickSpacing(5);
         nbCreatures.setMajorTickSpacing(20);
@@ -273,11 +325,11 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(nbCreaturesCriticalTextField);
         tabOptions.add(nbCreaturesCritical);
         
-        Dimension d = new Dimension(80,15);
+        Dimension d = new Dimension(100,15);
         cSeed.setMinimumSize(d);
         cSeed.setPreferredSize(d);
         cSeed.setMaximumSize(d);
-        Dimension d1 = new Dimension(100,15);
+        Dimension d1 = new Dimension(125,15);
         labelCSeed.setMinimumSize(d1);
         labelCSeed.setPreferredSize(d1);
         labelCSeed.setMaximumSize(d1);
@@ -288,29 +340,7 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(start);
         tabOptions.add(labelCSeed);
         tabOptions.add(cSeed);
-        tabOptions.add(labelSeed);
-        tabOptions.add(textSeed);
-        
-        tabOptions.add(deepOceanLabel);
-        tabOptions.add(deepOceanSlider);
-
-        tabOptions.add(oceanLabel);
-        tabOptions.add(oceanSlider);
-
-        tabOptions.add(waterLabel);
-        tabOptions.add(waterSlider);
-
-        tabOptions.add(sandLabel);
-        tabOptions.add(sandSlider);
-
-        tabOptions.add(woodLabel);
-        tabOptions.add(woodSlider);
-
-        tabOptions.add(mountainsLabel);
-        tabOptions.add(mountainsSlider);
-        
-        tabOptions.add(snowLabel);
-        tabOptions.add(snowSlider);
+        enableDepthTailoring();
          
         // Stats tab
         JPanel tabStats = new JPanel(){
@@ -660,6 +690,42 @@ public class SidePanel extends JPanel implements Observer{
 	 */
 	public JLabel getInitialNbLabel() {
 		return this.nbCreaturesLabel;
+	}
+
+	public JButton getSlow2Button() {
+		return timeSlow2;
+	}
+	public JButton getSlow1Button() {
+		return timeSlow1;
+	}
+	public JButton getRegularButton() {
+		return timeRegular;
+	}
+	public JButton getFast1Button() {
+		return timeFast1;
+	}
+	public JButton getFast2Button() {
+		return timeFast2;
+	}
+
+	public void enableAcceleration() {
+		this.timeFast1.setEnabled(true);
+		this.timeFast2.setEnabled(true);
+	}
+
+	public void disableDecceleration() {
+		this.timeSlow1.setEnabled(false);
+		this.timeSlow2.setEnabled(false);
+	}
+
+	public void enableDecceleration() {
+		this.timeSlow1.setEnabled(true);
+		this.timeSlow2.setEnabled(true);
+	}
+
+	public void disableAcceleration() {
+		this.timeFast1.setEnabled(false);
+		this.timeFast2.setEnabled(false);
 	}
 	
 }
