@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.event.EventListenerList;
 
 import controler.WorldControler;
@@ -26,7 +24,6 @@ public class ViewGrid extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	private WorldControler wc;
 	private final int TILE_SIZE;
-	private int tick;
 	protected EventListenerList listenerList = new EventListenerList();
 	private boolean endOfGame = false;
 	

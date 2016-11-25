@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import controler.WorldControler;
-import model.Creature;
 
 public class ViewCreature extends JLabel {
 

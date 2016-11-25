@@ -18,9 +18,9 @@ import utils.Utils;
  */
 public class NeuralNetwork {
 	
-	private final int NB_INPUT = 17;
-	private final int NB_OUTPUT = 2;
-	private final int NB_HIDDENNODES = 17;
+	private static final int NB_INPUT = 17;
+	private static final int NB_OUTPUT = 2;
+	private static final int NB_HIDDENNODES = 17;
 	private float[] matrix;
 	private float[][] inputAxiom;
 	private float[][] outputAxiom;
@@ -65,7 +65,7 @@ public class NeuralNetwork {
 						outputAxiom[i][j] += (float) ((rand.nextFloat()/2 - 0.25)); //Petite mutation
 					}
 					else{
-						outputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
+						outputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bï¿½nigne
 					}
 				}
 				if(outputAxiom[i][j]<-1)
@@ -95,7 +95,7 @@ public class NeuralNetwork {
 						inputAxiom[i][j] += (float) ((rand.nextFloat()/2 - 0.25)); //Petite mutation
 					}
 					else{
-						//inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
+						//inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bï¿½nigne
 					}
 				}
 				if(inputAxiom[i][j]<-1)
@@ -172,10 +172,6 @@ public class NeuralNetwork {
 		out += "]\n\n";
 		return out;
 	}
-
-	private float sigmoid(float f){
-		return (float) (1/(1+Math.exp(-f/10)));
-	}
 	
 	private float[][] getInputAxiom() {
 		return inputAxiom;
@@ -183,5 +179,21 @@ public class NeuralNetwork {
 	private float[][] getOutputAxiom() {
 		return outputAxiom;
 	}
+
+	public static int getNbInput() {
+		return NB_INPUT;
+	}
+
+	public static int getNbOutput() {
+		return NB_OUTPUT;
+	}
+
+	public static int getNbHiddennodes() {
+		return NB_HIDDENNODES;
+	}
+
+	
+	
+	
 	
 }

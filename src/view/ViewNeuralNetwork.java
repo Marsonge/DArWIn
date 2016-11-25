@@ -31,9 +31,9 @@ public class ViewNeuralNetwork extends JDialog{
 
 	private List<NodeView> nodeList;
 	private int columnNumber = 3;
-	private final int NB_INPUT = 16;
-	private final int NB_OUTPUT = 2;
-	private final int NB_HIDDENNODES = 16;
+	private final int NB_INPUT = NeuralNetwork.getNbInput();
+	private final int NB_OUTPUT = NeuralNetwork.getNbOutput();
+	private final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
 	
 	public ViewNeuralNetwork(NeuralNetwork nn){
 		

@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -8,12 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +18,13 @@ import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -64,6 +65,7 @@ public class SidePanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
+	private static final String HELPFILE = "resources/help.txt";
 	private JLabel nbTime;
 	private JLabel nbAlive;
 	private JLabel nbDead;
@@ -77,42 +79,41 @@ public class SidePanel extends JPanel implements Observer{
 	private SidePanel self = this;
 	private JPanel tabOptions;
 
-	JButton changeMap = new JButton("Change Map");
-	JButton start = new JButton("Start");
+	private JButton changeMap = new JButton("Change Map");
+	private JButton start = new JButton("Start");
 	JButton timeSlow2 = new JButton("<<");
 	JButton timeSlow1 = new JButton("<");
 	JButton timeRegular = new JButton("*");
 	JButton timeFast1 = new JButton(">");
 	JButton timeFast2 = new JButton(">>");
-	
-	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
-	JTextField nbCreaturesTextField = new JTextField(4);
-	JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
-	JLabel nbCreaturesPreferredLabel = new JLabel("Preferred number of creatures");
-	JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
-	JTextField nbCreaturesPreferredTextField = new JTextField(4);
-	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
-	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
-	JLabel deepOceanLabel = new JLabel("Deep ocean");
-	JSlider deepOceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, DEEP_WATER);
-	JLabel oceanLabel = new JLabel("Ocean");
-	JSlider oceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, OCEAN);
-	JLabel waterLabel = new JLabel("Coast");
-	JSlider waterSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SHALLOW_WATER);
-	JLabel sandLabel = new JLabel("Sand");
-	JSlider sandSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SAND);
-	JLabel woodLabel = new JLabel("Woods");
-	JSlider woodSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, WOOD);
-	JLabel mountainsLabel = new JLabel("Mountains");
-	JSlider mountainsSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, MOUNTAIN);
-	JLabel snowLabel = new JLabel("Snow");
-	JSlider snowSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SNOW);
-	JTextField nbCreaturesCriticalTextField = new JTextField(4);
-	JTextField textSeed = new JTextField(9);
-	JLabel labelCSeed = new JLabel("Current seed:");
-	JLabel cSeed = new JLabel("");
-	JLabel labelSeed = new JLabel("Input seed for generation:");
-	JLabel custLabel = new JLabel("Customize map depths");
+	private JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
+	private JTextField nbCreaturesTextField = new JTextField(4);
+	private JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
+	private JLabel nbCreaturesPreferredLabel = new JLabel("Preferred number of creatures");
+	private JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
+	private JTextField nbCreaturesPreferredTextField = new JTextField(4);
+	private JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
+	private JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
+	private JLabel deepOceanLabel = new JLabel("Deep ocean");
+	private JSlider deepOceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, DEEP_WATER);
+	private JLabel oceanLabel = new JLabel("Ocean");
+	private JSlider oceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, OCEAN);
+	private JLabel waterLabel = new JLabel("Coast");
+	private JSlider waterSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SHALLOW_WATER);
+	private JLabel sandLabel = new JLabel("Sand");
+	private JSlider sandSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SAND);
+	private JLabel woodLabel = new JLabel("Woods");
+	private JSlider woodSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, WOOD);
+	private JLabel mountainsLabel = new JLabel("Mountains");
+	private JSlider mountainsSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, MOUNTAIN);
+	private JLabel snowLabel = new JLabel("Snow");
+	private JSlider snowSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SNOW);
+	private JTextField nbCreaturesCriticalTextField = new JTextField(4);
+	private JTextField textSeed = new JTextField(9);
+	private JLabel labelCSeed = new JLabel("Current seed:");
+	private JLabel cSeed = new JLabel("");
+	private JLabel labelSeed = new JLabel("Input seed for generation:");
+	private JPanel custPanel = new JPanel();
 	
 	/**
 	 * Disable a button
@@ -138,13 +139,6 @@ public class SidePanel extends JPanel implements Observer{
 	}
 	
 	public void disableLabels(){
-		this.tabOptions.remove(snowLabel);
-		this.tabOptions.remove(mountainsLabel);
-		this.tabOptions.remove(woodLabel);
-		this.tabOptions.remove(sandLabel);
-		this.tabOptions.remove(waterLabel);
-		this.tabOptions.remove(oceanLabel);
-		this.tabOptions.remove(deepOceanLabel);
 		this.disable(nbCreaturesLabel);
 		this.tabOptions.remove(labelSeed);
 		this.tabOptions.remove(textSeed);
@@ -152,34 +146,14 @@ public class SidePanel extends JPanel implements Observer{
 		this.repaint();
 	}
 	public void disableSliders(){
-		for(JSlider j : depthSliders){
-			this.tabOptions.remove(j);
-		}
+		this.tabOptions.remove(custPanel);
 	}
 	public void enableDepthTailoring(){
         tabOptions.add(labelSeed);
         tabOptions.add(textSeed);
         
-        tabOptions.add(deepOceanLabel);
-        tabOptions.add(deepOceanSlider);
-
-        tabOptions.add(oceanLabel);
-        tabOptions.add(oceanSlider);
-
-        tabOptions.add(waterLabel);
-        tabOptions.add(waterSlider);
-
-        tabOptions.add(sandLabel);
-        tabOptions.add(sandSlider);
-
-        tabOptions.add(woodLabel);
-        tabOptions.add(woodSlider);
-
-        tabOptions.add(mountainsLabel);
-        tabOptions.add(mountainsSlider);
+        tabOptions.add(custPanel);
         
-        tabOptions.add(snowLabel);
-        tabOptions.add(snowSlider);
          
 	}
 	public void removeTimeControl(){
@@ -254,7 +228,7 @@ public class SidePanel extends JPanel implements Observer{
 		this.parent = mv;
 		
 		// Set size and color of panel
-        this.setPreferredSize(new Dimension(300,700)); 
+        this.setPreferredSize(new Dimension(300,800)); 
         this.setBackground(black);
 		
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -336,12 +310,39 @@ public class SidePanel extends JPanel implements Observer{
         
         
         // Add buttons to Option tab
+        tabOptions.setLayout(new FlowLayout());
         tabOptions.add(changeMap);
         tabOptions.add(start);
         tabOptions.add(labelCSeed);
         tabOptions.add(cSeed);
         enableDepthTailoring();
-         
+        tabOptions.add(labelSeed);
+        tabOptions.add(textSeed);
+        
+        
+        custPanel.add(deepOceanLabel);
+        custPanel.add(deepOceanSlider);
+
+        custPanel.add(oceanLabel);
+        custPanel.add(oceanSlider);
+
+        custPanel.add(waterLabel);
+        custPanel.add(waterSlider);
+
+        custPanel.add(sandLabel);
+        custPanel.add(sandSlider);
+
+        custPanel.add(woodLabel);
+        custPanel.add(woodSlider);
+
+        custPanel.add(mountainsLabel);
+        custPanel.add(mountainsSlider);
+        
+        custPanel.add(snowLabel);
+        custPanel.add(snowSlider);
+        custPanel.setPreferredSize(new Dimension(290,400));
+        custPanel.setBorder(new TitledBorder("Customize heights"));
+        tabOptions.add(custPanel);
         // Stats tab
         JPanel tabStats = new JPanel(){
 			
@@ -397,7 +398,7 @@ public class SidePanel extends JPanel implements Observer{
         // Tab Help
         
         tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
-        Scanner sc = new Scanner(new File("help.txt"));
+        Scanner sc = new Scanner(new File(HELPFILE));
         
         while (sc.hasNextLine()){
         	JLabel label = new JLabel(sc.nextLine());
