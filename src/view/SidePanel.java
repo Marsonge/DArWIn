@@ -237,11 +237,12 @@ public class SidePanel extends JPanel implements Observer{
         		 if (wc == null) wc = parent.getWorldControler();
         		 
         		 // NeuralNetwork view is created with current creature's NN.
-        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
-
-        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		 nnView.pack();
-        		 nnView.setVisible(true);
+        		 if (wc.getCurrentCreature() != null){
+        			 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+        			 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            		 nnView.pack();
+            		 nnView.setVisible(true);
+        		 }
         	}
         });
         tabStats.add(viewNnButton);
