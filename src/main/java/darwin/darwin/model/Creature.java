@@ -1,4 +1,4 @@
-package model;
+package darwin.darwin.model;
 
 import java.awt.Color;
 import java.util.Random;

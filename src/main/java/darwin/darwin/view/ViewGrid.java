@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,12 +10,12 @@ import java.util.Observer;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
 
-import controler.WorldControler;
-import model.Creature;
-import model.grid.Tile;
-import utils.EndOfGameEvent;
-import utils.EndOfGameEventListener;
-import utils.UpdateInfoWrapper;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.model.Creature;
+import darwin.darwin.model.grid.Tile;
+import darwin.darwin.utils.EndOfGameEvent;
+import darwin.darwin.utils.EndOfGameEventListener;
+import darwin.darwin.utils.UpdateInfoWrapper;
 
 public class ViewGrid extends JPanel implements Observer{
 	/**

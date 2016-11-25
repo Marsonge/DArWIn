@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import javax.swing.JDialog;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
+import darwin.darwin.model.NeuralNetwork;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -17,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.NeuralNetwork;
 
 /**
  * Vue pour le réseau neuronal d'une créature

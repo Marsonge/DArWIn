@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -35,8 +35,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.lang3.StringUtils;
 
-import controler.WorldControler;
-import utils.Export;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.Export;
+import darwin.darwin.utils.Utils;
 
 
 
@@ -71,7 +72,7 @@ public class SidePanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
-	private static final String HELPFILE = "resources/help.txt";
+	private static final String HELPFILE = "help.txt";
 	private JLabel nbTime;
 	private JLabel nbAlive;
 	private JLabel nbDead;
@@ -406,7 +407,7 @@ public class SidePanel extends JPanel implements Observer{
         // Tab Help
         
         tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
-        Scanner sc = new Scanner(new File(HELPFILE));
+        Scanner sc = new Scanner(Utils.getResource(HELPFILE).openStream());
         
         while (sc.hasNextLine()){
         	JLabel label = new JLabel(sc.nextLine());

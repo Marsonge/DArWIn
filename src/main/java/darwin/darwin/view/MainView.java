@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,12 +15,12 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import utils.EndOfGameEvent;
-import utils.EndOfGameEventListener;
-import utils.GrowTimerActionListener;
-import utils.TimerActionListener;
-import utils.Utils;
-import controler.WorldControler;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.EndOfGameEvent;
+import darwin.darwin.utils.EndOfGameEventListener;
+import darwin.darwin.utils.GrowTimerActionListener;
+import darwin.darwin.utils.TimerActionListener;
+import darwin.darwin.utils.Utils;
 
 /**
  * 

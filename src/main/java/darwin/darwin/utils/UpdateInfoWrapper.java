@@ -1,9 +1,9 @@
-package utils;
+package darwin.darwin.utils;
 
 import java.util.List;
 
-import model.Creature;
-import model.grid.Tile;
+import darwin.darwin.model.Creature;
+import darwin.darwin.model.grid.Tile;
 
 /**
  * Wrapper class for notifying observers with several arguments

@@ -1,8 +1,8 @@
-package model;
+package darwin.darwin.model;
 
 import java.util.Random;
 
-import utils.Utils;
+import darwin.darwin.utils.Utils;
 
 
 /**

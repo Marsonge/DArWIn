@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

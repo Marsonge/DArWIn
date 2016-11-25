@@ -1,4 +1,4 @@
-package controler;
+package darwin.darwin.controler;
 
 import java.awt.Color;
 import java.util.LinkedList;
@@ -10,14 +10,14 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
-import model.Creature;
-import model.NeuralNetwork;
-import model.grid.Statistique;
-import model.grid.Grid;
-import model.grid.Terrain;
-import model.grid.Tile;
-import utils.UpdateInfoWrapper;
-import utils.Utils;
+import darwin.darwin.model.Creature;
+import darwin.darwin.model.NeuralNetwork;
+import darwin.darwin.model.grid.Grid;
+import darwin.darwin.model.grid.Statistique;
+import darwin.darwin.model.grid.Terrain;
+import darwin.darwin.model.grid.Tile;
+import darwin.darwin.utils.UpdateInfoWrapper;
+import darwin.darwin.utils.Utils;
 
 /**
  * General Controler

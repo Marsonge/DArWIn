@@ -1,5 +1,7 @@
-package utils;
+package darwin.darwin.utils;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Random;
 
 public class Utils {
@@ -42,5 +44,15 @@ public class Utils {
             result[r] = input[r].clone();
         }
         return result;
+    }
+    /**
+     * Gets a file from the resources folder
+     * @param path the path from inside the resources folder (no src/main/resources/....)
+     * @return
+     */
+    public static URL getResource(String path){
+    	ClassLoader classLoader = Utils.class.getClassLoader();
+    	URL file = classLoader.getResource(path);
+    	return file;
     }
 }

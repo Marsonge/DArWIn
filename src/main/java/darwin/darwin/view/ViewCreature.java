@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -11,7 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import controler.WorldControler;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.Utils;
 
 public class ViewCreature extends JLabel {
 
@@ -32,7 +33,7 @@ public class ViewCreature extends JLabel {
 		this.wc = wc;
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature"+Math.round(speed)+".png"));
+		    img = ImageIO.read(Utils.getResource("img/creature"+Math.round(speed)+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
