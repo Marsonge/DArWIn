@@ -36,6 +36,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import controler.WorldControler;
 
 
@@ -628,7 +630,7 @@ public class SidePanel extends JPanel implements Observer{
 		this.cSeed.setText(Integer.toString(i));
 	}
 	public int getSeed(){
-		if((textSeed.getText() != null) && !(textSeed.getText().equals(""))){
+		if(StringUtils.isNotBlank(textSeed.getText())){
 			try{
 				return Integer.parseInt(this.textSeed.getText());
 			}
