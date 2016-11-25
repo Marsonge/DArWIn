@@ -12,7 +12,7 @@ public class Export {
 		
 		CSVWriter writer = new CSVWriter(new FileWriter(file), '\t');
 		
-		String[] entries = "first#second#third".split("#");
+		String[] entries = "first;second;third".split(";");
 	    writer.writeNext(entries);
 		writer.close();
 	}
