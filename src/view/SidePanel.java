@@ -444,7 +444,7 @@ public class SidePanel extends JPanel implements Observer{
         	    fileChooser.setFileFilter(filter);
         	    
         	    Calendar cal = Calendar.getInstance();
-        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.HHmmss");
+        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".csv"));
         	    
         	    fileChooser.setDialogTitle("Select File");
