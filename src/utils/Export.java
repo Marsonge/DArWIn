@@ -10,7 +10,7 @@ public class Export {
 
 	public static void export(File file) throws IOException{
 		
-		CSVWriter writer = new CSVWriter(new FileWriter(file), '\t');
+		CSVWriter writer = new CSVWriter(new FileWriter(file), ';');
 		
 		String[] entries = "first;second;third".split(";");
 	    writer.writeNext(entries);

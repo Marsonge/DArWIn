@@ -9,10 +9,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -435,22 +437,19 @@ public class SidePanel extends JPanel implements Observer{
         exportButton.addActionListener(new ActionListener(){
         	
         	public void actionPerformed(ActionEvent e){
-
-        		JDialog browseFiles = new JDialog();
-        		browseFiles.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		browseFiles.pack();
-        		browseFiles.setVisible(true);	      	
-        		
+ 	
         		JFileChooser fileChooser = new JFileChooser();
         		
         	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Coma Seperated Values (.csv)","csv");
         	    fileChooser.setFileFilter(filter);
         	    
-        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ LocalDateTime.now() + ".csv"));
+        	    Calendar cal = Calendar.getInstance();
+        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.HHmmss");
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".csv"));
         	    
         	    fileChooser.setDialogTitle("Select File");
         	
-        		int rVal = fileChooser.showOpenDialog(browseFiles);
+        		int rVal = fileChooser.showOpenDialog(self);
         		
         		// When file is selected, we call the export function
         		if (rVal == JFileChooser.APPROVE_OPTION) {
