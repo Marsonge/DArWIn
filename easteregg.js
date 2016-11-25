@@ -1,10 +1,7 @@
 var easter_egg = new Konami(function() {
       var video = document.querySelector("iframe"); 
       video.setAttribute("src", "https://www.youtube.com/embed/Akwm2UZJ34o?autoplay=1");
-      function openwindow(){
-            window.open("autumn_effect.htm","","width=350,height=500")
-      }
-
+      
       var snowsrc="assets/rosen.png"
         // Configure below to change number of snow to render
         var no = 10;
@@ -17,7 +14,6 @@ var easter_egg = new Konami(function() {
 
         var ie4up = (document.all) ? 1 : 0;
         var ns6up = (document.getElementById&&!document.all) ? 1 : 0;
-
             function iecompattest(){
             return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
             }
@@ -80,13 +76,6 @@ var easter_egg = new Konami(function() {
           }
           snowtimer=setTimeout("snowIE_NS6()", 10);
         }
-
-            function hidesnow(){
-                  if (window.snowtimer) clearTimeout(snowtimer)
-                  for (i=0; i<no; i++) document.getElementById("dot"+i).style.visibility="hidden"
-            }
-
-
       if (ie4up||ns6up){
           snowIE_NS6();
                   if (hidesnowtime>0)
