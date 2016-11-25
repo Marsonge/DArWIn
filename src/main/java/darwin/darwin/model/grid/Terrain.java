@@ -1,4 +1,4 @@
-package model.grid;
+package darwin.darwin.model.grid;
 
 public enum Terrain {
 	ETHER(0,0,0), //Pure death

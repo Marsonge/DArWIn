@@ -1,4 +1,4 @@
-package model.grid;
+package darwin.darwin.model.grid;
 
 import java.awt.Color;
 import java.util.Arrays;
