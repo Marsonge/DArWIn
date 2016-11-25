@@ -9,8 +9,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -27,10 +29,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import controler.WorldControler;
+import utils.Export;
 
 
 
@@ -114,6 +118,8 @@ public class SidePanel extends JPanel implements Observer{
 	private JLabel cSeed = new JLabel("");
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
 	private JPanel custPanel = new JPanel();
+	JButton exportButton = new JButton("Export to CSV");
+	JFileChooser fileChooserForExport = new JFileChooser();
 	
 	/**
 	 * Disable a button
@@ -426,11 +432,44 @@ public class SidePanel extends JPanel implements Observer{
         });
         tabStats.add(viewNnButton);
         
+        exportButton.addActionListener(new ActionListener(){
+        	
+        	public void actionPerformed(ActionEvent e){
+
+        		JDialog browseFiles = new JDialog();
+        		browseFiles.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		browseFiles.pack();
+        		browseFiles.setVisible(true);	      	
+        		
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Coma Seperated Values (.csv)","csv");
+        	    fileChooser.setFileFilter(filter);
+        	    
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ LocalDateTime.now() + ".csv"));
+        	    
+        	    fileChooser.setDialogTitle("Select File");
+        	
+        		int rVal = fileChooser.showOpenDialog(browseFiles);
+        		
+        		// When file is selected, we call the export function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+        			try {
+						Export.export(fileChooser.getSelectedFile());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        		}
+        	}
+        });
+        tabStats.add(exportButton);
+        
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
 	}
-	
+	  
 	private void initDepthSliders() {
 		int width = 70;
 		int height = 15;
