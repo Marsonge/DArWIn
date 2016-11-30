@@ -4,6 +4,8 @@
 
 Darwin: Artificial Wildlife Intelligence
 
+<b> Page web officielle : </b> https://marsonge.github.io/DArWIn/
+
 ## A propos
 
 Le but de ce projet est de réaliser une simulation d’évolution de créatures via une intelligence artificielle  évolutive utilisant un circuit neuronal. 
@@ -13,10 +15,8 @@ La simulation se fera sur une grille de taille définie par l’utilisateur. Les
 
 A travers les mutations légères et une fonction de mort pour éliminer les traits négatifs, les créatures devraient rapidement atteindre des performances excellentes sans besoin de  programmer leur cerveau manuellement.
 
+## Dernière version stable : 0.6.0
 
 ![Options](http://i.imgur.com/4PCHOqv.png)
 
 ![Stats](http://i.imgur.com/y4cpY20.png)
-
-
-## Last stable version : 0.6.0
