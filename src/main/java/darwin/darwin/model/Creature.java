@@ -3,6 +3,9 @@ package darwin.darwin.model;
 import java.awt.Color;
 import java.util.Random;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 public class Creature implements Cloneable {
 	
 	Color xminus;
@@ -133,6 +136,22 @@ public class Creature implements Cloneable {
 			return null;
 		}
 		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSONObject toJson(){
+		
+		JSONObject jsonThis = new JSONObject();
+		
+		jsonThis.put("id", this.id);
+		jsonThis.put("energy", this.energy);
+		jsonThis.put("speed", this.speed);
+		jsonThis.put("neural network", this.nn.toJson());
+		
+		return jsonThis;
 	}
 
 	

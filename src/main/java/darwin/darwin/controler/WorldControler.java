@@ -348,4 +348,8 @@ public class WorldControler extends Observable{
 		this.hardcap = val;
 	}
 	
+	public List<Creature> getCreatureList(){
+		return this.creatureList;
+	}
+	
 } 
