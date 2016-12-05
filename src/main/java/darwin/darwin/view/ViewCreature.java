@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -25,7 +27,7 @@ public class ViewCreature extends JLabel {
 	private int x;
 	private int y;
 	private ViewCreature self = this;
-	private static URL[] IMAGES = {
+	private static URL[] IMAGESURL = {
 			Utils.getResource("img/creature0.png"),
 			Utils.getResource("img/creature1.png"),
 			Utils.getResource("img/creature2.png"),
@@ -36,6 +38,8 @@ public class ViewCreature extends JLabel {
 			Utils.getResource("img/creature7.png")
 	};
 	
+	private static ArrayList<BufferedImage> IMAGES= null;
+	
 	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
 		super();
 		this.size = size;
@@ -44,13 +48,19 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.setSize(size,size);
-		try {
-		    img = ImageIO.read(IMAGES[Math.round(speed)]);
-		} catch (IOException e) {
-		    e.printStackTrace();
+		if(IMAGES==null){
+			IMAGES = new ArrayList<>();
+			try {
+				for(int i=0; i<8; i++){
+					IMAGES.add(ImageIO.read(IMAGESURL[i]));
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
-		img.flush();
+		
+		this.img = IMAGES.get(Math.round(speed)).getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 
