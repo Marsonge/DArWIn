@@ -11,7 +11,7 @@ public class Creature implements Cloneable {
 	Color yminus;
 	Color yplus;
 	
-	private int id;
+	private long id;
 	private int x;
 	private int y;
 	private int energy;
@@ -20,9 +20,10 @@ public class Creature implements Cloneable {
 	private int rot = 0;
 	private int previousRot = 0;
 	private static final int MAXSPEED = 7;
+	private static long idmax = 0;
 	
-	public Creature(int id, int x, int y){
-		this.id = id;
+	public Creature(int x, int y){
+		this.id = idmax++;
 		this.x = x;
 		this.y = y;
 		this.energy = 50;
@@ -30,8 +31,8 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 	
-	protected Creature(int id, int x, int y, float speed, NeuralNetwork nn){
-		this(id, x, y);
+	protected Creature(int x, int y, float speed, NeuralNetwork nn){
+		this(x, y);
 		this.speed = speed;
 		this.nn = new NeuralNetwork(nn);
 	}
@@ -70,7 +71,7 @@ public class Creature implements Cloneable {
 	private float getLargeSigmoid(float f){
 		return (float) (1/(1+Math.exp(-f/10)));
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -121,7 +122,7 @@ public class Creature implements Cloneable {
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		return new Creature(id, x, y,  speed, nn);
+		return new Creature(x, y,  speed, nn);
 	}
 	
 	public Creature reproduce() throws CloneNotSupportedException{
