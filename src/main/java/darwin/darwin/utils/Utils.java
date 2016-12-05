@@ -47,6 +47,7 @@ public class Utils {
     }
     /**
      * Gets a file from the resources folder
+     * Care, this is really slow, use it at the beginning of the application
      * @param path the path from inside the resources folder (no src/main/resources/....)
      * @return
      */

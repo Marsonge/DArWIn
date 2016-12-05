@@ -48,6 +48,9 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.setSize(size,size);
+		/* Getting all the images only once
+		 * Because ImageIO.read(URL) is so slow
+		 */
 		if(IMAGES==null){
 			IMAGES = new ArrayList<>();
 			try {
