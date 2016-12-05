@@ -4,8 +4,10 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,6 +25,16 @@ public class ViewCreature extends JLabel {
 	private int x;
 	private int y;
 	private ViewCreature self = this;
+	private static URL[] IMAGES = {
+			Utils.getResource("img/creature0.png"),
+			Utils.getResource("img/creature1.png"),
+			Utils.getResource("img/creature2.png"),
+			Utils.getResource("img/creature3.png"),
+			Utils.getResource("img/creature4.png"),
+			Utils.getResource("img/creature5.png"),
+			Utils.getResource("img/creature6.png"),
+			Utils.getResource("img/creature7.png")
+	};
 	
 	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
 		super();
@@ -33,11 +45,12 @@ public class ViewCreature extends JLabel {
 		this.wc = wc;
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(Utils.getResource("img/creature"+Math.round(speed)+".png"));
+		    img = ImageIO.read(IMAGES[Math.round(speed)]);
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
 		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
+		img.flush();
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 
