@@ -237,7 +237,7 @@ public class SidePanel extends JPanel implements Observer{
 		this.parent = mv;
 		
 		// Set size and color of panel
-        this.setPreferredSize(new Dimension(300,800)); 
+        this.setPreferredSize(new Dimension(300,771)); 
         this.setBackground(black);
 		
         JTabbedPane tabbedPane = new JTabbedPane();
