@@ -1,12 +1,17 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JDialog;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
 import model.NeuralNetwork;
@@ -25,6 +30,7 @@ public class ViewNeuralNetwork extends JDialog{
 	private final int NB_INPUT = 16;
 	private final int NB_OUTPUT = 2;
 	private final int NB_HIDDENNODES = 16;
+	private final int NODE_SIZE = 15;
 	private List<Object> inputNodeList;
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
@@ -45,6 +51,9 @@ public class ViewNeuralNetwork extends JDialog{
 		graph.setCellsEditable(false);
 		graph.setCellsMovable(false);
 		graph.setEdgeLabelsMovable(false);
+		graph.setAllowDanglingEdges(false);
+		graph.setConnectableEdges(false);
+		graph.setCellsSelectable(false);
 		Object parent = graph.getDefaultParent();
 		
 		for (int i = 0; i<COLUMN_NUMBER; i++){
@@ -58,8 +67,8 @@ public class ViewNeuralNetwork extends JDialog{
 									null,
 									(this.getPreferredSize().getWidth())/4,
 									((this.getPreferredSize().getHeight())/NB_INPUT)*j,
-									8,
-									8);
+									NODE_SIZE,
+									NODE_SIZE);
 							inputNodeList.add(node);
 						} finally {
 							graph.getModel().endUpdate();
@@ -77,8 +86,8 @@ public class ViewNeuralNetwork extends JDialog{
 									null,
 									((this.getPreferredSize().getWidth())/4)*2,
 									((this.getPreferredSize().getHeight())/NB_HIDDENNODES)*j,
-									8,
-									8);
+									NODE_SIZE,
+									NODE_SIZE);
 							hiddenNodeList.add(node);
 						} finally {
 							graph.getModel().endUpdate();
@@ -95,8 +104,8 @@ public class ViewNeuralNetwork extends JDialog{
 									null,
 									((this.getPreferredSize().getWidth())/4)*3,
 									((this.getPreferredSize().getHeight())/NB_OUTPUT)*j,
-									8,
-									8);
+									NODE_SIZE,
+									NODE_SIZE);
 							outputNodeList.add(node);
 						} finally {
 							graph.getModel().endUpdate();
@@ -134,6 +143,69 @@ public class ViewNeuralNetwork extends JDialog{
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 	    getContentPane().add(graphComponent);
 	    this.add(graphComponent);
+	    
+	    //TODO
+	    // NE FONCTIONNE PAS COMME IL FAUT
+	    // Sans la 2e condition, marche, mais ne differencie pas les nodes des edges.
+	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() 
+	    {
+	    @Override
+	        public void mouseClicked(MouseEvent e) 
+	        {    
+	    	
+	    		mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+    			mxGraph graph = graphComponent.getGraph();
+    			mxIGraphModel model = graph.getModel();
+
+    			String styleCurrentCell = mxConstants.STYLE_FILLCOLOR + "=#f47142"; // orange
+    			String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+	    		String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20";
+	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=20";
+    			
+	    		if (cell != null && !cell.isEdge()){
+		    		model.setStyle(cell, styleCurrentCell); // set color of selected cell
+		    		
+		            for (Object c : inputNodeList){
+		            	if (!c.equals(cell)) {
+		            		model.setStyle(c, styleDefault);
+		            		model.setStyle(c, fillOpacity);
+		            		model.setStyle(c, styleOpacity);
+		            	}
+		            }
+		            for (Object c : hiddenNodeList){
+		            	if (!c.equals(cell)) {
+			            	model.setStyle(c, styleDefault);
+		            		model.setStyle(c, fillOpacity);
+		            		model.setStyle(c, styleOpacity);
+		            	}
+		            }
+		            for (Object c : outputNodeList){
+		            	if (!c.equals(cell)) {
+		            		model.setStyle(c, styleDefault);
+		            		model.setStyle(c, fillOpacity);
+		            		model.setStyle(c, styleOpacity);
+		            	}
+		            }
+	    		} else {
+	    			// si on clique n'importe où, ailleurs que sur une cellule
+	    			for (Object c : inputNodeList){
+		            		model.setStyle(c, styleDefault);
+		            }
+		            for (Object c : hiddenNodeList){
+			            	model.setStyle(c, styleDefault);
+		            }
+		            for (Object c : outputNodeList){
+		            		model.setStyle(c, styleDefault);
+		            }
+	    		}
+	    	
+	    		
+	        }
+	    });
+	    
+	    
+	    
+	    
 		
 	}
 	
