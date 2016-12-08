@@ -46,7 +46,7 @@ public class WorldControler extends Observable{
 		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
-			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
+			Creature c = new Creature(rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
