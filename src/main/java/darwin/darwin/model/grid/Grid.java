@@ -77,7 +77,6 @@ public class Grid {
             	else{
             		this.tileGrid[i][j] = new Tile(Terrain.ETHER,i,j);
             	}
-            	
             }
         }
 	}
@@ -101,8 +100,39 @@ public class Grid {
 	 * @return the colour of the tile at the possition i, j
 	 */
 	public Color getTileColour(int i, int j) {
-
 		return tileGrid[i][j].getColor();
+	}
+	public void setTileColour(int i,int j, Color c){
+		if(c.getRGB() == Terrain.SNOW.getRGB()){
+			tileGrid[i][j] = new Tile(Terrain.SNOW,i,j);
+		}
+		else if(c.getRGB() == Terrain.MOUNTAINS.getRGB() || 
+		  (c.getBlue() == Terrain.MOUNTAINS.getBlueValue() 
+		  && c.getRed() == Terrain.MOUNTAINS.getRedValue() 
+		  && c.getGreen() <= 130 && c.getGreen() >= 115)){
+			tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,c.getRed(),c.getGreen(),c.getBlue(),i,j);
+		}
+		else if(c.getRGB() == Terrain.WOODS.getRGB() || 
+			   (c.getBlue() == Terrain.WOODS.getBlueValue() 
+			   && c.getRed() == Terrain.WOODS.getRedValue() 
+			   && c.getGreen() <= 180 && c.getGreen() >= 115)){
+			tileGrid[i][j] = new Tile(Terrain.WOODS,c.getRed(),c.getGreen(),c.getBlue(),i,j);
+		}
+		else if(c.getRGB() == Terrain.SAND.getRGB()){
+			tileGrid[i][j] = new Tile(Terrain.SAND,i,j);
+		}
+		else if(c.getRGB() == Terrain.SHALLOW_WATER.getRGB()){
+			tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER,i,j);
+		}
+		else if(c.getRGB() == Terrain.OCEAN.getRGB()){
+			tileGrid[i][j] = new Tile(Terrain.OCEAN,i,j);
+		}
+		else if(c.getRGB() == Terrain.DEEP_WATER.getRGB()){
+			tileGrid[i][j] = new Tile(Terrain.DEEP_WATER,i,j);
+		}
+		else{
+			tileGrid[i][j] = new Tile(Terrain.ETHER,i,j);
+		}
 	}
 	
 	public List<Tile> getFertileLand(){

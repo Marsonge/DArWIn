@@ -18,7 +18,7 @@ import darwin.darwin.model.grid.Grid;
 import darwin.darwin.model.grid.Statistique;
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.model.grid.Tile;
-import darwin.darwin.utils.ExportPNG;
+import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
 
@@ -205,7 +205,6 @@ public class WorldControler extends Observable{
 				}
 			}
 			t.setColor(new Color(r,g,b));
-
 		}
 	}
 	
@@ -351,11 +350,15 @@ public class WorldControler extends Observable{
 		this.hardcap = val;
 	}
 	public void exportToPng(File selectedFile) throws IOException {
-		ExportPNG.exportToPng(grid,selectedFile);
+		IOPng.exportToPng(grid,selectedFile);
 	}
 	
 	public List<Creature> getCreatureList(){
 		return this.creatureList;
+	}
+	public void importFromPng(File selectedFile) throws IOException {
+		IOPng.importFromPng(grid,selectedFile);
+		this.simulateForward();
 	}
 	
 } 
