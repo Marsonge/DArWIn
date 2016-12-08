@@ -1,6 +1,8 @@
-package controler;
+package darwin.darwin.controler;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -10,14 +12,15 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
-import model.Creature;
-import model.NeuralNetwork;
-import model.grid.Statistique;
-import model.grid.Grid;
-import model.grid.Terrain;
-import model.grid.Tile;
-import utils.UpdateInfoWrapper;
-import utils.Utils;
+import darwin.darwin.model.Creature;
+import darwin.darwin.model.NeuralNetwork;
+import darwin.darwin.model.grid.Grid;
+import darwin.darwin.model.grid.Statistique;
+import darwin.darwin.model.grid.Terrain;
+import darwin.darwin.model.grid.Tile;
+import darwin.darwin.utils.ExportPNG;
+import darwin.darwin.utils.UpdateInfoWrapper;
+import darwin.darwin.utils.Utils;
 
 /**
  * General Controler
@@ -27,17 +30,18 @@ public class WorldControler extends Observable{
 	
 	private Grid grid;
 	private Statistique statistique;
-	private int tilesize;
 	private List<Creature> creatureList;
 	private int tileSize;
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
 	private Creature currentCreature;
+	private int seed;
 	
-	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
 		this.tileSize = tilesize;
-		this.grid = new Grid(size,roughness,seed);
+		this.grid = new Grid(size,roughness,seed,depths);
+		this.seed = grid.getSeed();
 		this.statistique = new Statistique();
 		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
@@ -45,7 +49,7 @@ public class WorldControler extends Observable{
 		this.nbdead=0;
 		Random rand = new Random();
 		for(int i=0; i<creatureCount;i++){
-			Creature c = new Creature(i,rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
+			Creature c = new Creature(rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
@@ -191,13 +195,13 @@ public class WorldControler extends Observable{
 			Random rand = new Random();
 			int grows = rand.nextInt(20);
 			if(Terrain.WOODS.equals(t.getTerrain())){
-				if(g<180 && grows < 5){ //Mountains are harsh places : food doesn't always grow
-					g+=3;
+				if(g<180 && grows < 2){ //Mountains are harsh places : food doesn't always grow
+					g+=2;
 				}
 			}
 			else{//Mountain
 				if(g<130 && grows == 19){ //Mountains are harsh places : food doesn't always grow
-					g+=2;
+					g++;
 				}
 			}
 			t.setColor(new Color(r,g,b));
@@ -327,19 +331,31 @@ public class WorldControler extends Observable{
 		this.softcap = val;
 	}
 	
-	public void setHardCap(int val){
-		this.hardcap = val;
+	public int getSeed() { 
+	    return seed; 
+	  } 
+	
+	public Creature getCurrentCreature() {
+		return currentCreature;
 	}
 	
 	public void setCurrentCreature(int x, int y){
-		for (Creature c : creatureList){
-			if (c.getX() == x && c.getY() == y){
-				this.currentCreature = c;
-			}
-		}
+        for (Creature c : creatureList){
+            if (c.getX() == x && c.getY() == y){
+                this.currentCreature = c;
+            }
+        }
+    }
+	
+	public void setHardCap(int val){
+		this.hardcap = val;
+	}
+	public void exportToPng(File selectedFile) throws IOException {
+		ExportPNG.exportToPng(grid,selectedFile);
 	}
 	
-	public Creature getCurrentCreature(){
-		return this.currentCreature;
+	public List<Creature> getCreatureList(){
+		return this.creatureList;
 	}
+	
 } 

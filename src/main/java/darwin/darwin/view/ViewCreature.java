@@ -1,18 +1,22 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import controler.WorldControler;
-import model.Creature;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.Utils;
 
 public class ViewCreature extends JLabel {
 
@@ -23,6 +27,18 @@ public class ViewCreature extends JLabel {
 	private int x;
 	private int y;
 	private ViewCreature self = this;
+	private static URL[] IMAGESURL = {
+			Utils.getResource("img/creature0.png"),
+			Utils.getResource("img/creature1.png"),
+			Utils.getResource("img/creature2.png"),
+			Utils.getResource("img/creature3.png"),
+			Utils.getResource("img/creature4.png"),
+			Utils.getResource("img/creature5.png"),
+			Utils.getResource("img/creature6.png"),
+			Utils.getResource("img/creature7.png")
+	};
+	
+	private static ArrayList<BufferedImage> IMAGES= null;
 	
 	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
 		super();
@@ -32,12 +48,22 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.setSize(size,size);
-		try {
-		    img = ImageIO.read(new File("resources/img/creature"+Math.round(speed)+".png"));
-		} catch (IOException e) {
-		    e.printStackTrace();
+		/* Getting all the images only once
+		 * Because ImageIO.read(URL) is so slow
+		 */
+		if(IMAGES==null){
+			IMAGES = new ArrayList<>();
+			try {
+				for(int i=0; i<8; i++){
+					IMAGES.add(ImageIO.read(IMAGESURL[i]));
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
+		
+		this.img = IMAGES.get(Math.round(speed)).getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 
