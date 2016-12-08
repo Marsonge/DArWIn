@@ -184,4 +184,13 @@ public class NeuralNetwork {
 		return outputAxiom;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public String hotFood(){
+	 return "hot food.\nWe sit down to eat, butthe potato's a bit hot.";
+	}
+	
+	
 }
