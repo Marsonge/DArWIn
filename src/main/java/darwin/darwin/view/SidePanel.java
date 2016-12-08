@@ -2,6 +2,7 @@ package darwin.darwin.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -9,6 +10,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,7 +48,6 @@ import darwin.darwin.utils.Utils;
  * 
  * Side panel with options and stats tab
  * 
- * @author cyril.weller
  *
  */
 public class SidePanel extends JPanel implements Observer{
@@ -363,6 +365,16 @@ public class SidePanel extends JPanel implements Observer{
         };
         
         // Help tab
+        JPanel tabImportExport = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660); //Utilité ?
+        	}
+        };
+        
+        // Help tab
         JPanel tabHelp = new JPanel(){
 			
         	private static final long serialVersionUID = 1L;
@@ -375,6 +387,7 @@ public class SidePanel extends JPanel implements Observer{
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
+        tabbedPane.addTab("Import/Export", null, tabImportExport);
         tabbedPane.addTab("Help", null, tabHelp);
         
         time = 0;
@@ -410,13 +423,41 @@ public class SidePanel extends JPanel implements Observer{
         Scanner sc = new Scanner(Utils.getResource(HELPFILE).openStream());
         
         while (sc.hasNextLine()){
+        	
         	JLabel label = new JLabel(sc.nextLine());
-
-        	label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        	tabHelp.add(label);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            tabHelp.add(label);
         }
         
         sc.close();
+        
+        
+        JButton websiteButton = new JButton("Go to website");
+        websiteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        websiteButton.addActionListener(new ActionListener(){
+	    	public void actionPerformed(ActionEvent e){
+	    		
+	    		URI website = null;
+				try {
+					website = new URI("https://marsonge.github.io/DArWIn");
+				} catch (URISyntaxException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+	    		try {
+					Desktop.getDesktop().browse(website);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	    		
+	    	}
+    	
+    	});
+        
+        
+        tabHelp.add(websiteButton);
         
         // Add neural network view button to Stats tab
         JButton viewNnButton = new JButton("View creature's neural network");
@@ -436,9 +477,9 @@ public class SidePanel extends JPanel implements Observer{
         tabStats.add(viewNnButton);
         
         addActionListenerExportImport();
-        tabStats.add(exportButton);
-        tabStats.add(exportPngButton);
-        tabStats.add(importPngButton);
+        tabImportExport.add(exportButton);
+        tabImportExport.add(exportPngButton);
+        tabImportExport.add(importPngButton);
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
