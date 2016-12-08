@@ -122,6 +122,7 @@ public class SidePanel extends JPanel implements Observer{
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
 	private JPanel custPanel = new JPanel();
 	JButton exportPngButton = new JButton("Export map to PNG");
+	JButton importPngButton = new JButton("Import map from PNG");
 	JButton exportButton = new JButton("Export to JSON");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	
@@ -424,7 +425,7 @@ public class SidePanel extends JPanel implements Observer{
         viewNnButton.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
         		// We set the value of SidePanel's wc once the button is clicked.
-        		 if (wc == null) wc = parent.getWorldControler();
+        		 wc = parent.getWorldControler();
         		 
         		 // NeuralNetwork view is created with current creature's NN.
         		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
@@ -436,17 +437,17 @@ public class SidePanel extends JPanel implements Observer{
         });
         tabStats.add(viewNnButton);
         
-        addActionListenerExports();
+        addActionListenerExportImport();
         tabStats.add(exportButton);
         tabStats.add(exportPngButton);
+        tabStats.add(importPngButton);
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
 	}
 
-	private void addActionListenerExports() {
+	private void addActionListenerExportImport() {
 		exportButton.addActionListener(new ActionListener(){
-        	
         	public void actionPerformed(ActionEvent e){
  	
         		JFileChooser fileChooser = new JFileChooser();
@@ -475,7 +476,6 @@ public class SidePanel extends JPanel implements Observer{
         	}
         });
 		exportPngButton.addActionListener(new ActionListener(){
-			
 			public void actionPerformed(ActionEvent e){
         		JFileChooser fileChooser = new JFileChooser();
         		
@@ -493,13 +493,35 @@ public class SidePanel extends JPanel implements Observer{
         		// When file is selected, we call the export function
         		if (rVal == JFileChooser.APPROVE_OPTION) {
 					try {
-		        		if (wc == null) wc = parent.getWorldControler();
+		        		wc = parent.getWorldControler();
 						wc.exportToPng(fileChooser.getSelectedFile());
 					} catch (IOException e1) {
 	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 						return;
 					}
         			JOptionPane.showMessageDialog(null, "Export successful.");
+        		}
+        	}
+		});
+		importPngButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)","png");
+        	    fileChooser.setFileFilter(filter);
+        	    fileChooser.setDialogTitle("Select File");
+        		int rVal = fileChooser.showOpenDialog(self);
+        		
+        		// When file is selected, we call the import function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+					try {
+		        		wc = parent.getWorldControler();
+						wc.importFromPng(fileChooser.getSelectedFile());
+					} catch (Exception e1) {
+	        			JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
+						return;
+					}
+					cSeed.setText("Imported");
         		}
         	}
 			

@@ -15,6 +15,12 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 	}
+	public Tile(Terrain t, int r, int g, int b, int x, int y){
+		this.color = new Color(r,g,b);
+		this.t = t;
+		this.x = x;
+		this.y = y;
+	}
 	
 	public void setColor(Color c){
 		this.color = c;
