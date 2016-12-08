@@ -121,8 +121,8 @@ public class SidePanel extends JPanel implements Observer{
 	private JLabel cSeed = new JLabel("");
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
 	private JPanel custPanel = new JPanel();
-	JButton exportButton = new JButton("Export to CSV");
 	JButton exportPngButton = new JButton("Export map to PNG");
+	JButton exportButton = new JButton("Export to JSON");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	
 	/**
@@ -451,12 +451,12 @@ public class SidePanel extends JPanel implements Observer{
  	
         		JFileChooser fileChooser = new JFileChooser();
         		
-        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Coma Seperated Values (.csv)","csv");
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Save files","json");
         	    fileChooser.setFileFilter(filter);
         	    
         	    Calendar cal = Calendar.getInstance();
         	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".csv"));
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".json"));
         	    
         	    fileChooser.setDialogTitle("Select File");
         	
@@ -465,7 +465,7 @@ public class SidePanel extends JPanel implements Observer{
         		// When file is selected, we call the export function
         		if (rVal == JFileChooser.APPROVE_OPTION) {
         			try {
-						Export.export(fileChooser.getSelectedFile());
+						Export.export(fileChooser.getSelectedFile(), parent.getWorldControler().getCreatureList());
 					} catch (IOException e1) {
 	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 						return;

@@ -354,4 +354,8 @@ public class WorldControler extends Observable{
 		ExportPNG.exportToPng(grid,selectedFile);
 	}
 	
+	public List<Creature> getCreatureList(){
+		return this.creatureList;
+	}
+	
 } 

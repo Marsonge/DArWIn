@@ -2,6 +2,9 @@ package darwin.darwin.model;
 
 import java.util.Random;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import darwin.darwin.utils.Utils;
 
 
@@ -192,6 +195,46 @@ public class NeuralNetwork {
 		return NB_HIDDENNODES;
 	}
 
+	public JSONObject toJson() {
+		
+		int i,j;
+		JSONObject jsonThis = new JSONObject();
+		
+		JSONArray jsonArrayInput = new JSONArray();
+		JSONArray jsonArrayOutput = new JSONArray();
+		
+		for(i=0;i<NB_HIDDENNODES;i++){
+			JSONArray lineArrayIn = new JSONArray();
+			for(j=0;j<NB_INPUT;j++){
+				lineArrayIn.add(inputAxiom[i][j]);
+			}
+			jsonArrayInput.add(lineArrayIn);
+		}
+		
+		for(i=0;i<NB_OUTPUT;i++){
+			JSONArray lineArrayOut = new JSONArray();
+			for(j=0;j<NB_HIDDENNODES;j++){
+				lineArrayOut.add(outputAxiom[i][j]);
+			}
+			jsonArrayOutput.add(lineArrayOut);
+		}
+	
+		jsonThis.put("input_axiom", jsonArrayInput);
+		jsonThis.put("output_axiom", jsonArrayOutput);
+		
+		return jsonThis;
+	}
+
+	public static JSONObject getStaticJson(){
+		
+		JSONObject jsonStatic = new JSONObject();
+		
+		jsonStatic.put("input_nodes", NB_INPUT);
+		jsonStatic.put("hidden_nodes", NB_HIDDENNODES);
+		jsonStatic.put("output_nodes", NB_OUTPUT);
+		
+		return jsonStatic;
+	}
 	
 	
 	
