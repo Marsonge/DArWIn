@@ -62,7 +62,7 @@
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.7.12</version>
+				<version>1.7.13</version>
 				<executions>
 					<execution>
 						<id>l4j-clui</id>
@@ -74,7 +74,7 @@
 							<headerType>gui</headerType>
 							<jar>${project.build.directory}/${artifactId}-${version}-shaded.jar</jar>
 							<outfile>${project.build.directory}/darwin.exe</outfile>
-							<downloadUrl>http://java.com/download</downloadUrl>
+							<downloadUrl>https://marsonge.github.io/DArWIn/</downloadUrl>
 							<classPath>
 								<mainClass>darwin.darwin.view.MainView</mainClass>
 								<preCp>anything</preCp>
