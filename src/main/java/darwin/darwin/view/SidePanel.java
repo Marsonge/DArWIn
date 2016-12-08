@@ -259,7 +259,7 @@ public class SidePanel extends JPanel implements Observer{
         	private static final long serialVersionUID = 1L;
 			
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); 
+				return new Dimension(280,765); 
 			}
 
         };
