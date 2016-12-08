@@ -15,7 +15,7 @@ La simulation se fera sur une grille de taille définie par l’utilisateur. Les
 
 A travers les mutations légères et une fonction de mort pour éliminer les traits négatifs, les créatures devraient rapidement atteindre des performances excellentes sans besoin de  programmer leur cerveau manuellement.
 
-## Dernière version stable : 0.6.0
+## Dernière version stable : 0.7.0
 
 ![Options](http://i.imgur.com/4PCHOqv.png)
 
