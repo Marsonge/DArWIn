@@ -122,6 +122,7 @@ public class SidePanel extends JPanel implements Observer{
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
 	private JPanel custPanel = new JPanel();
 	JButton exportButton = new JButton("Export to CSV");
+	JButton exportPngButton = new JButton("Export map to PNG");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	
 	/**
@@ -435,7 +436,16 @@ public class SidePanel extends JPanel implements Observer{
         });
         tabStats.add(viewNnButton);
         
-        exportButton.addActionListener(new ActionListener(){
+        addActionListenerExports();
+        tabStats.add(exportButton);
+        tabStats.add(exportPngButton);
+        
+        // Add tabbedPane to viewPanel
+        this.add(tabbedPane);     
+	}
+
+	private void addActionListenerExports() {
+		exportButton.addActionListener(new ActionListener(){
         	
         	public void actionPerformed(ActionEvent e){
  	
@@ -457,17 +467,43 @@ public class SidePanel extends JPanel implements Observer{
         			try {
 						Export.export(fileChooser.getSelectedFile());
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
+						return;
 					}
+        			JOptionPane.showMessageDialog(null, "Export successful.");
         		}
         	}
         });
-        tabStats.add(exportButton);
-        
-        
-        // Add tabbedPane to viewPanel
-        this.add(tabbedPane);     
+		exportPngButton.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent e){
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)","png");
+        	    fileChooser.setFileFilter(filter);
+        	    
+        	    Calendar cal = Calendar.getInstance();
+        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".png"));
+        	    
+        	    fileChooser.setDialogTitle("Select File");
+        	
+        		int rVal = fileChooser.showOpenDialog(self);
+        		
+        		// When file is selected, we call the export function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+					try {
+		        		if (wc == null) wc = parent.getWorldControler();
+						wc.exportToPng(fileChooser.getSelectedFile());
+					} catch (IOException e1) {
+	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
+						return;
+					}
+        			JOptionPane.showMessageDialog(null, "Export successful.");
+        		}
+        	}
+			
+		});
 	}
 	  
 	private void initDepthSliders() {

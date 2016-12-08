@@ -1,6 +1,8 @@
 package darwin.darwin.controler;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -16,6 +18,7 @@ import darwin.darwin.model.grid.Grid;
 import darwin.darwin.model.grid.Statistique;
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.model.grid.Tile;
+import darwin.darwin.utils.ExportPNG;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
 
@@ -346,6 +349,9 @@ public class WorldControler extends Observable{
 	
 	public void setHardCap(int val){
 		this.hardcap = val;
+	}
+	public void exportToPng(File selectedFile) throws IOException {
+		ExportPNG.exportToPng(grid,selectedFile);
 	}
 	
 } 
