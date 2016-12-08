@@ -2,16 +2,11 @@ package darwin.darwin.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.opencsv.CSVWriter;
-
-import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.grid.Grid;
-import darwin.darwin.view.ViewGrid;
 
 public class ExportPNG {
 
