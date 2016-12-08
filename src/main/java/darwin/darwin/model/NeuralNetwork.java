@@ -204,15 +204,19 @@ public class NeuralNetwork {
 		JSONArray jsonArrayOutput = new JSONArray();
 		
 		for(i=0;i<NB_HIDDENNODES;i++){
+			JSONArray lineArrayIn = new JSONArray();
 			for(j=0;j<NB_INPUT;j++){
-				jsonArrayInput.add(inputAxiom[i][j]);
+				lineArrayIn.add(inputAxiom[i][j]);
 			}
+			jsonArrayInput.add(lineArrayIn);
 		}
 		
 		for(i=0;i<NB_OUTPUT;i++){
+			JSONArray lineArrayOut = new JSONArray();
 			for(j=0;j<NB_HIDDENNODES;j++){
-				jsonArrayOutput.add(outputAxiom[i][j]);
+				lineArrayOut.add(outputAxiom[i][j]);
 			}
+			jsonArrayOutput.add(lineArrayOut);
 		}
 	
 		jsonThis.put("input_axiom", jsonArrayInput);

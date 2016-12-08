@@ -12,6 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -355,13 +358,21 @@ public class MainView extends JFrame {
     			sP.disableDecceleration();
 			break;
         }
+        
         timer.setDelay(TICK_GAMETURN);
         growTimer.setDelay(TICK_GROW);
         timer.start();
         growTimer.start();
 	}
-
-
+	
+	public static int getNumberOfCreaturesDead() {
+		return NUMBER_OF_CREATURES_DEAD;
+	}
+	
+	public WorldControler getWorldControler(){
+		return wc;
+	}
+	
 	/**
 	 * main function of the project, will create the view
 	 * 
@@ -370,16 +381,23 @@ public class MainView extends JFrame {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
+		
+		// Noice Look and Feel for the application
+		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Launch MainView
 		new MainView();
-	}
-	
-
-	public static int getNumberOfCreaturesDead() {
-		return NUMBER_OF_CREATURES_DEAD;
-	}
-	
-	public WorldControler getWorldControler(){
-		return wc;
 	}
 
 }

@@ -8,8 +8,6 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.opencsv.CSVWriter;
-
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
 
