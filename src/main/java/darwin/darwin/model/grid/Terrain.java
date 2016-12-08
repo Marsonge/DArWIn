@@ -1,4 +1,6 @@
-package model.grid;
+package darwin.darwin.model.grid;
+
+import java.awt.Color;
 
 public enum Terrain {
 	ETHER(0,0,0), //Pure death
@@ -11,14 +13,16 @@ public enum Terrain {
 	SHALLOW_WATER(0,70,255), //Lighter Blue
 	DEEP_WATER(20,0,180); //Dark blue
 
-    private int red;
-    private int green;
-    private int blue;
+    private final int red;
+    private final int green;
+    private final int blue;
+    private final int rgb;
 
     private Terrain(int r, int g, int b) {
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.rgb = calculateRGB();
     }
 
     public int getRedValue() {
@@ -31,6 +35,13 @@ public enum Terrain {
 
     public int getGreenValue() {
         return green;
+    }
+    public int getRGB(){
+    	return rgb;
+    }
+    private int calculateRGB(){
+    	Color c = new Color(red,green,blue);
+    	return c.getRGB();
     }
 
     @Override

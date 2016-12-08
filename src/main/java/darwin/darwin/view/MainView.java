@@ -1,4 +1,4 @@
-package view;
+package darwin.darwin.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -9,19 +9,21 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import utils.EndOfGameEvent;
-import utils.EndOfGameEventListener;
-import utils.Utils;
-import controler.WorldControler;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.EndOfGameEvent;
+import darwin.darwin.utils.EndOfGameEventListener;
+import darwin.darwin.utils.GrowTimerActionListener;
+import darwin.darwin.utils.TimerActionListener;
+import darwin.darwin.utils.Utils;
 
 /**
  * 
@@ -36,7 +38,11 @@ public class MainView extends JFrame {
 	
 	static final int NUMBER_OF_CREATURES_DEAD = 0;
 	static int TICK_GAMETURN = 100;
+	static final int TICK_GAMETURN_MAX = 5000;
+	static final int TICK_GAMETURN_MIN = 10;
 	static int TICK_GROW = 1000;
+	static final int TICK_GROW_MAX = 50000;
+	static final int TICK_GROW_MIN = 100;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
 
@@ -46,7 +52,7 @@ public class MainView extends JFrame {
 	private Timer growTimer;
 	WorldControler wc; 
 	ViewGrid vG ;
-	SidePanel sP = new SidePanel();
+	SidePanel sP = new SidePanel(this);
 	public boolean simulationLaunched = false;
 	private MainView self = this;
 	
@@ -75,7 +81,7 @@ public class MainView extends JFrame {
 		this.setLayout(new BorderLayout());
     	
     	// Add view panel
-    	sP = new SidePanel();
+    	sP = new SidePanel(this);
     	
     	//sP.addPropertyChangeListener();
     	
@@ -87,11 +93,13 @@ public class MainView extends JFrame {
     	this.setNbCreaturesListener(sP);
     	this.setNbCreaturesSoftCapListener(sP);
     	this.setNbCreaturesHardCapListener(sP);
+    	this.setTimeControlListener(sP);
     	
     	// Add a map
     	changeMap();
 	}
-	
+
+
 	/**
 	 * Start the timer
 	 */
@@ -211,10 +219,9 @@ public class MainView extends JFrame {
                         	simulationLaunched = true;
                         	sP.disable(sP.getChangeMapButton());
                         	sP.disable(sP.getInitialNbSlider());
-                        	for(JSlider j : sP.getDepthSliders()){
-                        		sP.disable(j);
-                        	}
+                        	sP.disableSliders();
                         	sP.disableLabels();
+                        	sP.addTimeControl();
                         }
 
                     } else if (btn.getText().equals("Pause")){
@@ -251,7 +258,6 @@ public class MainView extends JFrame {
 		vg.addEndOfGameListener(new EndOfGameEventListener() {
 			public void actionPerformed(EndOfGameEvent evt) {
 				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
-				System.out.println("Event triggered");
 				if (choice == JOptionPane.YES_OPTION) {
 		  			// if yes do : changes map once and reset all buttons settings
 		  			self.simulationLaunched = false;
@@ -259,6 +265,8 @@ public class MainView extends JFrame {
 		  			self.sP.getChangeMapButton().setEnabled(true);
 		  			self.sP.getStartButton().setEnabled(true);
 		  			self.sP.getStartButton().setText("Start");
+		  			self.sP.removeTimeControl();
+		  			self.sP.enableDepthTailoring();
 		  		} else {
 		  			// if no do : quit game
 		  			// TODO Save results before exit
@@ -266,6 +274,103 @@ public class MainView extends JFrame {
 		  		}
 		     }
 		});
+	}
+	
+	private void setTimeControlListener(SidePanel sP2) {
+		sP.getSlow2Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(-2);
+            }
+        });
+		sP.getSlow1Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(-1);
+            }
+        });
+		sP.getRegularButton().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(0);
+            }
+        });
+		sP.getFast1Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(1);
+            }
+        });
+		sP.getFast2Button().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+           {
+            	changeSpeed(2);
+            }
+        });
+	}
+	
+	protected void changeSpeed(int i) {
+		timer.stop();
+        growTimer.stop();
+        switch (i){
+        	case 1:
+        		sP.enableDecceleration();
+        		TICK_GAMETURN -= 10;
+        		if(TICK_GAMETURN < TICK_GAMETURN_MIN){
+        			TICK_GAMETURN = TICK_GAMETURN_MIN;
+        			sP.disableAcceleration();
+        			sP.enableDecceleration();
+        		}
+        		TICK_GROW -= 100;
+        		if(TICK_GROW < TICK_GROW_MIN){
+        			TICK_GROW = TICK_GROW_MIN;
+        		}
+    		break;
+        	case 2:
+        		TICK_GAMETURN = TICK_GAMETURN_MIN;
+        		TICK_GROW = TICK_GROW_MIN;
+        		sP.disableAcceleration();
+    			sP.enableDecceleration();
+    		break;
+        	case 0:
+        		TICK_GAMETURN = 100;
+        		TICK_GROW = 1000;
+        		sP.enableAcceleration();
+    			sP.enableDecceleration();
+			break;
+        	case -1:
+        		sP.enableAcceleration();
+        		TICK_GAMETURN += 10;
+        		if(TICK_GAMETURN > TICK_GAMETURN_MAX){
+        			TICK_GAMETURN = TICK_GAMETURN_MAX;
+        			sP.enableAcceleration();
+        			sP.disableDecceleration();
+        		}
+        		TICK_GROW += 100;
+        		if(TICK_GROW > TICK_GROW_MAX){
+        			TICK_GROW = TICK_GROW_MAX;
+        		}
+    		break;
+        	case -2:
+        		TICK_GAMETURN = TICK_GAMETURN_MAX;
+        		TICK_GROW = TICK_GROW_MAX;
+        		sP.enableAcceleration();
+    			sP.disableDecceleration();
+			break;
+        }
+        
+        timer.setDelay(TICK_GAMETURN);
+        growTimer.setDelay(TICK_GROW);
+        timer.start();
+        growTimer.start();
+	}
+	
+	public static int getNumberOfCreaturesDead() {
+		return NUMBER_OF_CREATURES_DEAD;
+	}
+	
+	public WorldControler getWorldControler(){
+		return wc;
 	}
 	
 	/**
@@ -276,12 +381,23 @@ public class MainView extends JFrame {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
+		
+//		// Noice Look and Feel for the application
+//		try {
+//			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//		        if ("Nimbus".equals(info.getName())) {
+//		            UIManager.setLookAndFeel(info.getClassName());
+//		            break;
+//		        }
+//		    }
+//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+//				| UnsupportedLookAndFeelException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+		// Launch MainView
 		new MainView();
-	}
-	
-
-	public static int getNumberOfCreaturesDead() {
-		return NUMBER_OF_CREATURES_DEAD;
 	}
 
 }

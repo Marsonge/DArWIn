@@ -1,8 +1,11 @@
-package model;
+package darwin.darwin.model;
 
 import java.util.Random;
 
-import utils.Utils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import darwin.darwin.utils.Utils;
 
 
 /**
@@ -18,9 +21,9 @@ import utils.Utils;
  */
 public class NeuralNetwork {
 	
-	private final int NB_INPUT = 16;
-	private final int NB_OUTPUT = 2;
-	private final int NB_HIDDENNODES = 16;
+	private static final int NB_INPUT = 17;
+	private static final int NB_OUTPUT = 2;
+	private static final int NB_HIDDENNODES = 17;
 	private float[] matrix;
 	private float[][] inputAxiom;
 	private float[][] outputAxiom;
@@ -65,7 +68,7 @@ public class NeuralNetwork {
 						outputAxiom[i][j] += (float) ((rand.nextFloat()/2 - 0.25)); //Petite mutation
 					}
 					else{
-						outputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
+						outputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bï¿½nigne
 					}
 				}
 				if(outputAxiom[i][j]<-1)
@@ -95,7 +98,7 @@ public class NeuralNetwork {
 						inputAxiom[i][j] += (float) ((rand.nextFloat()/2 - 0.25)); //Petite mutation
 					}
 					else{
-						//inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bénigne
+						//inputAxiom[i][j] += (float) ((rand.nextFloat()/10 - 0.05)); //Mutation bï¿½nigne
 					}
 				}
 				if(inputAxiom[i][j]<-1)
@@ -172,10 +175,6 @@ public class NeuralNetwork {
 		out += "]\n\n";
 		return out;
 	}
-
-	private float sigmoid(float f){
-		return (float) (1/(1+Math.exp(-f/10)));
-	}
 	
 	private float[][] getInputAxiom() {
 		return inputAxiom;
@@ -183,5 +182,61 @@ public class NeuralNetwork {
 	private float[][] getOutputAxiom() {
 		return outputAxiom;
 	}
+
+	public static int getNbInput() {
+		return NB_INPUT;
+	}
+
+	public static int getNbOutput() {
+		return NB_OUTPUT;
+	}
+
+	public static int getNbHiddennodes() {
+		return NB_HIDDENNODES;
+	}
+
+	public JSONObject toJson() {
+		
+		int i,j;
+		JSONObject jsonThis = new JSONObject();
+		
+		JSONArray jsonArrayInput = new JSONArray();
+		JSONArray jsonArrayOutput = new JSONArray();
+		
+		for(i=0;i<NB_HIDDENNODES;i++){
+			JSONArray lineArrayIn = new JSONArray();
+			for(j=0;j<NB_INPUT;j++){
+				lineArrayIn.add(inputAxiom[i][j]);
+			}
+			jsonArrayInput.add(lineArrayIn);
+		}
+		
+		for(i=0;i<NB_OUTPUT;i++){
+			JSONArray lineArrayOut = new JSONArray();
+			for(j=0;j<NB_HIDDENNODES;j++){
+				lineArrayOut.add(outputAxiom[i][j]);
+			}
+			jsonArrayOutput.add(lineArrayOut);
+		}
+	
+		jsonThis.put("input_axiom", jsonArrayInput);
+		jsonThis.put("output_axiom", jsonArrayOutput);
+		
+		return jsonThis;
+	}
+
+	public static JSONObject getStaticJson(){
+		
+		JSONObject jsonStatic = new JSONObject();
+		
+		jsonStatic.put("input_nodes", NB_INPUT);
+		jsonStatic.put("hidden_nodes", NB_HIDDENNODES);
+		jsonStatic.put("output_nodes", NB_OUTPUT);
+		
+		return jsonStatic;
+	}
+	
+	
+	
 	
 }

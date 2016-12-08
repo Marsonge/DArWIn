@@ -1,38 +1,44 @@
-package view;
+package darwin.darwin.view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
-import javax.naming.InitialContext;
 import javax.swing.*;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.lang3.StringUtils;
+
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.utils.Export;
+import darwin.darwin.utils.Utils;
 
 
 
@@ -42,7 +48,6 @@ import javax.swing.event.ChangeListener;
  * 
  * Side panel with options and stats tab
  * 
- * @author cyril.weller
  *
  */
 public class SidePanel extends JPanel implements Observer{
@@ -67,6 +72,7 @@ public class SidePanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
+	private static final String HELPFILE = "help.txt";
 	private JLabel nbTime;
 	private JLabel nbAlive;
 	private JLabel nbDead;
@@ -75,36 +81,50 @@ public class SidePanel extends JPanel implements Observer{
 	private int dead;
 	private List<JSlider> depthSliders;
 	
-	JButton changeMap = new JButton("Change Map");
-	JButton start = new JButton("Start");
-	JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
-	JTextField nbCreaturesTextField = new JTextField(4);
-	JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
-	JLabel nbCreaturesPreferredLabel = new JLabel("Preferred number of creatures");
-	JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
-	JTextField nbCreaturesPreferredTextField = new JTextField(4);
-	JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
-	JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
-	JLabel deepOceanLabel = new JLabel("Deep ocean");
-	JSlider deepOceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, DEEP_WATER);
-	JLabel oceanLabel = new JLabel("Ocean");
-	JSlider oceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, OCEAN);
-	JLabel waterLabel = new JLabel("Coast");
-	JSlider waterSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SHALLOW_WATER);
-	JLabel sandLabel = new JLabel("Sand");
-	JSlider sandSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SAND);
-	JLabel woodLabel = new JLabel("Woods");
-	JSlider woodSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, WOOD);
-	JLabel mountainsLabel = new JLabel("Mountains");
-	JSlider mountainsSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, MOUNTAIN);
-	JLabel snowLabel = new JLabel("Snow");
-	JSlider snowSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SNOW);
-	JTextField nbCreaturesCriticalTextField = new JTextField(4);
-	JTextField textSeed = new JTextField(9);
-	JLabel labelCSeed = new JLabel("Current seed:");
-	JLabel cSeed = new JLabel("");
-	JLabel labelSeed = new JLabel("Input seed for generation:");
-	JLabel custLabel = new JLabel("Customize map depths");
+	private WorldControler wc;
+	private MainView parent;
+	private SidePanel self = this;
+	private JPanel tabOptions;
+
+	private JButton changeMap = new JButton("Change Map");
+	private JButton start = new JButton("Start");
+	JButton timeSlow2 = new JButton("<<");
+	JButton timeSlow1 = new JButton("<");
+	JButton timeRegular = new JButton("*");
+	JButton timeFast1 = new JButton(">");
+	JButton timeFast2 = new JButton(">>");
+	private JLabel nbCreaturesLabel = new JLabel("Initial number of creatures");
+	private JTextField nbCreaturesTextField = new JTextField(4);
+	private JSlider nbCreatures = new JSlider(MIN_CREATURE, MAX_CREATURE, DEFAULT_CREATURE);
+	private JLabel nbCreaturesPreferredLabel = new JLabel("Preferred number of creatures");
+	private JSlider nbCreaturesPreferred = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_PREFERRED_CREATURE);
+	private JTextField nbCreaturesPreferredTextField = new JTextField(4);
+	private JLabel nbCreaturesCriticalLabel = new JLabel("Critical number of creatures");
+	private JSlider nbCreaturesCritical = new JSlider(MIN_CRITICAL_CREATURE, MAX_CRITICAL_CREATURE, DEFAULT_CRITICAL_CREATURE);
+	private JLabel deepOceanLabel = new JLabel("Deep ocean");
+	private JSlider deepOceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, DEEP_WATER);
+	private JLabel oceanLabel = new JLabel("Ocean");
+	private JSlider oceanSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, OCEAN);
+	private JLabel waterLabel = new JLabel("Coast");
+	private JSlider waterSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SHALLOW_WATER);
+	private JLabel sandLabel = new JLabel("Sand");
+	private JSlider sandSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SAND);
+	private JLabel woodLabel = new JLabel("Woods");
+	private JSlider woodSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, WOOD);
+	private JLabel mountainsLabel = new JLabel("Mountains");
+	private JSlider mountainsSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, MOUNTAIN);
+	private JLabel snowLabel = new JLabel("Snow");
+	private JSlider snowSlider = new JSlider(MIN_DEPTH, MAX_DEPTH, SNOW);
+	private JTextField nbCreaturesCriticalTextField = new JTextField(4);
+	private JTextField textSeed = new JTextField(9);
+	private JLabel labelCSeed = new JLabel("Current seed:");
+	private JLabel cSeed = new JLabel("");
+	private JLabel labelSeed = new JLabel("Input seed for generation:");
+	private JPanel custPanel = new JPanel();
+	JButton exportPngButton = new JButton("Export map to PNG");
+	JButton importPngButton = new JButton("Import map from PNG");
+	JButton exportButton = new JButton("Export to JSON");
+	JFileChooser fileChooserForExport = new JFileChooser();
 	
 	/**
 	 * Disable a button
@@ -130,19 +150,39 @@ public class SidePanel extends JPanel implements Observer{
 	}
 	
 	public void disableLabels(){
-		this.disable(snowLabel);
-		this.disable(mountainsLabel);
-		this.disable(woodLabel);
-		this.disable(sandLabel);
-		this.disable(waterLabel);
-		this.disable(oceanLabel);
-		this.disable(deepOceanLabel);
 		this.disable(nbCreaturesLabel);
-		this.disable(labelSeed);
-		textSeed.setFocusable(false);
-		textSeed.setEnabled(false);
+		this.tabOptions.remove(labelSeed);
+		this.tabOptions.remove(textSeed);
+		this.revalidate();
+		this.repaint();
+	}
+	public void disableSliders(){
+		this.tabOptions.remove(custPanel);
+	}
+	public void enableDepthTailoring(){
+        tabOptions.add(labelSeed);
+        tabOptions.add(textSeed);
+        
+        tabOptions.add(custPanel);
+        
+         
+	}
+	public void removeTimeControl(){
+		this.tabOptions.remove(timeSlow2);
+		this.tabOptions.remove(timeSlow1);
+		this.tabOptions.remove(timeRegular);
+		this.tabOptions.remove(timeFast1);
+		this.tabOptions.remove(timeFast2);
+	}
+	public void addTimeControl(){
+		this.tabOptions.add(timeSlow2);
+		this.tabOptions.add(timeSlow1);
+		this.tabOptions.add(timeRegular);
+		this.tabOptions.add(timeFast1);
+		this.tabOptions.add(timeFast2);
 	}
 	
+
 	/**
 	 * Disable a label
 	 * 
@@ -194,10 +234,12 @@ public class SidePanel extends JPanel implements Observer{
 	 * SidePanel constructor, will build the side panel
 	 * @throws IOException 
 	 */
-	public SidePanel() throws IOException{
+	public SidePanel(MainView mv) throws IOException{
+		
+		this.parent = mv;
 		
 		// Set size and color of panel
-        this.setPreferredSize(new Dimension(300,700)); 
+        this.setPreferredSize(new Dimension(300,771)); 
         this.setBackground(black);
 		
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -213,7 +255,7 @@ public class SidePanel extends JPanel implements Observer{
         /** Create the tabs **/
         
         // Options tab
-        JPanel tabOptions = new JPanel(){
+        tabOptions = new JPanel(){
 			
         	private static final long serialVersionUID = 1L;
 			
@@ -225,6 +267,13 @@ public class SidePanel extends JPanel implements Observer{
         
         initDepthSliders();
         
+        timeSlow2.setPreferredSize(new Dimension(48,30));
+        timeSlow1.setPreferredSize(new Dimension(42,30));
+        timeRegular.setPreferredSize(new Dimension(42,30));
+        timeFast1.setPreferredSize(new Dimension(42,30));
+        timeFast2.setPreferredSize(new Dimension(48,30));
+        
+
         /** Slider **/
         nbCreatures.setMinorTickSpacing(5);
         nbCreatures.setMajorTickSpacing(20);
@@ -261,47 +310,62 @@ public class SidePanel extends JPanel implements Observer{
         tabOptions.add(nbCreaturesCriticalTextField);
         tabOptions.add(nbCreaturesCritical);
         
-        Dimension d = new Dimension(80,15);
+        Dimension d = new Dimension(100,15);
         cSeed.setMinimumSize(d);
         cSeed.setPreferredSize(d);
         cSeed.setMaximumSize(d);
-        Dimension d1 = new Dimension(100,15);
+        Dimension d1 = new Dimension(125,15);
         labelCSeed.setMinimumSize(d1);
         labelCSeed.setPreferredSize(d1);
         labelCSeed.setMaximumSize(d1);
         
         
         // Add buttons to Option tab
+        tabOptions.setLayout(new FlowLayout());
         tabOptions.add(changeMap);
         tabOptions.add(start);
         tabOptions.add(labelCSeed);
         tabOptions.add(cSeed);
+        enableDepthTailoring();
         tabOptions.add(labelSeed);
         tabOptions.add(textSeed);
         
-        tabOptions.add(deepOceanLabel);
-        tabOptions.add(deepOceanSlider);
-
-        tabOptions.add(oceanLabel);
-        tabOptions.add(oceanSlider);
-
-        tabOptions.add(waterLabel);
-        tabOptions.add(waterSlider);
-
-        tabOptions.add(sandLabel);
-        tabOptions.add(sandSlider);
-
-        tabOptions.add(woodLabel);
-        tabOptions.add(woodSlider);
-
-        tabOptions.add(mountainsLabel);
-        tabOptions.add(mountainsSlider);
         
-        tabOptions.add(snowLabel);
-        tabOptions.add(snowSlider);
-         
+        custPanel.add(deepOceanLabel);
+        custPanel.add(deepOceanSlider);
+
+        custPanel.add(oceanLabel);
+        custPanel.add(oceanSlider);
+
+        custPanel.add(waterLabel);
+        custPanel.add(waterSlider);
+
+        custPanel.add(sandLabel);
+        custPanel.add(sandSlider);
+
+        custPanel.add(woodLabel);
+        custPanel.add(woodSlider);
+
+        custPanel.add(mountainsLabel);
+        custPanel.add(mountainsSlider);
+        
+        custPanel.add(snowLabel);
+        custPanel.add(snowSlider);
+        custPanel.setPreferredSize(new Dimension(290,400));
+        custPanel.setBorder(new TitledBorder("Customize heights"));
+        tabOptions.add(custPanel);
         // Stats tab
         JPanel tabStats = new JPanel(){
+			
+        	private static final long serialVersionUID = 1L;
+
+			public Dimension getPreferredSize(){ 
+				return new Dimension(280,660); // Utilite ?
+        	}
+        };
+        
+        // Help tab
+        JPanel tabImportExport = new JPanel(){
 			
         	private static final long serialVersionUID = 1L;
 
@@ -323,9 +387,9 @@ public class SidePanel extends JPanel implements Observer{
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
+        tabbedPane.addTab("Import/Export", null, tabImportExport);
         tabbedPane.addTab("Help", null, tabHelp);
         
-
         time = 0;
         alive = 90;
         dead = 0;
@@ -356,21 +420,153 @@ public class SidePanel extends JPanel implements Observer{
         // Tab Help
         
         tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
-        Scanner sc = new Scanner(new File("help.txt"));
+        Scanner sc = new Scanner(Utils.getResource(HELPFILE).openStream());
         
         while (sc.hasNextLine()){
+        	
         	JLabel label = new JLabel(sc.nextLine());
-
-        	label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        	tabHelp.add(label);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            tabHelp.add(label);
         }
         
         sc.close();
         
+        
+        JButton websiteButton = new JButton("Go to website");
+        websiteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        websiteButton.addActionListener(new ActionListener(){
+	    	public void actionPerformed(ActionEvent e){
+	    		
+	    		URI website = null;
+				try {
+					website = new URI("https://marsonge.github.io/DArWIn");
+				} catch (URISyntaxException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+	    		try {
+					Desktop.getDesktop().browse(website);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	    		
+	    	}
+    	
+    	});
+        
+        
+        tabHelp.add(websiteButton);
+        
+        // Add neural network view button to Stats tab
+        JButton viewNnButton = new JButton("View creature's neural network");
+        viewNnButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// We set the value of SidePanel's wc once the button is clicked.
+        		 wc = parent.getWorldControler();
+        		 
+        		 // NeuralNetwork view is created with current creature's NN.
+        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+
+        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		 nnView.pack();
+        		 nnView.setVisible(true);
+        	}
+        });
+        tabStats.add(viewNnButton);
+        
+        addActionListenerExportImport();
+        tabImportExport.add(exportButton);
+        tabImportExport.add(exportPngButton);
+        tabImportExport.add(importPngButton);
+        
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
 	}
-	
+
+	private void addActionListenerExportImport() {
+		exportButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+ 	
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Save files","json");
+        	    fileChooser.setFileFilter(filter);
+        	    
+        	    Calendar cal = Calendar.getInstance();
+        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".json"));
+        	    
+        	    fileChooser.setDialogTitle("Select File");
+        	
+        		int rVal = fileChooser.showOpenDialog(self);
+        		
+        		// When file is selected, we call the export function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+        			try {
+						Export.export(fileChooser.getSelectedFile(), parent.getWorldControler().getCreatureList());
+					} catch (IOException e1) {
+	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
+						return;
+					}
+        			JOptionPane.showMessageDialog(null, "Export successful.");
+        		}
+        	}
+        });
+		exportPngButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)","png");
+        	    fileChooser.setFileFilter(filter);
+        	    
+        	    Calendar cal = Calendar.getInstance();
+        	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        	    fileChooser.setSelectedFile(new File("DArWIn_export_"+ sdf.format(cal.getTime()) + ".png"));
+        	    
+        	    fileChooser.setDialogTitle("Select File");
+        	
+        		int rVal = fileChooser.showOpenDialog(self);
+        		
+        		// When file is selected, we call the export function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+					try {
+		        		wc = parent.getWorldControler();
+						wc.exportToPng(fileChooser.getSelectedFile());
+					} catch (IOException e1) {
+	        			JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
+						return;
+					}
+        			JOptionPane.showMessageDialog(null, "Export successful.");
+        		}
+        	}
+		});
+		importPngButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+        		JFileChooser fileChooser = new JFileChooser();
+        		
+        	    FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)","png");
+        	    fileChooser.setFileFilter(filter);
+        	    fileChooser.setDialogTitle("Select File");
+        		int rVal = fileChooser.showOpenDialog(self);
+        		
+        		// When file is selected, we call the import function
+        		if (rVal == JFileChooser.APPROVE_OPTION) {
+					try {
+		        		wc = parent.getWorldControler();
+						wc.importFromPng(fileChooser.getSelectedFile());
+					} catch (Exception e1) {
+	        			JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
+						return;
+					}
+					cSeed.setText("Imported");
+        		}
+        	}
+			
+		});
+	}
+	  
 	private void initDepthSliders() {
 		int width = 70;
 		int height = 15;
@@ -601,7 +797,7 @@ public class SidePanel extends JPanel implements Observer{
 		this.cSeed.setText(Integer.toString(i));
 	}
 	public int getSeed(){
-		if((textSeed.getText() != null) && !(textSeed.getText().equals(""))){
+		if(StringUtils.isNotBlank(textSeed.getText())){
 			try{
 				return Integer.parseInt(this.textSeed.getText());
 			}
@@ -631,6 +827,42 @@ public class SidePanel extends JPanel implements Observer{
 	 */
 	public JLabel getInitialNbLabel() {
 		return this.nbCreaturesLabel;
+	}
+
+	public JButton getSlow2Button() {
+		return timeSlow2;
+	}
+	public JButton getSlow1Button() {
+		return timeSlow1;
+	}
+	public JButton getRegularButton() {
+		return timeRegular;
+	}
+	public JButton getFast1Button() {
+		return timeFast1;
+	}
+	public JButton getFast2Button() {
+		return timeFast2;
+	}
+
+	public void enableAcceleration() {
+		this.timeFast1.setEnabled(true);
+		this.timeFast2.setEnabled(true);
+	}
+
+	public void disableDecceleration() {
+		this.timeSlow1.setEnabled(false);
+		this.timeSlow2.setEnabled(false);
+	}
+
+	public void enableDecceleration() {
+		this.timeSlow1.setEnabled(true);
+		this.timeSlow2.setEnabled(true);
+	}
+
+	public void disableAcceleration() {
+		this.timeFast1.setEnabled(false);
+		this.timeFast2.setEnabled(false);
 	}
 	
 }

@@ -1,4 +1,4 @@
-package model.grid;
+package darwin.darwin.model.grid;
 
 import java.awt.Color;
 
@@ -11,6 +11,12 @@ public class Tile {
 	
 	public Tile(Terrain t, int x, int y){
 		this.color = new Color(t.getRedValue(),t.getGreenValue(),t.getBlueValue());
+		this.t = t;
+		this.x = x;
+		this.y = y;
+	}
+	public Tile(Terrain t, int r, int g, int b, int x, int y){
+		this.color = new Color(r,g,b);
 		this.t = t;
 		this.x = x;
 		this.y = y;

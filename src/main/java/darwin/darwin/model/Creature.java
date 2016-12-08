@@ -1,7 +1,10 @@
-package model;
+package darwin.darwin.model;
 
 import java.awt.Color;
 import java.util.Random;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Creature implements Cloneable {
 	
@@ -11,7 +14,7 @@ public class Creature implements Cloneable {
 	Color yminus;
 	Color yplus;
 	
-	private int id;
+	private long id;
 	private int x;
 	private int y;
 	private int energy;
@@ -20,9 +23,10 @@ public class Creature implements Cloneable {
 	private int rot = 0;
 	private int previousRot = 0;
 	private static final int MAXSPEED = 7;
+	private static long idmax = 0;
 	
-	public Creature(int id, int x, int y){
-		this.id = id;
+	public Creature(int x, int y){
+		this.id = idmax++;
 		this.x = x;
 		this.y = y;
 		this.energy = 50;
@@ -30,8 +34,8 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 	
-	protected Creature(int id, int x, int y, float speed, NeuralNetwork nn){
-		this(id, x, y);
+	protected Creature(int x, int y, float speed, NeuralNetwork nn){
+		this(x, y);
 		this.speed = speed;
 		this.nn = new NeuralNetwork(nn);
 	}
@@ -49,12 +53,13 @@ public class Creature implements Cloneable {
 		yminus = new Color(intput[9], intput[10], intput[11]);
 		yplus = new Color(intput[12], intput[13], intput[14]);
 				
-		float input[] = new float[16];
+		float input[] = new float[17];
 		//TODO : Normalize correctly ?
 		for(int i=0;i<15;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/(255);
 		}
 		input[15] = this.previousRot/180;
+		input[16] = this.energy/150;
 		float result[] = this.nn.compute(input);
 		this.speed = getShortSigmoid(result[0])*MAXSPEED;
 		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
@@ -69,7 +74,7 @@ public class Creature implements Cloneable {
 	private float getLargeSigmoid(float f){
 		return (float) (1/(1+Math.exp(-f/10)));
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -120,7 +125,7 @@ public class Creature implements Cloneable {
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		return new Creature(id, x, y,  speed, nn);
+		return new Creature(x, y,  speed, nn);
 	}
 	
 	public Creature reproduce() throws CloneNotSupportedException{
@@ -132,6 +137,22 @@ public class Creature implements Cloneable {
 			return null;
 		}
 		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSONObject toJson(){
+		
+		JSONObject jsonThis = new JSONObject();
+		
+		jsonThis.put("id", this.id);
+		jsonThis.put("energy", this.energy);
+		jsonThis.put("speed", this.speed);
+		jsonThis.put("neural network", this.nn.toJson());
+		
+		return jsonThis;
 	}
 
 	

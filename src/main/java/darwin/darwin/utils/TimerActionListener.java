@@ -1,9 +1,10 @@
-package view;
+package darwin.darwin.utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import controler.WorldControler;
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.view.SidePanel;
 
 public class TimerActionListener implements ActionListener{
 	
