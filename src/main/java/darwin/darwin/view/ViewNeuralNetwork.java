@@ -7,8 +7,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -164,7 +166,7 @@ public class ViewNeuralNetwork extends JDialog{
 	    @Override
 	        public void mouseClicked(MouseEvent e) 
 	        {    
-	    	
+	    		System.out.println("MOUSE CLICKED");
 	    		mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
     			mxGraph graph = graphComponent.getGraph();
     			mxIGraphModel model = graph.getModel();
@@ -177,63 +179,73 @@ public class ViewNeuralNetwork extends JDialog{
 	    		String fontColor = mxConstants.STYLE_FONTCOLOR+"=#ffd000";
 	            DecimalFormat df = new DecimalFormat("#.##");
     			
-	    		if (cell != null && !cell.isEdge()){
-		    		model.setStyle(cell, styleCurrentCellFill); // set color of selected cell
-		    		
-		            for (Object c : inputNodeList){
-		            	if (!c.equals(cell)) {
-		            		model.setStyle(c, styleDefault);
-		            		//model.setStyle(c, fillOpacity);
-		            		model.setStyle(c, styleOpacity);
-		            	}
-		            }
-		            for (Object c : hiddenNodeList){
-		            	if (!c.equals(cell)) {
-			            	model.setStyle(c, styleDefault);
-		            		//model.setStyle(c, fillOpacity);
-		            		model.setStyle(c, styleOpacity);
-		            	}
-		            }
-		            for (Object c : outputNodeList){
-		            	if (!c.equals(cell)) {
-		            		model.setStyle(c, styleDefault);
-		            		//model.setStyle(c, fillOpacity);
-		            		model.setStyle(c, styleOpacity);
-		            	}
-		            }
-		            
-		            //TODO
-		            // - afficher les infos lors du premier clic (non du second)
-		            // - afficher les infos en couleur differente (lisible)
-		            // - enlever les infos lors du clic default
-		            
-		            mxCell[] cells = {cell}; // transforme la cellule cliquée en array ...
-		            Object[] edges = graph.getAllEdges(cells); // ... pour le bien de cette méthode
-		            
-		            
-		            for (int i = 0; i<edges.length; i++){ // Récupération de toutes les aretes connectées a la cellule
-		            	
-		            	graph.getModel().beginUpdate();
-		            	
-		            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi à 2 décimales
-		            	
-		            	
-		            	graph.getModel().endUpdate();
-		            	
-		            }
-		            
-	    		} else {
-	    			// si on clique n'importe où, ailleurs que sur une cellule
-	    			for (Object c : inputNodeList){
-		            		model.setStyle(c, styleDefault);
-		            }
-		            for (Object c : hiddenNodeList){
-			            	model.setStyle(c, styleDefault);
-		            }
-		            for (Object c : outputNodeList){
-		            		model.setStyle(c, styleDefault);
-		            }
-	    		}
+	            graph.getModel().beginUpdate();
+	            try {
+		    		if (cell != null && !cell.isEdge()){
+		    			System.out.println("cell is clicked");
+			    		model.setStyle(cell, styleCurrentCellFill); // set color of selected cell
+			    		
+			            for (Object c : inputNodeList){
+			            	if (!c.equals(cell)) {
+			            		model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+			            for (Object c : hiddenNodeList){
+			            	if (!c.equals(cell)) {
+				            	model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+			            for (Object c : outputNodeList){
+			            	if (!c.equals(cell)) {
+			            		model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+			            
+			            //TODO
+			            // - afficher les infos en couleur differente (lisible)
+			            
+			            mxCell[] cells = {cell}; // transforme la cellule cliquée en array ...
+			            Object[] edges = graph.getAllEdges(cells); // ... pour le bien de cette méthode
+			            
+			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+			            while (it.hasNext()) {
+			                Map.Entry pair = (Map.Entry)it.next();
+			                ((mxCell) pair.getKey()).setValue(null);
+			            }
+			            for (int i = 0; i<edges.length; i++){ // Récupération de toutes les aretes connectées a la cellule
+			            	System.out.println("Update value " + edges[i]);
+			            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi à 2 décimales
+			            }
+			            
+		    		} else {
+		    			System.out.println("Default click");
+		    			// si on clique n'importe où, ailleurs que sur une cellule
+		    			for (Object c : inputNodeList){
+			            		model.setStyle(c, styleDefault);
+			            }
+			            for (Object c : hiddenNodeList){
+				            	model.setStyle(c, styleDefault);
+			            }
+			            for (Object c : outputNodeList){
+			            		model.setStyle(c, styleDefault);
+			            }
+			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+			            while (it.hasNext()) {
+			            	System.out.println("set value to null");
+			                Map.Entry pair = (Map.Entry)it.next();
+			                ((mxCell) pair.getKey()).setValue(null);
+			            }
+		    		}
+	            } finally {
+	            	graph.getModel().endUpdate();
+	            }
+	        
 	        }
 	    });
 	}
