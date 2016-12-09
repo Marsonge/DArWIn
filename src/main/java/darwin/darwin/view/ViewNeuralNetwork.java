@@ -11,9 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.swing.JDialog;
 
 import com.mxgraph.model.mxCell;
@@ -44,10 +41,7 @@ public class ViewNeuralNetwork extends JDialog{
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
 	private Map<Object, Float> edgesValuesMap;
-	private NeuralNetwork nn;
-	
 	public ViewNeuralNetwork(NeuralNetwork nn){
-		this.nn = nn;
 		this.setPreferredSize(new Dimension(700,850));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
@@ -132,7 +126,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object input : inputNodeList){
 				graph.getModel().beginUpdate();
 				try {
-					Object edge = graph.insertEdge(parent, null, null, hidden, input);
+					Object edge = graph.insertEdge(parent, null, null, input, hidden);
 					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
 				} finally {
@@ -145,7 +139,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object hidden : hiddenNodeList){
 				graph.getModel().beginUpdate();
 				try {
-					Object edge = graph.insertEdge(parent, null, null, output, hidden);
+					Object edge = graph.insertEdge(parent, null, null, hidden, output);
 					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
 				} finally {
@@ -172,12 +166,10 @@ public class ViewNeuralNetwork extends JDialog{
     			mxIGraphModel model = graph.getModel();
 
     			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142"; // orange
-    			String styleCurrentCellStroke = mxConstants.STYLE_STROKECOLOR + "=#f47142"; // orange
     			String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
 	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
 	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
-	    		String fontColor = mxConstants.STYLE_FONTCOLOR+"=#ffd000";
-	            DecimalFormat df = new DecimalFormat("#.##");
+	    		DecimalFormat df = new DecimalFormat("#.##");
 	            
 	            //TODO
 	            // - afficher les infos en couleur differente (lisible)
@@ -188,7 +180,7 @@ public class ViewNeuralNetwork extends JDialog{
 	            	// On remet à zéro l'affichage avant toute opération
 	            	resetDisplay(model);
 		    		if (cell != null && !cell.isEdge()){ // si on clique sur un node
-			    		model.setStyle(cell, styleCurrentCellFill); // set color of selected cell
+			    		model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
 			    		
 			    		// mise à jour des edges affichées : on efface les edges non connectées à la cellule cliquée
 			            mxCell[] cellArray = {cell}; // transforme la cellule cliquée en array ...
