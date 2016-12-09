@@ -1,15 +1,26 @@
 package darwin.darwin.view;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.swing.JDialog;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
 import darwin.darwin.model.NeuralNetwork;
+
 
 /**
  * Vue pour le r�seau neuronal d'une cr�ature
@@ -21,68 +32,213 @@ import darwin.darwin.model.NeuralNetwork;
 @SuppressWarnings("serial")
 public class ViewNeuralNetwork extends JDialog{
 
-	private List<NodeView> nodeList;
-	private int columnNumber = 3;
-	private final int NB_INPUT = NeuralNetwork.getNbInput();
-	private final int NB_OUTPUT = NeuralNetwork.getNbOutput();
-	private final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
-	
-	@SuppressWarnings("restriction")
+	private final int COLUMN_NUMBER = 3;
+	private final int NB_INPUT = 16;
+	private final int NB_OUTPUT = 2;
+	private final int NB_HIDDENNODES = 16;
+	private final int NODE_SIZE = 15;
+	private List<Object> inputNodeList;
+	private List<Object> hiddenNodeList;
+	private List<Object> outputNodeList;
+	private Map<Object, Float> edgesValuesMap;
 	public ViewNeuralNetwork(NeuralNetwork nn){
+		this.setPreferredSize(new Dimension(700,850));
+		this.inputNodeList = new ArrayList<Object>();
+		this.hiddenNodeList = new ArrayList<Object>();
+		this.outputNodeList = new ArrayList<Object>();
+		this.edgesValuesMap = new HashMap<Object, Float>();
 		
-		this.setPreferredSize(new Dimension(500,500));
-		this.nodeList = new ArrayList<NodeView>();
+		float[][] inputAxiom = nn.getInputAxiom();
+		float[][] outputAxiom = nn.getOutputAxiom();
 		
-		for (int i = 0; i<columnNumber; i++){
-			switch(i){
-				case 0: // Input nodes
-					for (int j = 0; j<NB_INPUT; j++){
-						NodeView node = new NodeView(i,j);
-						node.setCenterX((this.getPreferredSize().getWidth())/4);
-						node.setCenterY(((this.getPreferredSize().getHeight())/NB_INPUT)*j);
-						nodeList.add(node);
-					}
-					break;
-				case 1: // Hidden nodes
-					for (int j = 0; j<NB_HIDDENNODES; j++){
-						NodeView node = new NodeView(i,j);
-						node.setCenterX(((this.getPreferredSize().getWidth())/4)*2);
-						node.setCenterY(((this.getPreferredSize().getHeight())/NB_HIDDENNODES)*j);
-						nodeList.add(node);
-					}
-					break;
-				case 2: // Output nodes
-					for (int j = 0; j<NB_OUTPUT; j++){
-						NodeView node = new NodeView(i,j);
-						node.setCenterX(((this.getPreferredSize().getWidth())/4)*3);
-						node.setCenterY(((this.getPreferredSize().getHeight())/NB_OUTPUT)*j);
-						nodeList.add(node);
-						
-					}
-					break;
-			}
-		}
-		
-		//TODO display nodes
-		
+		// graph settings
 		mxGraph graph = new mxGraph();
+		graph.setCellsResizable(false);
+		graph.setCellsEditable(false);
+		graph.setCellsMovable(false);
+		graph.setEdgeLabelsMovable(false);
+		graph.setAllowDanglingEdges(false);
+		graph.setConnectableEdges(false);
+		graph.setCellsSelectable(false);
 		Object parent = graph.getDefaultParent();
+		mxIGraphModel model = graph.getModel();
+		String minHotspotSize = mxConstants.MIN_HOTSPOT_SIZE + "=1";
+		String defaultHotspotSize = mxConstants.DEFAULT_HOTSPOT + "=0,1";
 		
-		graph.getModel().beginUpdate();
+		model.beginUpdate();
 		try {
-			Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80, 30);
-		    Object v2 = graph.insertVertex(parent, null, "World!", 240, 150, 80, 30);
-		    graph.insertEdge(parent, null, "Edge", v1, v2);
+			for (int i = 0; i<COLUMN_NUMBER; i++){
+				switch(i){
+					case 0: // Input nodes
+						for (int j = 0; j<NB_INPUT; j++){;
+							Object node = graph.insertVertex(parent,
+									null,
+									null,
+									(this.getPreferredSize().getWidth())/4,
+									((this.getPreferredSize().getHeight())/NB_INPUT)*j,
+									NODE_SIZE,
+									NODE_SIZE);
+							inputNodeList.add(node);
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
+						}
+						break;
+					case 1: // Hidden nodes
+						for (int j = 0; j<NB_HIDDENNODES; j++){
+							// Nodes creation
+							Object node = graph.insertVertex(parent,
+									null,
+									null,
+									((this.getPreferredSize().getWidth())/4)*2,
+									((this.getPreferredSize().getHeight())/NB_HIDDENNODES)*j,
+									NODE_SIZE,
+									NODE_SIZE);
+							hiddenNodeList.add(node);
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
+						}
+						break;
+					case 2: // Output nodes
+						for (int j = 0; j<NB_OUTPUT; j++){
+							Object node = graph.insertVertex(parent,
+									null,
+									null,
+									((this.getPreferredSize().getWidth())/4)*3,
+									((this.getPreferredSize().getHeight())/NB_OUTPUT)*j,
+									NODE_SIZE,
+									NODE_SIZE);
+							outputNodeList.add(node);
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
+						}
+						break;
+				}
+			}
+			
+			// Edges creation (inputAxiom)
+			for (Object hidden : hiddenNodeList) {
+				for (Object input : inputNodeList){
+					Object edge = graph.insertEdge(parent, null, null, input, hidden);
+					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
+					this.edgesValuesMap.put(edge, value);
+				}
+			}
+			// (outputAxiom)
+			for (Object output : outputNodeList) {
+				for (Object hidden : hiddenNodeList){
+					Object edge = graph.insertEdge(parent, null, null, hidden, output);
+					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
+					this.edgesValuesMap.put(edge, value);
+				}
+			}
 		} finally {
-			graph.getModel().endUpdate();
+			model.endUpdate();
 		}
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 	    getContentPane().add(graphComponent);
 	    this.add(graphComponent);
+	    
+	    /**
+	     * Classe interne MouseAdapter
+	     */
+	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() 
+	    {
+	    @Override
+	        public void mouseClicked(MouseEvent e) 
+	        {    
+	    		System.out.println("MOUSE CLICKED");
+	    		mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+    			mxGraph graph = graphComponent.getGraph();
+    			mxIGraphModel model = graph.getModel();
 
-		
-		//TODO javafx gen of links betweens nodes
+    			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142"; // orange
+    			String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
+	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
+	    		DecimalFormat df = new DecimalFormat("#.##");
+	            
+	            //TODO
+	            // - afficher les infos en couleur differente (lisible)
+	            // - (facultatif) bouger le code vers une methode "mouseOver" plut�t que "mouseClicked"
+    			
+	            graph.getModel().beginUpdate();
+	            try {
+	            	// On remet � z�ro l'affichage avant toute op�ration
+	            	resetDisplay(model);
+		    		if (cell != null && !cell.isEdge()){ // si on clique sur un node
+			    		model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
+			    		
+			    		// mise � jour des edges affich�es : on efface les edges non connect�es � la cellule cliqu�e
+			            mxCell[] cellArray = {cell}; // transforme la cellule cliqu�e en array ...
+			            Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette m�thode
+			            
+			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+			            while (it.hasNext()) { // parcours de toutes les edges
+			                Map.Entry pair = (Map.Entry)it.next();
+			                mxCell edge = ((mxCell) pair.getKey());
+			                if (!(Arrays.asList(edges).contains(edge))) {
+			                	edge.setVisible(false);
+			                }
+			                edge.setValue(null);
+			            }
+			            
+			            // Puis on affiche les valeurs des edges qui nous interessent
+			            for (int i = 0; i<edges.length; i++){ // R�cup�ration de toutes les aretes connect�es a la cellule
+			            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi � 2 d�cimales
+			            }
+			    		
+			    		// Enfin, mise � jour du style des autres nodes : on baisse l'opacit� et on remet la couleur par d�faut
+			            for (Object c : inputNodeList){
+			            	if (!c.equals(cell)) {
+			            		model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+			            for (Object c : hiddenNodeList){
+			            	if (!c.equals(cell)) {
+				            	model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+			            for (Object c : outputNodeList){
+			            	if (!c.equals(cell)) {
+			            		model.setStyle(c, styleDefault);
+			            		//model.setStyle(c, fillOpacity);
+			            		model.setStyle(c, styleOpacity);
+			            	}
+			            }
+		    		}
+	            } finally {
+	            	graph.getModel().endUpdate();
+	            }
+	        }
+	    });
 	}
 	
+	/**
+	 * Fonction de remise � z�ro de l'affichage du neural network
+	 */
+	private void resetDisplay(mxIGraphModel model){
+		
+		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+		
+		for (Object c : inputNodeList){
+	    		model.setStyle(c, styleDefault);
+	    }
+	    for (Object c : hiddenNodeList){
+	        	model.setStyle(c, styleDefault);
+	    }
+	    for (Object c : outputNodeList){
+	    		model.setStyle(c, styleDefault);
+	    }
+	    Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        ((mxCell) pair.getKey()).setValue(null);
+	        ((mxCell) pair.getKey()).setVisible(true);
+	    }
+    }
 }

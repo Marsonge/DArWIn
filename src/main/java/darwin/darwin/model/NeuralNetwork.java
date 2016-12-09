@@ -176,10 +176,10 @@ public class NeuralNetwork {
 		return out;
 	}
 	
-	private float[][] getInputAxiom() {
+	public float[][] getInputAxiom() {
 		return inputAxiom;
 	}
-	private float[][] getOutputAxiom() {
+	public float[][] getOutputAxiom() {
 		return outputAxiom;
 	}
 
