@@ -461,22 +461,6 @@ public class SidePanel extends JPanel implements Observer{
         
         tabHelp.add(websiteButton);
         
-        // Add neural network view button to Stats tab
-        JButton viewNnButton = new JButton("View creature's neural network");
-        viewNnButton.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent e) {
-        		// We set the value of SidePanel's wc once the button is clicked.
-        		 wc = parent.getWorldControler();
-        		 
-        		 // NeuralNetwork view is created with current creature's NN.
-        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
-
-        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		 nnView.pack();
-        		 nnView.setVisible(true);
-        	}
-        });
-        tabStats.add(viewNnButton);
         
         addActionListenerExportImport();
         tabImportExport.add(exportButton);
