@@ -61,13 +61,16 @@ public class ViewNeuralNetwork extends JDialog{
 		graph.setConnectableEdges(false);
 		graph.setCellsSelectable(false);
 		Object parent = graph.getDefaultParent();
+		mxIGraphModel model = graph.getModel();
+		String minHotspotSize = mxConstants.MIN_HOTSPOT_SIZE + "=1";
+		String defaultHotspotSize = mxConstants.DEFAULT_HOTSPOT + "=0,1";
 		
-		for (int i = 0; i<COLUMN_NUMBER; i++){
-			switch(i){
-				case 0: // Input nodes
-					for (int j = 0; j<NB_INPUT; j++){;
-						graph.getModel().beginUpdate();
-						try {
+		model.beginUpdate();
+		try {
+			for (int i = 0; i<COLUMN_NUMBER; i++){
+				switch(i){
+					case 0: // Input nodes
+						for (int j = 0; j<NB_INPUT; j++){;
 							Object node = graph.insertVertex(parent,
 									null,
 									null,
@@ -76,16 +79,12 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							inputNodeList.add(node);
-						} finally {
-							graph.getModel().endUpdate();
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
 						}
-					}
-					break;
-				case 1: // Hidden nodes
-					for (int j = 0; j<NB_HIDDENNODES; j++){
-						
-						graph.getModel().beginUpdate();
-						try {
+						break;
+					case 1: // Hidden nodes
+						for (int j = 0; j<NB_HIDDENNODES; j++){
 							// Nodes creation
 							Object node = graph.insertVertex(parent,
 									null,
@@ -95,15 +94,12 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							hiddenNodeList.add(node);
-						} finally {
-							graph.getModel().endUpdate();
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
 						}
-					}
-					break;
-				case 2: // Output nodes
-					for (int j = 0; j<NB_OUTPUT; j++){
-						graph.getModel().beginUpdate();
-						try {
+						break;
+					case 2: // Output nodes
+						for (int j = 0; j<NB_OUTPUT; j++){
 							Object node = graph.insertVertex(parent,
 									null,
 									null,
@@ -112,40 +108,31 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							outputNodeList.add(node);
-						} finally {
-							graph.getModel().endUpdate();
+							((mxCell) node).setStyle(minHotspotSize);
+							((mxCell) node).setStyle(defaultHotspotSize);
 						}
-						
-					}
-					break;
+						break;
+				}
 			}
-		}
-		
-		// Edges creation (inputAxiom)
-		for (Object hidden : hiddenNodeList) {
-			for (Object input : inputNodeList){
-				graph.getModel().beginUpdate();
-				try {
+			
+			// Edges creation (inputAxiom)
+			for (Object hidden : hiddenNodeList) {
+				for (Object input : inputNodeList){
 					Object edge = graph.insertEdge(parent, null, null, input, hidden);
 					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
-				} finally {
-					graph.getModel().endUpdate();
 				}
 			}
-		}
-		// (outputAxiom)
-		for (Object output : outputNodeList) {
-			for (Object hidden : hiddenNodeList){
-				graph.getModel().beginUpdate();
-				try {
+			// (outputAxiom)
+			for (Object output : outputNodeList) {
+				for (Object hidden : hiddenNodeList){
 					Object edge = graph.insertEdge(parent, null, null, hidden, output);
 					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
-				} finally {
-					graph.getModel().endUpdate();
 				}
 			}
+		} finally {
+			model.endUpdate();
 		}
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
@@ -227,10 +214,8 @@ public class ViewNeuralNetwork extends JDialog{
 	            } finally {
 	            	graph.getModel().endUpdate();
 	            }
-	        
 	        }
 	    });
-	    
 	}
 	
 	/**
