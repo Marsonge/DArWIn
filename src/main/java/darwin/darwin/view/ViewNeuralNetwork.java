@@ -1,5 +1,6 @@
 package darwin.darwin.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -18,6 +19,7 @@ import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxStylesheet;
 
 import darwin.darwin.model.NeuralNetwork;
 
@@ -62,8 +64,7 @@ public class ViewNeuralNetwork extends JDialog{
 		graph.setCellsSelectable(false);
 		Object parent = graph.getDefaultParent();
 		mxIGraphModel model = graph.getModel();
-		String minHotspotSize = mxConstants.MIN_HOTSPOT_SIZE + "=1";
-		String defaultHotspotSize = mxConstants.DEFAULT_HOTSPOT + "=0,1";
+		mxStylesheet stylesheet = new mxStylesheet();
 		
 		model.beginUpdate();
 		try {
@@ -79,8 +80,6 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							inputNodeList.add(node);
-							((mxCell) node).setStyle(minHotspotSize);
-							((mxCell) node).setStyle(defaultHotspotSize);
 						}
 						break;
 					case 1: // Hidden nodes
@@ -94,8 +93,6 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							hiddenNodeList.add(node);
-							((mxCell) node).setStyle(minHotspotSize);
-							((mxCell) node).setStyle(defaultHotspotSize);
 						}
 						break;
 					case 2: // Output nodes
@@ -108,8 +105,6 @@ public class ViewNeuralNetwork extends JDialog{
 									NODE_SIZE,
 									NODE_SIZE);
 							outputNodeList.add(node);
-							((mxCell) node).setStyle(minHotspotSize);
-							((mxCell) node).setStyle(defaultHotspotSize);
 						}
 						break;
 				}
@@ -121,6 +116,9 @@ public class ViewNeuralNetwork extends JDialog{
 					Object edge = graph.insertEdge(parent, null, null, input, hidden);
 					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
+					
+					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
+					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#bf7e1c");
 				}
 			}
 			// (outputAxiom)
@@ -129,12 +127,16 @@ public class ViewNeuralNetwork extends JDialog{
 					Object edge = graph.insertEdge(parent, null, null, hidden, output);
 					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
+					
+					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
+					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#bf7e1c");
 				}
 			}
 		} finally {
 			model.endUpdate();
 		}
 		
+		// apply settings
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 	    getContentPane().add(graphComponent);
 	    this.add(graphComponent);
@@ -159,7 +161,6 @@ public class ViewNeuralNetwork extends JDialog{
 	    		DecimalFormat df = new DecimalFormat("#.##");
 	            
 	            //TODO
-	            // - afficher les infos en couleur differente (lisible)
 	            // - (facultatif) bouger le code vers une methode "mouseOver" plut�t que "mouseClicked"
     			
 	            graph.getModel().beginUpdate();
@@ -241,4 +242,23 @@ public class ViewNeuralNetwork extends JDialog{
 	        ((mxCell) pair.getKey()).setVisible(true);
 	    }
     }
+	
+	/**
+	 * Fonction de g�n�ration de la couleur de l'ar�te
+	 * Les couleurs g�n�r�es sont entre le bleu (vers 1) et le rouge (vers -1)
+	 * (gris pour alentours de 0.)
+	 * @param value poids de l'ar�te
+	 * @return valeur en hexadecimal de la couleur
+	 */
+	private String getEdgeColor(float value){
+		
+		float r = (-value) / 2f+0.5f;
+		float g = (1-(Math.abs(value)))*0.5f;
+		float b = value / 2f + 0.5f;
+		
+		Color color = new Color(r,g,b);
+		String hex = "#"+Integer.toHexString(color.getRGB()).substring(2);
+		
+		return hex;
+	}
 }
