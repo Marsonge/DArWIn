@@ -266,18 +266,25 @@ public class SidePanel extends JPanel implements Observer{
         timeFast1.setPreferredSize(new Dimension(42,30));
         timeFast2.setPreferredSize(new Dimension(48,30));
         
-
+        Dimension optionSliderDim = new Dimension(235, 42);
+        Dimension optionLabelDim  = new Dimension(235, 25);
+        
         /** Slider **/
         nbCreatures.setMinorTickSpacing(5);
         nbCreatures.setMajorTickSpacing(20);
         nbCreatures.setPaintTicks(true);
         nbCreatures.setPaintLabels(true);
+        nbCreatures.setPreferredSize(optionSliderDim);
         nbCreaturesTextField.setText(Integer.toString(DEFAULT_CREATURE));
+        nbCreaturesTextField.setPreferredSize(optionLabelDim);
+        
         /** Slider **/
         nbCreaturesCritical.setMinorTickSpacing(25);
         nbCreaturesCritical.setMajorTickSpacing(200);
         nbCreaturesCritical.setPaintTicks(true);
         nbCreaturesCritical.setPaintLabels(true);
+        nbCreaturesCritical.setPreferredSize(optionSliderDim);
+        nbCreaturesCriticalTextField.setPreferredSize(optionLabelDim);
         nbCreaturesCriticalTextField.setText(Integer.toString(DEFAULT_CRITICAL_CREATURE));
         
         /** Slider **/
@@ -285,6 +292,8 @@ public class SidePanel extends JPanel implements Observer{
         nbCreaturesPreferred.setMajorTickSpacing(200);
         nbCreaturesPreferred.setPaintTicks(true);
         nbCreaturesPreferred.setPaintLabels(true);
+        nbCreaturesPreferred.setPreferredSize(optionSliderDim);
+        nbCreaturesPreferredTextField.setPreferredSize(optionLabelDim);
         nbCreaturesPreferredTextField.setText(Integer.toString(DEFAULT_PREFERRED_CREATURE));
         
         addSliderListeners();
@@ -546,12 +555,13 @@ public class SidePanel extends JPanel implements Observer{
 		int width = 70;
 		int height = 15;
 		Dimension d = new Dimension(width,height);
-		
+		Dimension sliderDim = new Dimension(150, 42);
         this.depthSliders = new ArrayList<JSlider>();
         deepOceanSlider.setMinorTickSpacing(5);
         deepOceanSlider.setMajorTickSpacing(20);
         deepOceanSlider.setPaintTicks(true);
         deepOceanSlider.setPaintLabels(true);
+        deepOceanSlider.setPreferredSize(sliderDim);
         deepOceanLabel.setMinimumSize(d);
         deepOceanLabel.setPreferredSize(d);
         deepOceanLabel.setMaximumSize(d);
@@ -560,6 +570,7 @@ public class SidePanel extends JPanel implements Observer{
         oceanSlider.setMajorTickSpacing(20);
         oceanSlider.setPaintTicks(true);
         oceanSlider.setPaintLabels(true);
+        oceanSlider.setPreferredSize(sliderDim);
         oceanLabel.setMinimumSize(d);
         oceanLabel.setPreferredSize(d);
         oceanLabel.setMaximumSize(d);
@@ -568,6 +579,7 @@ public class SidePanel extends JPanel implements Observer{
         waterSlider.setMajorTickSpacing(20);
         waterSlider.setPaintTicks(true);
         waterSlider.setPaintLabels(true);
+        waterSlider.setPreferredSize(sliderDim);
         waterLabel.setMinimumSize(d);
         waterLabel.setPreferredSize(d);
         waterLabel.setMaximumSize(d);
@@ -576,6 +588,7 @@ public class SidePanel extends JPanel implements Observer{
         sandSlider.setMajorTickSpacing(20);
         sandSlider.setPaintTicks(true);
         sandSlider.setPaintLabels(true);
+        sandSlider.setPreferredSize(sliderDim);
         sandLabel.setMinimumSize(d);
         sandLabel.setPreferredSize(d);
         sandLabel.setMaximumSize(d);
@@ -584,6 +597,7 @@ public class SidePanel extends JPanel implements Observer{
         woodSlider.setMajorTickSpacing(20);
         woodSlider.setPaintTicks(true);
         woodSlider.setPaintLabels(true);
+        woodSlider.setPreferredSize(sliderDim);
         woodLabel.setMinimumSize(d);
         woodLabel.setPreferredSize(d);
         woodLabel.setMaximumSize(d);
@@ -592,6 +606,7 @@ public class SidePanel extends JPanel implements Observer{
         mountainsSlider.setMajorTickSpacing(20);
         mountainsSlider.setPaintTicks(true);
         mountainsSlider.setPaintLabels(true);
+        mountainsSlider.setPreferredSize(sliderDim);
         mountainsLabel.setMinimumSize(d);
         mountainsLabel.setPreferredSize(d);
         mountainsLabel.setMaximumSize(d);
@@ -600,6 +615,7 @@ public class SidePanel extends JPanel implements Observer{
         snowSlider.setMajorTickSpacing(20);
         snowSlider.setPaintTicks(true);
         snowSlider.setPaintLabels(true);
+        snowSlider.setPreferredSize(sliderDim);
         snowLabel.setMinimumSize(d);
         snowLabel.setPreferredSize(d);
         snowLabel.setMaximumSize(d);
