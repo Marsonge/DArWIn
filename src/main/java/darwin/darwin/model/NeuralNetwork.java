@@ -195,6 +195,11 @@ public class NeuralNetwork {
 		return NB_HIDDENNODES;
 	}
 
+	/**
+	 * toJson
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	public JSONObject toJson() {
 		
 		int i,j;
@@ -225,6 +230,11 @@ public class NeuralNetwork {
 		return jsonThis;
 	}
 
+	/**
+	 * getStaticJson
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	public static JSONObject getStaticJson(){
 		
 		JSONObject jsonStatic = new JSONObject();

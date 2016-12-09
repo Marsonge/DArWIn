@@ -3,7 +3,6 @@ package darwin.darwin.model;
 import java.awt.Color;
 import java.util.Random;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class Creature implements Cloneable {
@@ -143,6 +142,7 @@ public class Creature implements Cloneable {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public JSONObject toJson(){
 		
 		JSONObject jsonThis = new JSONObject();

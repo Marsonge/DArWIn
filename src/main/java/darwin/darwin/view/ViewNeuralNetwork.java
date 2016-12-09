@@ -4,23 +4,15 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
 import darwin.darwin.model.NeuralNetwork;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 /**
- * Vue pour le réseau neuronal d'une créature
+ * Vue pour le rï¿½seau neuronal d'une crï¿½ature
  * Attention, cette classe utilise la librairie JGraphX.
  * @author lulu
  *
@@ -35,6 +27,7 @@ public class ViewNeuralNetwork extends JDialog{
 	private final int NB_OUTPUT = NeuralNetwork.getNbOutput();
 	private final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
 	
+	@SuppressWarnings("restriction")
 	public ViewNeuralNetwork(NeuralNetwork nn){
 		
 		this.setPreferredSize(new Dimension(500,500));

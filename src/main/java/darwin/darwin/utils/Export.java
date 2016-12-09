@@ -13,6 +13,7 @@ import darwin.darwin.model.NeuralNetwork;
 
 public class Export {
 
+	@SuppressWarnings("unchecked")
 	public static void export(File file, List<Creature> listeCreatures) throws IOException{
 		
 		JSONObject obj = new JSONObject();
