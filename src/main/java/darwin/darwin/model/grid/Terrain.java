@@ -8,7 +8,6 @@ public enum Terrain {
 	MOUNTAINS(130,120,95), //Brownish
 	SAND(245,231,117), //Yellowish
 	WOODS(0,140,57), //Darkish Green
-	FOOD(0,255,0), //Pure Green of Pain
 	SNOW(241,255,255), //Bluish White
 	SHALLOW_WATER(0,70,255), //Lighter Blue
 	DEEP_WATER(20,0,180); //Dark blue
