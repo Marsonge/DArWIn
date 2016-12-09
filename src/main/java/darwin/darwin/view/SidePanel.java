@@ -255,15 +255,8 @@ public class SidePanel extends JPanel implements Observer{
         /** Create the tabs **/
         
         // Options tab
-        tabOptions = new JPanel(){
-			
-        	private static final long serialVersionUID = 1L;
-			
-			public Dimension getPreferredSize(){ 
-				return new Dimension(280,765); 
-			}
-
-        };
+        tabOptions = new JPanel();
+        tabOptions.setPreferredSize(new Dimension(280,765));
         
         initDepthSliders();
         
@@ -355,34 +348,16 @@ public class SidePanel extends JPanel implements Observer{
         custPanel.setBorder(new TitledBorder("Customize heights"));
         tabOptions.add(custPanel);
         // Stats tab
-        JPanel tabStats = new JPanel(){
-			
-        	private static final long serialVersionUID = 1L;
-
-			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); // Utilite ?
-        	}
-        };
+        JPanel tabStats = new JPanel();
+        tabStats.setPreferredSize(new Dimension(280,660));
         
         // Help tab
-        JPanel tabImportExport = new JPanel(){
-			
-        	private static final long serialVersionUID = 1L;
-
-			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); //Utilité ?
-        	}
-        };
+        JPanel tabImportExport = new JPanel();
+        tabImportExport.setPreferredSize(new Dimension(280,660));
         
         // Help tab
-        JPanel tabHelp = new JPanel(){
-			
-        	private static final long serialVersionUID = 1L;
-
-			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); //Utilité ?
-        	}
-        };
+        JPanel tabHelp = new JPanel();
+        tabHelp.setPreferredSize(new Dimension(280,660));
         
         // Add tabs to tabbedPane
         tabbedPane.addTab("Options", null, tabOptions);
