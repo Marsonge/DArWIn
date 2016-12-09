@@ -174,17 +174,42 @@ public class ViewNeuralNetwork extends JDialog{
     			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142"; // orange
     			String styleCurrentCellStroke = mxConstants.STYLE_STROKECOLOR + "=#f47142"; // orange
     			String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
-	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20";
-	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=20";
+	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
+	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
 	    		String fontColor = mxConstants.STYLE_FONTCOLOR+"=#ffd000";
 	            DecimalFormat df = new DecimalFormat("#.##");
+	            
+	            //TODO
+	            // - afficher les infos en couleur differente (lisible)
+	            // - (facultatif) bouger le code vers une methode "mouseOver" plutôt que "mouseClicked"
     			
 	            graph.getModel().beginUpdate();
 	            try {
-		    		if (cell != null && !cell.isEdge()){
-		    			System.out.println("cell is clicked");
+	            	// On remet à zéro l'affichage avant toute opération
+	            	resetDisplay(model);
+		    		if (cell != null && !cell.isEdge()){ // si on clique sur un node
 			    		model.setStyle(cell, styleCurrentCellFill); // set color of selected cell
 			    		
+			    		// mise à jour des edges affichées : on efface les edges non connectées à la cellule cliquée
+			            mxCell[] cellArray = {cell}; // transforme la cellule cliquée en array ...
+			            Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette méthode
+			            
+			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+			            while (it.hasNext()) { // parcours de toutes les edges
+			                Map.Entry pair = (Map.Entry)it.next();
+			                mxCell edge = ((mxCell) pair.getKey());
+			                if (!(Arrays.asList(edges).contains(edge))) {
+			                	edge.setVisible(false);
+			                }
+			                edge.setValue(null);
+			            }
+			            
+			            // Puis on affiche les valeurs des edges qui nous interessent
+			            for (int i = 0; i<edges.length; i++){ // Récupération de toutes les aretes connectées a la cellule
+			            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi à 2 décimales
+			            }
+			    		
+			    		// Enfin, mise à jour du style des autres nodes : on baisse l'opacité et on remet la couleur par défaut
 			            for (Object c : inputNodeList){
 			            	if (!c.equals(cell)) {
 			            		model.setStyle(c, styleDefault);
@@ -206,41 +231,6 @@ public class ViewNeuralNetwork extends JDialog{
 			            		model.setStyle(c, styleOpacity);
 			            	}
 			            }
-			            
-			            //TODO
-			            // - afficher les infos en couleur differente (lisible)
-			            
-			            mxCell[] cells = {cell}; // transforme la cellule cliquée en array ...
-			            Object[] edges = graph.getAllEdges(cells); // ... pour le bien de cette méthode
-			            
-			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
-			            while (it.hasNext()) {
-			                Map.Entry pair = (Map.Entry)it.next();
-			                ((mxCell) pair.getKey()).setValue(null);
-			            }
-			            for (int i = 0; i<edges.length; i++){ // Récupération de toutes les aretes connectées a la cellule
-			            	System.out.println("Update value " + edges[i]);
-			            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi à 2 décimales
-			            }
-			            
-		    		} else {
-		    			System.out.println("Default click");
-		    			// si on clique n'importe où, ailleurs que sur une cellule
-		    			for (Object c : inputNodeList){
-			            		model.setStyle(c, styleDefault);
-			            }
-			            for (Object c : hiddenNodeList){
-				            	model.setStyle(c, styleDefault);
-			            }
-			            for (Object c : outputNodeList){
-			            		model.setStyle(c, styleDefault);
-			            }
-			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
-			            while (it.hasNext()) {
-			            	System.out.println("set value to null");
-			                Map.Entry pair = (Map.Entry)it.next();
-			                ((mxCell) pair.getKey()).setValue(null);
-			            }
 		    		}
 	            } finally {
 	            	graph.getModel().endUpdate();
@@ -248,5 +238,30 @@ public class ViewNeuralNetwork extends JDialog{
 	        
 	        }
 	    });
+	    
 	}
+	
+	/**
+	 * Fonction de remise à zéro de l'affichage du neural network
+	 */
+	private void resetDisplay(mxIGraphModel model){
+		
+		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+		
+		for (Object c : inputNodeList){
+	    		model.setStyle(c, styleDefault);
+	    }
+	    for (Object c : hiddenNodeList){
+	        	model.setStyle(c, styleDefault);
+	    }
+	    for (Object c : outputNodeList){
+	    		model.setStyle(c, styleDefault);
+	    }
+	    Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        ((mxCell) pair.getKey()).setValue(null);
+	        ((mxCell) pair.getKey()).setVisible(true);
+	    }
+    }
 }
