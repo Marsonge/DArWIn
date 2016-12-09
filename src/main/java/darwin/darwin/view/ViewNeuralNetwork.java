@@ -161,7 +161,6 @@ public class ViewNeuralNetwork extends JDialog{
 	    		DecimalFormat df = new DecimalFormat("#.##");
 	            
 	            //TODO
-	            // - afficher les infos en couleur differente (lisible)
 	            // - (facultatif) bouger le code vers une methode "mouseOver" plutôt que "mouseClicked"
     			
 	            graph.getModel().beginUpdate();
@@ -247,13 +246,14 @@ public class ViewNeuralNetwork extends JDialog{
 	/**
 	 * Fonction de génération de la couleur de l'arête
 	 * Les couleurs générées sont entre le bleu (vers 1) et le rouge (vers -1)
+	 * (gris pour alentours de 0.)
 	 * @param value poids de l'arête
 	 * @return valeur en hexadecimal de la couleur
 	 */
 	private String getEdgeColor(float value){
 		
 		float r = (-value) / 2f+0.5f;
-		float g = value / 2f + 0.5f;
+		float g = (1-(Math.abs(value)))*0.5f;
 		float b = value / 2f + 0.5f;
 		
 		Color color = new Color(r,g,b);
