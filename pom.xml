@@ -22,6 +22,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<!-- <encoding>UTF-8</encoding> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -72,14 +73,14 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<jar>${project.build.directory}/${project.artifactId}-${version}-shaded.jar</jar>
+							<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar>
 							<outfile>${project.build.directory}/darwin.exe</outfile>
 							<downloadUrl>https://marsonge.github.io/DArWIn/</downloadUrl>
 							<classPath>
 								<mainClass>darwin.darwin.view.MainView</mainClass>
 								<preCp>anything</preCp>
 							</classPath>
-							<!-- <icon>src/main/resources/icon/application.ico</icon> -->
+							<icon>src/main/resources/icon/darwin.ico</icon>
 							<jre>
 								<minVersion>1.8.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
