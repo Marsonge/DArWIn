@@ -1,3 +1,17 @@
  
 Version 0.7.0
  
+How to use
+ Map settings
+ 
+This application is a simulation of wildlife evolution.
+You can change the map in which you want your creatures to evolve by clicking on the 'Change Map' button. Warning : you cannot change the map once the simulation is launched !
+It is possible to change the map look by setting the biomes ladders. The ladders values indicates the height above which the biome type may appear.
+The height value is defined randomly. Set a lower value if you wish for more of one biome type.
+ 
+It is also possible to import a map from a PNG file in the 'Import/Export' tab.
+ 
+Once the map settings suits you, you can launch a simulation by clicking the 'Launch' button.
+ 
+ During simulation
+During the simulation 
