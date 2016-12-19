@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import model.Creature;
+import model.NeuralNetwork;
 import model.grid.Statistique;
 import model.grid.Grid;
 import model.grid.Terrain;
@@ -32,11 +33,13 @@ public class WorldControler extends Observable{
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
+	private Creature currentCreature;
 	
 	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
 		this.statistique = new Statistique();
+		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
 		this.nbdead=0;
@@ -46,8 +49,8 @@ public class WorldControler extends Observable{
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
-		this.softcap = 150;
-		this.hardcap = 200;
+		/*this.softcap = 150;
+		this.hardcap = 200;*/
 	}
 	/**
 	 *  
@@ -268,14 +271,41 @@ public class WorldControler extends Observable{
 		return child;
 	}
 	
+	public NeuralNetwork getCreatureNn(int x, int y) {
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getNeuralNetwork();
+			}
+		}
+		return null;
+	}
+	
+	//TODO opti ?
+	public int getCreatureEnergy(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getEnergy();
+			}
+		}
+		return 0;
+	}
+	
+	//TODO opti ?
+	public float getCreatureSpeed(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				return c.getSpeed();
+			}
+		}
+		return 0;
+	}
 	
 	@Override
 	public void	notifyObservers(Object arg) {
 		super.setChanged();
 		super.notifyObservers(arg); 
 	}
-
-
+	
 	@Override
 	public void addObserver(Observer o){
 		super.addObserver(o);
@@ -291,5 +321,25 @@ public class WorldControler extends Observable{
 	
 	public int getDeadCountCreature(){
 		return this.nbdead;
+	}
+	
+	public void setSoftCap(int val){
+		this.softcap = val;
+	}
+	
+	public void setHardCap(int val){
+		this.hardcap = val;
+	}
+	
+	public void setCurrentCreature(int x, int y){
+		for (Creature c : creatureList){
+			if (c.getX() == x && c.getY() == y){
+				this.currentCreature = c;
+			}
+		}
+	}
+	
+	public Creature getCurrentCreature(){
+		return this.currentCreature;
 	}
 } 

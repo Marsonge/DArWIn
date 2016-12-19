@@ -1,26 +1,27 @@
-package view;
+package utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import controler.WorldControler;
+import view.SidePanel;
 
 public class TimerActionListener implements ActionListener{
 	
 	private WorldControler wc;
-	private ViewPanel vp;
+	private SidePanel sp;
 	
-	public TimerActionListener (WorldControler wc,ViewPanel vp){
+	public TimerActionListener (WorldControler wc,SidePanel sp){
 		this.wc = wc;
-		this.vp = vp;
+		this.sp = sp;
 	}
 	
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.wc.simulateForward();
-		this.vp.tick();
-		this.vp.NbCreatureUpdate(wc.getCountCreature(),wc.getDeadCountCreature());
+		this.sp.tick();
+		this.sp.updateNbCreature(wc.getCountCreature(),wc.getDeadCountCreature());
 	}
 
 }

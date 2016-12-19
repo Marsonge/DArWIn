@@ -4,22 +4,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
 
-import javafx.beans.value.ChangeListener;
+import controler.WorldControler;
 
 /**
  * 
@@ -30,11 +28,11 @@ import javafx.beans.value.ChangeListener;
  * @author cyril.weller
  *
  */
-public class ViewPanel extends JPanel implements Observer{
+public class SidePanel extends JPanel implements Observer{
 	
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
-	public static int MIN_CRITICAL_CREATURE = 200;
+	public static int MIN_CRITICAL_CREATURE = 0;
 	public static int CRITICAL_CREATURE = 1000;
 	public static int DEFAULT_CREATURE = 30;
 	public static int DEFAULT_PREFERRED_CREATURE = 400;
@@ -43,12 +41,15 @@ public class ViewPanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0,0,0);
 	public static final Color defaultButtonColor = new Color(220,220,220);
-	private JLabel NbTime;
-	private JLabel NbAlive;
-	private JLabel NbDead;
+	private JLabel nbTime;
+	private JLabel nbAlive;
+	private JLabel nbDead;
 	private int time;
 	private int alive;
 	private int dead;
+	private WorldControler wc;
+	private MainView parent;
+	//private SidePanel self = this;
 
 	JButton changeMap = new JButton("Change Map");
 	JButton start = new JButton("Start");
@@ -93,6 +94,22 @@ public class ViewPanel extends JPanel implements Observer{
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getSoftCapSlider(){
+		return this.nbCreaturesPreferred;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSlider getHardCapSlider(){
+		return this.nbCreaturesCritical;
+	}
+	
+	/**
 	 * get the start button
 	 * @return
 	 */
@@ -112,7 +129,9 @@ public class ViewPanel extends JPanel implements Observer{
 	/**
 	 * ViewPanel constructor, will build the side panel
 	 */
-	public ViewPanel(){
+	public SidePanel(MainView mv){
+		
+		this.parent = mv;
 		
 		// Set size and color of panel
         this.setPreferredSize(new Dimension(300,700)); 
@@ -175,7 +194,7 @@ public class ViewPanel extends JPanel implements Observer{
         	private static final long serialVersionUID = 1L;
 
 			public Dimension getPreferredSize(){ 
-				return new Dimension(280,660); //Utilité ?
+				return new Dimension(280,660); // Utilite ?
         	}
         };
         
@@ -183,33 +202,57 @@ public class ViewPanel extends JPanel implements Observer{
         tabbedPane.addTab("Options", null, tabOptions);
         tabbedPane.addTab("Stats", null, tabStats);
         
-
         time = 0;
         alive = 90;
         dead = 0;
         
-        JPanel Titres = new JPanel(new GridLayout(7,2));
-        JPanel Values = new JPanel(new GridLayout(7,2));
-        JPanel Ligne = new JPanel (new FlowLayout(4));
+        JPanel titres = new JPanel(new GridLayout(7,2));
+        JPanel values = new JPanel(new GridLayout(7,2));
+        JPanel ligne = new JPanel (new FlowLayout(4));
         
-        JLabel LbTime = new JLabel("Temps :");
-        JLabel LbAlive = new JLabel("Nbr bestioles en vie :");
-        JLabel LbDead = new JLabel("Nbr bestioles mortes :");
+        JLabel lbTime = new JLabel("Time:");
+        JLabel lbAlive = new JLabel("Alive creatures:");
+        JLabel lbDead = new JLabel("Death count:");
         
-        NbTime = new JLabel(Integer.toString(time));
-        NbAlive = new JLabel(Integer.toString(alive));
-        NbDead = new JLabel(Integer.toString(dead));
+        nbTime = new JLabel(Integer.toString(Math.round(time/10)));
+        nbAlive = new JLabel(Integer.toString(alive));
+        nbDead = new JLabel(Integer.toString(dead));
         
-        Titres.add(LbTime);
-        Titres.add(LbAlive);
-        Titres.add(LbDead);
-        Values.add(NbTime);
-        Values.add(NbAlive);
-        Values.add(NbDead);
-        Ligne.add(Titres);
-        Ligne.add(Values);
+        titres.add(lbTime);
+        titres.add(lbAlive);
+        titres.add(lbDead);
+        values.add(nbTime);
+        values.add(nbAlive);
+        values.add(nbDead);
+        ligne.add(titres);
+        ligne.add(values);
 
-        tabStats.add(Ligne);
+        tabStats.add(ligne);
+        
+        // Add neural network view button to Stats tab
+        JButton viewNnButton = new JButton("View creature's neural network");
+        viewNnButton.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// We set the value of SidePanel's wc once the button is clicked.
+        		 if (wc == null) wc = parent.getWorldControler();
+        		 
+        		 // NeuralNetwork view is created with current creature's NN.
+        		 ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+        		 JOptionPane optionPane = new JOptionPane("Neural Network display",
+        				 JOptionPane.INFORMATION_MESSAGE,
+        				 JOptionPane.DEFAULT_OPTION,
+        				 null,
+        				 new Object[]{}, // No buttons available other than 'close cross'
+        				 null);
+
+        		 nnView.setContentPane(optionPane);
+        		 nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		 nnView.pack();
+        		 nnView.setVisible(true);
+        	}
+        });
+        tabStats.add(viewNnButton);
+        
         
         // Add tabbedPane to viewPanel
         this.add(tabbedPane);     
@@ -217,15 +260,14 @@ public class ViewPanel extends JPanel implements Observer{
 	
 	public void tick(){
 		time++;
-		NbTime.setText(Integer.toString(time));
+		nbTime.setText(Integer.toString(Math.round(time/10)));
 		this.revalidate();
 		this.repaint();
 	}
 	
-	public void NbCreatureUpdate(int nbAlive,int nbDead){
-		
-		NbAlive.setText(Integer.toString(nbAlive));
-		NbDead.setText(Integer.toString(nbDead));
+	public void updateNbCreature(int nbAlive,int nbDead){
+		this.nbAlive.setText(Integer.toString(nbAlive));
+		this.nbDead.setText(Integer.toString(nbDead));
 	}
 
 	@Override

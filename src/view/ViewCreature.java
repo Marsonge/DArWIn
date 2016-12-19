@@ -2,6 +2,8 @@ package view;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -9,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import controler.WorldControler;
 import model.Creature;
 
 public class ViewCreature extends JLabel {
@@ -16,19 +19,27 @@ public class ViewCreature extends JLabel {
 	private static final long serialVersionUID = 3003074446528565112L;
 	private Image img;
 	private int size;
+	private WorldControler wc;
+	private int x;
+	private int y;
+	private ViewCreature self = this;
 	
-	public ViewCreature(Creature c,int size){
+	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
 		super();
 		this.size = size;
-		this.setLocation(c.getX(), c.getY());
+		this.setLocation(x,y);
+		this.x = x;
+		this.y = y;
+		this.wc = wc;
 		this.setSize(size,size);
 		try {
-		    img = ImageIO.read(new File("resources/img/creature"+Math.round(c.getSpeed())+".png"));
+		    img = ImageIO.read(new File("resources/img/creature"+Math.round(speed)+".png"));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
 		this.img = img.getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
+		this.addMouseListener(new CreatureMouseListener());
 
 	}
 
@@ -40,6 +51,35 @@ public class ViewCreature extends JLabel {
 	public void setLocation(Point p) {
 		super.setLocation((int)p.getX()-size/2,(int)p.getY()-size/2);
 	}
+
+	/**
+	 * Custom mouse listener intern class for clicking on creature on screen in order to get info
+	 * @author lucie.deruaz
+	 *
+	 */
+	class CreatureMouseListener implements MouseListener{
+	   public void mouseClicked(MouseEvent e) {
+		   //TODO display creature info
+		   System.out.println(self.wc.getCreatureNn(x, y));
+	   }
+
+	   public void mousePressed(MouseEvent e) {
+	   }
+
+	   public void mouseReleased(MouseEvent e) {
+	   }
+
+	   public void mouseEntered(MouseEvent e) {
+		   // TODO opti ?
+		   self.setToolTipText("Energy: " + wc.getCreatureEnergy(x,y) + " Speed: " + wc.getCreatureSpeed(x,y));
+		   wc.setCurrentCreature(x, y);
+		   System.out.println("CREATURE CURRENT : " + wc.getCurrentCreature().getId());
+	   }
+
+	   public void mouseExited(MouseEvent e) {
+	   }
+	}
+
 	
 		
 }
