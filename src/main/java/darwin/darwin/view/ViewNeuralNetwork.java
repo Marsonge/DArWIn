@@ -34,15 +34,19 @@ import darwin.darwin.model.NeuralNetwork;
 @SuppressWarnings("serial")
 public class ViewNeuralNetwork extends JDialog{
 
-	private final int COLUMN_NUMBER = 3;
-	private final int NB_INPUT = 16;
-	private final int NB_OUTPUT = 2;
-	private final int NB_HIDDENNODES = 16;
-	private final int NODE_SIZE = 15;
+	private static final int COLUMN_NUMBER = 3;
+	private static final int NB_INPUT = NeuralNetwork.getNbInput();
+	private static final int NB_OUTPUT = NeuralNetwork.getNbOutput();
+	private static final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
+	private static final int NODE_SIZE = 25;
 	private List<Object> inputNodeList;
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
 	private Map<Object, Float> edgesValuesMap;
+	private float[] input;
+	private float[] matrix;
+	private float[] output;
+	
 	public ViewNeuralNetwork(NeuralNetwork nn){
 		this.setPreferredSize(new Dimension(700,850));
 		this.inputNodeList = new ArrayList<Object>();
@@ -50,8 +54,13 @@ public class ViewNeuralNetwork extends JDialog{
 		this.outputNodeList = new ArrayList<Object>();
 		this.edgesValuesMap = new HashMap<Object, Float>();
 		
+		DecimalFormat df = new DecimalFormat("#.##");
+		
 		float[][] inputAxiom = nn.getInputAxiom();
 		float[][] outputAxiom = nn.getOutputAxiom();
+		input = nn.getInput();
+		matrix = nn.getMatrix();
+		output = nn.getOutput();
 		
 		// graph settings
 		mxGraph graph = new mxGraph();
@@ -74,7 +83,7 @@ public class ViewNeuralNetwork extends JDialog{
 						for (int j = 0; j<NB_INPUT; j++){;
 							Object node = graph.insertVertex(parent,
 									null,
-									null,
+									df.format(input[j]),
 									(this.getPreferredSize().getWidth())/4,
 									((this.getPreferredSize().getHeight())/NB_INPUT)*j,
 									NODE_SIZE,
@@ -87,7 +96,7 @@ public class ViewNeuralNetwork extends JDialog{
 							// Nodes creation
 							Object node = graph.insertVertex(parent,
 									null,
-									null,
+									df.format(matrix[j]),
 									((this.getPreferredSize().getWidth())/4)*2,
 									((this.getPreferredSize().getHeight())/NB_HIDDENNODES)*j,
 									NODE_SIZE,
@@ -99,7 +108,7 @@ public class ViewNeuralNetwork extends JDialog{
 						for (int j = 0; j<NB_OUTPUT; j++){
 							Object node = graph.insertVertex(parent,
 									null,
-									null,
+									df.format(output[j]),
 									((this.getPreferredSize().getWidth())/4)*3,
 									((this.getPreferredSize().getHeight())/NB_OUTPUT)*j,
 									NODE_SIZE,
@@ -118,7 +127,7 @@ public class ViewNeuralNetwork extends JDialog{
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
-					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#bf7e1c");
+					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#000000");
 				}
 			}
 			// (outputAxiom)
@@ -129,7 +138,7 @@ public class ViewNeuralNetwork extends JDialog{
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
-					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#bf7e1c");
+					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#000000");
 				}
 			}
 		} finally {
@@ -154,11 +163,13 @@ public class ViewNeuralNetwork extends JDialog{
     			mxGraph graph = graphComponent.getGraph();
     			mxIGraphModel model = graph.getModel();
 
-    			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142"; // orange
-    			String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+    			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142;"+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // orange
+    			String styleDefault = mxConstants.STYLE_FILLCOLOR
+    					+ "=#C3D9FF;"+ mxConstants.STYLE_FONTCOLOR + "=#000000;"
+    					+mxConstants.STYLE_OPACITY + "=25"; // default light blue
 	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
 	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
-	    		DecimalFormat df = new DecimalFormat("#.##");
+	    		
 	            
 	            //TODO
 	            // - (facultatif) bouger le code vers une methode "mouseOver" plut�t que "mouseClicked"
@@ -194,21 +205,18 @@ public class ViewNeuralNetwork extends JDialog{
 			            	if (!c.equals(cell)) {
 			            		model.setStyle(c, styleDefault);
 			            		//model.setStyle(c, fillOpacity);
-			            		model.setStyle(c, styleOpacity);
 			            	}
 			            }
 			            for (Object c : hiddenNodeList){
 			            	if (!c.equals(cell)) {
 				            	model.setStyle(c, styleDefault);
 			            		//model.setStyle(c, fillOpacity);
-			            		model.setStyle(c, styleOpacity);
 			            	}
 			            }
 			            for (Object c : outputNodeList){
 			            	if (!c.equals(cell)) {
 			            		model.setStyle(c, styleDefault);
 			            		//model.setStyle(c, fillOpacity);
-			            		model.setStyle(c, styleOpacity);
 			            	}
 			            }
 		    		}
@@ -217,6 +225,7 @@ public class ViewNeuralNetwork extends JDialog{
 	            }
 	        }
 	    });
+	    resetDisplay(model);
 	}
 	
 	/**
@@ -224,7 +233,7 @@ public class ViewNeuralNetwork extends JDialog{
 	 */
 	private void resetDisplay(mxIGraphModel model){
 		
-		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF"; // default light blue
+		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;"+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // default light blue
 		
 		for (Object c : inputNodeList){
 	    		model.setStyle(c, styleDefault);
