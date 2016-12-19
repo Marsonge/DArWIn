@@ -10,8 +10,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 
-import javax.swing.JPanel;
-
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
 import darwin.darwin.model.grid.Grid;

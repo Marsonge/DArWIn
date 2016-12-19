@@ -78,8 +78,6 @@ public class SidePanel extends JPanel implements Observer {
 	private int alive;
 	private int dead;
 	
-	private int speed;
-	private int energy;
 	private JLabel nbSpeed;
 	private JLabel nbEnergy;
 	

@@ -19,7 +19,6 @@ import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxStylesheet;
 
 import darwin.darwin.model.NeuralNetwork;
 
@@ -75,7 +74,7 @@ public class ViewNeuralNetwork extends JDialog{
 		graph.setCellsSelectable(false);
 		Object parent = graph.getDefaultParent();
 		mxIGraphModel model = graph.getModel();
-		mxStylesheet stylesheet = new mxStylesheet();
+		//mxStylesheet stylesheet = new mxStylesheet();
 		
 		model.beginUpdate();
 		try {
@@ -170,7 +169,7 @@ public class ViewNeuralNetwork extends JDialog{
     					+ "=#C3D9FF;"+ mxConstants.STYLE_FONTCOLOR + "=#000000;"
     					+mxConstants.STYLE_OPACITY + "=25"; // default light blue
 	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
-	    		String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
+	    		//String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
 	    		
 	            
 	            //TODO
@@ -189,7 +188,7 @@ public class ViewNeuralNetwork extends JDialog{
 			            
 			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
 			            while (it.hasNext()) { // parcours de toutes les edges
-			                Map.Entry pair = (Map.Entry)it.next();
+			                Entry<Object, Float> pair = it.next();
 			                mxCell edge = ((mxCell) pair.getKey());
 			                if (!(Arrays.asList(edges).contains(edge))) {
 			                	edge.setVisible(false);
@@ -248,7 +247,7 @@ public class ViewNeuralNetwork extends JDialog{
 	    }
 	    Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
 	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry)it.next();
+	        Entry<Object, Float> pair = it.next();
 	        ((mxCell) pair.getKey()).setValue(null);
 	        ((mxCell) pair.getKey()).setVisible(true);
 	    }
