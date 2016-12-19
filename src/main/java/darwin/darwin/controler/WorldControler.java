@@ -15,13 +15,11 @@ import javax.swing.JPanel;
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
 import darwin.darwin.model.grid.Grid;
-import darwin.darwin.model.grid.Statistique;
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.model.grid.Tile;
 import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
-import darwin.darwin.view.SidePanel;
 
 /**
  * General Controler
@@ -30,7 +28,6 @@ import darwin.darwin.view.SidePanel;
 public class WorldControler extends Observable{
 	
 	private Grid grid;
-	private Statistique statistique;
 	private List<Creature> creatureList;
 	private int tileSize;
 	private int nbdead;
@@ -38,14 +35,11 @@ public class WorldControler extends Observable{
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
-	private SidePanel sp;
 	
-	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[], SidePanel sP){
-		this.sp = sP;
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed,depths);
 		this.seed = grid.getSeed();
-		this.statistique = new Statistique();
 		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
@@ -77,13 +71,6 @@ public class WorldControler extends Observable{
 		return grid.getNumCols();
 	}
 	
-	/**
-	 * 
-	 * @return 
-	 */
-	public JPanel getStatistique() {
-		return statistique.getStatistique();
-	}
 
 	/**
 	 * Function called every timer tick.
@@ -345,7 +332,6 @@ public class WorldControler extends Observable{
         for (Creature c : creatureList){
             if (c.getX() == x && c.getY() == y){
                 this.currentCreature = c;
-                sp.updateCurrentCreature(currentCreature);
             }
         }
     }

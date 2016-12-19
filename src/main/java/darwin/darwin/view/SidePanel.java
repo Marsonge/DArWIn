@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -131,6 +132,7 @@ public class SidePanel extends JPanel implements Observer {
 	JButton importPngButton = new JButton("Import map from PNG");
 	JButton exportButton = new JButton("Export to JSON");
 	JFileChooser fileChooserForExport = new JFileChooser();
+	private DecimalFormat df = new DecimalFormat("0.00");
 
 	/**
 	 * Disable a button
@@ -403,8 +405,8 @@ public class SidePanel extends JPanel implements Observer {
 		//Modifs stats current creature
         JLabel lbSpeed = new JLabel("Speed:");
         JLabel lbEnergy = new JLabel("Energy:");
-        nbSpeed = new JLabel(Integer.toString(speed));
-        nbEnergy = new JLabel(Integer.toString(energy));
+        nbSpeed = new JLabel("No creature selected");
+        nbEnergy = new JLabel("No creature selected");
 
 		titres.add(lbTime);
 		titres.add(lbAlive);
@@ -847,9 +849,15 @@ public class SidePanel extends JPanel implements Observer {
 		return this.reset;
 	}
 	
-	public void updateCurrentCreature(Creature CurrentCreature){
-		this.nbSpeed.setText(Float.toString(CurrentCreature.getSpeed()));
-		this.nbEnergy.setText(Integer.toString(CurrentCreature.getEnergy()));
+	public void updateCurrentCreature(Creature currentCreature){
+		if(currentCreature==null){
+			this.nbSpeed.setText("No creature selected");
+			this.nbEnergy.setText("No creature selected");
+		}else{
+			this.nbSpeed.setText(df.format(currentCreature.getSpeed()));
+			this.nbEnergy.setText(currentCreature.getEnergy()!=0?Integer.toString(currentCreature.getEnergy()):"DEAD");
+		}
+		
 	}
 
 }
