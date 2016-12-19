@@ -48,7 +48,7 @@ public class ViewNeuralNetwork extends JDialog{
 	private float[] output;
 	
 	public ViewNeuralNetwork(NeuralNetwork nn){
-		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 150);
+		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
 		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2);
 		this.setPreferredSize(new Dimension(width,height));
 		this.inputNodeList = new ArrayList<Object>();
