@@ -88,6 +88,7 @@ public class SidePanel extends JPanel implements Observer{
 
 	private JButton changeMap = new JButton("Change Map");
 	private JButton start = new JButton("Start");
+	private JButton reset = new JButton("Reset");
 	JButton timeSlow2 = new JButton("<<");
 	JButton timeSlow1 = new JButton("<");
 	JButton timeRegular = new JButton("*");
@@ -167,19 +168,23 @@ public class SidePanel extends JPanel implements Observer{
         
          
 	}
+	
 	public void removeTimeControl(){
 		this.tabOptions.remove(timeSlow2);
 		this.tabOptions.remove(timeSlow1);
 		this.tabOptions.remove(timeRegular);
 		this.tabOptions.remove(timeFast1);
 		this.tabOptions.remove(timeFast2);
+		this.tabOptions.remove(reset);
 	}
+	
 	public void addTimeControl(){
 		this.tabOptions.add(timeSlow2);
 		this.tabOptions.add(timeSlow1);
 		this.tabOptions.add(timeRegular);
 		this.tabOptions.add(timeFast1);
 		this.tabOptions.add(timeFast2);
+		this.tabOptions.add(reset);
 	}
 	
 
@@ -265,6 +270,7 @@ public class SidePanel extends JPanel implements Observer{
         timeRegular.setPreferredSize(new Dimension(42,30));
         timeFast1.setPreferredSize(new Dimension(42,30));
         timeFast2.setPreferredSize(new Dimension(48,30));
+        reset.setPreferredSize(new Dimension(150,30));
         
         Dimension optionSliderDim = new Dimension(235, 42);
         Dimension optionLabelDim  = new Dimension(235, 25);
@@ -856,6 +862,10 @@ public class SidePanel extends JPanel implements Observer{
 	public void disableAcceleration() {
 		this.timeFast1.setEnabled(false);
 		this.timeFast2.setEnabled(false);
+	}
+	
+	public JButton getResetButton(){
+		return this.reset;
 	}
 	
 }

@@ -31,7 +31,6 @@ import darwin.darwin.utils.Utils;
  * 
  * main view of the project
  * 
- * @author cyril.weller
  *
  */
 public class MainView extends JFrame {
@@ -94,6 +93,7 @@ public class MainView extends JFrame {
     	this.setNbCreaturesSoftCapListener(sP);
     	this.setNbCreaturesHardCapListener(sP);
     	this.setTimeControlListener(sP);
+    	this.resetListener(sP);
     	
     	// Add a map
     	changeMap();
@@ -122,6 +122,37 @@ public class MainView extends JFrame {
 		if(this.sP.getSeed() != 0){
 			seed = Utils.borderVar(this.sP.getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
+		Float[] depths = new Float[7];
+		int i = 0;
+		List<JSlider> depthSliders = this.sP.getDepthSliders();
+		for(JSlider j : depthSliders){
+			depths[i] = j.getValue()/(float) 100;
+			i++;
+		}
+		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,seed,NUMBER_OF_CREATURES,depths); 
+		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
+		this.wc.setHardCap(sP.getHardCapSlider().getValue());
+		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
+		this.sP.updateSeed(this.wc.getSeed());
+		this.vG = new ViewGrid(wc);
+    	this.setEndOfGameListener(this.vG);
+		
+		this.add(vG, BorderLayout.WEST);
+    	this.pack();
+    	this.setVisible(true);
+    	
+    	wc.simulateForward();
+    	initTimer();
+    	initGrowTimer();
+	}
+	
+	/**
+	 * Reset the map
+	 */
+	public void resetMap(int seed){
+		
+		// When map is created the first time, vG is null
+		if (vG != null) this.remove(vG);
 		Float[] depths = new Float[7];
 		int i = 0;
 		List<JSlider> depthSliders = this.sP.getDepthSliders();
@@ -260,13 +291,7 @@ public class MainView extends JFrame {
 				int choice = JOptionPane.showConfirmDialog(null, "Your creatures all died ! Do you want to start a new simulation ?", "DArWIn - the end", JOptionPane.YES_NO_OPTION);
 				if (choice == JOptionPane.YES_OPTION) {
 		  			// if yes do : changes map once and reset all buttons settings
-		  			self.simulationLaunched = false;
-		  			self.changeMap();
-		  			self.sP.getChangeMapButton().setEnabled(true);
-		  			self.sP.getStartButton().setEnabled(true);
-		  			self.sP.getStartButton().setText("Start");
-		  			self.sP.removeTimeControl();
-		  			self.sP.enableDepthTailoring();
+		  			reset();
 		  		} else {
 		  			// if no do : quit game
 		  			// TODO Save results before exit
@@ -276,6 +301,61 @@ public class MainView extends JFrame {
 		});
 	}
 	
+	
+	/**
+	 * reset
+	 */
+	private void reset(){
+		 
+		self.simulationLaunched = false;
+		self.resetMap(self.wc.getSeed());
+		self.sP.getChangeMapButton().setEnabled(true);
+		self.sP.getStartButton().setEnabled(true);
+		self.sP.getStartButton().setText("Start");
+		self.sP.getInitialNbSlider().setEnabled(true);
+		self.sP.getInitialNbLabel().setEnabled(true);
+		self.sP.removeTimeControl();
+		self.sP.enableDepthTailoring();
+	}
+	
+	/**
+	 * resetListener
+	 * @param sP2
+	 */
+	private void resetListener(SidePanel sP2){
+		sP.getResetButton().addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				
+				boolean paused=true;
+				
+				if (sP.getStartButton().getText().equals("Pause")){
+					paused = false;
+				}
+				
+				if (!paused){
+					timer.stop();
+	                growTimer.stop();
+	                sP.getStartButton().setText("Start");
+				}
+				
+				int choice = JOptionPane.showConfirmDialog(null, "Do you want to start a new simulation ?", "DArWIn - reset", JOptionPane.YES_NO_OPTION);
+				
+				if (choice == JOptionPane.YES_OPTION) {
+					reset();
+				} else if (!paused){
+					timer.start();
+	                growTimer.start();
+	                sP.getStartButton().setText("Pause");
+				}
+				
+			}
+		});
+	}
+	
+	/**
+	 * setTimeControlListener
+	 * @param sP2
+	 */
 	private void setTimeControlListener(SidePanel sP2) {
 		sP.getSlow2Button().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
