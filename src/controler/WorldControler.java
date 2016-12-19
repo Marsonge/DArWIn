@@ -18,6 +18,7 @@ import model.grid.Terrain;
 import model.grid.Tile;
 import utils.UpdateInfoWrapper;
 import utils.Utils;
+import view.SidePanel;
 
 /**
  * General Controler
@@ -34,13 +35,16 @@ public class WorldControler extends Observable{
 	private int softcap;
 	private int hardcap;
 	private Creature currentCreature;
+	SidePanel sp;
 	
-	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount){
+	public WorldControler(int size,int tilesize, float roughness,long seed, int creatureCount,SidePanel sP){
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed);
 		this.statistique = new Statistique();
 		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
+		sp = sP;
+		
 		creatureList = new LinkedList<Creature>();
 		this.nbdead=0;
 		Random rand = new Random();
@@ -191,8 +195,8 @@ public class WorldControler extends Observable{
 			Random rand = new Random();
 			int grows = rand.nextInt(20);
 			if(Terrain.WOODS.equals(t.getTerrain())){
-				if(g<180 && grows < 5){ //Mountains are harsh places : food doesn't always grow
-					g+=3;
+				if(g<180 && grows < 5){ //Mountains  harsh places : food doesn't always grow
+					g+=3;//are
 				}
 			}
 			else{//Mountain
@@ -335,6 +339,7 @@ public class WorldControler extends Observable{
 		for (Creature c : creatureList){
 			if (c.getX() == x && c.getY() == y){
 				this.currentCreature = c;
+				sp.updateCurrentCreature(currentCreature);
 			}
 		}
 	}

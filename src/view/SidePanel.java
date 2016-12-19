@@ -18,6 +18,7 @@ import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 
 import controler.WorldControler;
+import model.Creature;
 
 /**
  * 
@@ -44,9 +45,17 @@ public class SidePanel extends JPanel implements Observer{
 	private JLabel nbTime;
 	private JLabel nbAlive;
 	private JLabel nbDead;
+	
+	private JLabel nbSpeed;
+	private JLabel nbEnergy;
+	
 	private int time;
 	private int alive;
 	private int dead;
+	
+	private int speed;
+	private int energy;
+	
 	private WorldControler wc;
 	private MainView parent;
 	//private SidePanel self = this;
@@ -157,7 +166,7 @@ public class SidePanel extends JPanel implements Observer{
 			public Dimension getPreferredSize(){ 
 				return new Dimension(280,660); 
 			}
-
+			
         };
         
         /** Slider **/
@@ -214,20 +223,34 @@ public class SidePanel extends JPanel implements Observer{
         JLabel lbAlive = new JLabel("Alive creatures:");
         JLabel lbDead = new JLabel("Death count:");
         
+        //Modifs stats current creature
+        JLabel lbSpeed = new JLabel("Speed:");
+        JLabel lbEnergy = new JLabel("Energy:");
+        
         nbTime = new JLabel(Integer.toString(Math.round(time/10)));
         nbAlive = new JLabel(Integer.toString(alive));
         nbDead = new JLabel(Integer.toString(dead));
         
+        nbSpeed = new JLabel(Integer.toString(speed));
+        nbEnergy = new JLabel(Integer.toString(energy));
+        
         titres.add(lbTime);
         titres.add(lbAlive);
         titres.add(lbDead);
+        titres.add(lbSpeed);
+        titres.add(lbEnergy);
         values.add(nbTime);
         values.add(nbAlive);
         values.add(nbDead);
+        values.add(nbSpeed);
+        values.add(nbEnergy);
         ligne.add(titres);
         ligne.add(values);
 
         tabStats.add(ligne);
+        
+       
+        
         
         // Add neural network view button to Stats tab
         JButton viewNnButton = new JButton("View creature's neural network");
@@ -253,12 +276,14 @@ public class SidePanel extends JPanel implements Observer{
         });
         tabStats.add(viewNnButton);
         
-        
+        //wc.addObserver(this);
         // Add tabbedPane to viewPanel
-        this.add(tabbedPane);     
+        this.add(tabbedPane); 
+        
 	}
 	
 	public void tick(){
+		//if (wc == null) wc = parent.getWorldControler(); 
 		time++;
 		nbTime.setText(Integer.toString(Math.round(time/10)));
 		this.revalidate();
@@ -291,4 +316,8 @@ public class SidePanel extends JPanel implements Observer{
 		return this.nbCreaturesLabel;
 	}
 	
+	public void updateCurrentCreature(Creature CurrentCreature){
+		this.nbSpeed.setText(Float.toString(CurrentCreature.getSpeed()));
+		this.nbEnergy.setText(Integer.toString(CurrentCreature.getEnergy()));
+	}
 }

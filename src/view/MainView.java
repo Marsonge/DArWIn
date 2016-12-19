@@ -108,7 +108,7 @@ public class MainView extends JFrame {
 		if (vG != null) this.remove(vG);
 
 		
-		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES); 
+		this.wc = new WorldControler(GRID_SIZE,TILE_SIZE,(float)80*GRID_SIZE,0,NUMBER_OF_CREATURES,sP); 
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
@@ -229,6 +229,9 @@ public class MainView extends JFrame {
             }
         });
 	}
+	
+
+
 	
 	public void setEndOfGameListener(final ViewGrid vg){
 		vg.addEndOfGameListener(new EndOfGameEventListener() {
