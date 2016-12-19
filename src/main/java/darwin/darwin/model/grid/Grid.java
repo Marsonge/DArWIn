@@ -45,8 +45,8 @@ public class Grid {
 			this.seed = seed;
 		}
 		double[][] terrainNoiseGrid = noiseGrid.getNoiseGrid();
-		double max = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).max().getAsDouble();
-		double min = Arrays.stream(terrainNoiseGrid).flatMapToDouble(a -> Arrays.stream(a)).min().getAsDouble();
+		double max = Arrays.stream(terrainNoiseGrid).parallel().flatMapToDouble(a -> Arrays.stream(a)).max().getAsDouble();
+		double min = Arrays.stream(terrainNoiseGrid).parallel().flatMapToDouble(a -> Arrays.stream(a)).min().getAsDouble();
 
         for (int i = 0; i < NUMROWS; i++) {
             for (int j = 0; j < NUMCOLS; j++) {
