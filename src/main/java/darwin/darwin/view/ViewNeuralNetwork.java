@@ -48,7 +48,9 @@ public class ViewNeuralNetwork extends JDialog{
 	private float[] output;
 	
 	public ViewNeuralNetwork(NeuralNetwork nn){
-		this.setPreferredSize(new Dimension(700,850));
+		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 150);
+		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2);
+		this.setPreferredSize(new Dimension(width,height));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
@@ -84,8 +86,8 @@ public class ViewNeuralNetwork extends JDialog{
 							Object node = graph.insertVertex(parent,
 									null,
 									df.format(input[j]),
-									(this.getPreferredSize().getWidth())/4,
-									((this.getPreferredSize().getHeight())/NB_INPUT)*j,
+									((this.getPreferredSize().getWidth())/7)+25,
+									(((this.getPreferredSize().getHeight())/NB_INPUT)-2)*j,
 									NODE_SIZE,
 									NODE_SIZE);
 							inputNodeList.add(node);
@@ -97,8 +99,8 @@ public class ViewNeuralNetwork extends JDialog{
 							Object node = graph.insertVertex(parent,
 									null,
 									df.format(matrix[j]),
-									((this.getPreferredSize().getWidth())/4)*2,
-									((this.getPreferredSize().getHeight())/NB_HIDDENNODES)*j,
+									((((this.getPreferredSize().getWidth())/7))+25)*3,
+									(((this.getPreferredSize().getHeight())/NB_HIDDENNODES)-2)*j,
 									NODE_SIZE,
 									NODE_SIZE);
 							hiddenNodeList.add(node);
@@ -109,8 +111,8 @@ public class ViewNeuralNetwork extends JDialog{
 							Object node = graph.insertVertex(parent,
 									null,
 									df.format(output[j]),
-									((this.getPreferredSize().getWidth())/4)*3,
-									((this.getPreferredSize().getHeight())/NB_OUTPUT)*j,
+									((((this.getPreferredSize().getWidth())/7))+25)*5,
+									(((this.getPreferredSize().getHeight())/NB_OUTPUT)-2)*j,
 									NODE_SIZE,
 									NODE_SIZE);
 							outputNodeList.add(node);

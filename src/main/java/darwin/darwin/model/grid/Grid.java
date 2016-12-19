@@ -97,7 +97,7 @@ public class Grid {
 	 *  
 	 * @param i
 	 * @param j
-	 * @return the colour of the tile at the possition i, j
+	 * @return the colour of the tile at the position i, j
 	 */
 	public Color getTileColour(int i, int j) {
 		return tileGrid[i][j].getColor();
