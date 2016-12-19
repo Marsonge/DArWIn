@@ -130,7 +130,7 @@ public class MainView extends JFrame {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
-		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
+		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths, sP);
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
@@ -162,7 +162,7 @@ public class MainView extends JFrame {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
-		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
+		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths, sP);
 		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);

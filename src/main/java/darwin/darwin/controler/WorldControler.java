@@ -21,6 +21,7 @@ import darwin.darwin.model.grid.Tile;
 import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.SidePanel;
 
 /**
  * General Controler
@@ -37,8 +38,10 @@ public class WorldControler extends Observable{
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
+	private SidePanel sp;
 	
-	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
+	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[], SidePanel sP){
+		this.sp = sP;
 		this.tileSize = tilesize;
 		this.grid = new Grid(size,roughness,seed,depths);
 		this.seed = grid.getSeed();
@@ -342,6 +345,7 @@ public class WorldControler extends Observable{
         for (Creature c : creatureList){
             if (c.getX() == x && c.getY() == y){
                 this.currentCreature = c;
+                sp.updateCurrentCreature(currentCreature);
             }
         }
     }

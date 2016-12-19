@@ -35,6 +35,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import darwin.darwin.controler.WorldControler;
+import darwin.darwin.model.Creature;
 import darwin.darwin.utils.Export;
 import darwin.darwin.utils.Utils;
 
@@ -75,6 +76,12 @@ public class SidePanel extends JPanel implements Observer {
 	private int time;
 	private int alive;
 	private int dead;
+	
+	private int speed;
+	private int energy;
+	private JLabel nbSpeed;
+	private JLabel nbEnergy;
+	
 	private List<JSlider> depthSliders;
 
 	private WorldControler wc;
@@ -392,13 +399,24 @@ public class SidePanel extends JPanel implements Observer {
 		nbTime = new JLabel(Integer.toString(Math.round(time / 10)));
 		nbAlive = new JLabel(Integer.toString(alive));
 		nbDead = new JLabel(Integer.toString(dead));
+		
+		//Modifs stats current creature
+        JLabel lbSpeed = new JLabel("Speed:");
+        JLabel lbEnergy = new JLabel("Energy:");
+        nbSpeed = new JLabel(Integer.toString(speed));
+        nbEnergy = new JLabel(Integer.toString(energy));
 
 		titres.add(lbTime);
 		titres.add(lbAlive);
 		titres.add(lbDead);
+		titres.add(lbSpeed);
+        titres.add(lbEnergy);
 		values.add(nbTime);
 		values.add(nbAlive);
 		values.add(nbDead);
+		values.add(nbSpeed);
+        values.add(nbEnergy);
+        
 		ligne.add(titres);
 		ligne.add(values);
 
@@ -827,6 +845,11 @@ public class SidePanel extends JPanel implements Observer {
 
 	public JButton getResetButton() {
 		return this.reset;
+	}
+	
+	public void updateCurrentCreature(Creature CurrentCreature){
+		this.nbSpeed.setText(Float.toString(CurrentCreature.getSpeed()));
+		this.nbEnergy.setText(Integer.toString(CurrentCreature.getEnergy()));
 	}
 
 }
