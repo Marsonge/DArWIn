@@ -1,5 +1,6 @@
 package darwin.darwin.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -21,13 +22,17 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -70,17 +75,17 @@ public class SidePanel extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
 	public static final Color defaultButtonColor = new Color(220, 220, 220);
-	private static final String HELPFILE = "help.txt";
+	private static final String HELPFILE = "help.html";
 	private JLabel nbTime;
 	private JLabel nbAlive;
 	private JLabel nbDead;
 	private int time;
 	private int alive;
 	private int dead;
-	
+
 	private JLabel nbSpeed;
 	private JLabel nbEnergy;
-	
+
 	private List<JSlider> depthSliders;
 
 	private WorldControler wc;
@@ -376,13 +381,17 @@ public class SidePanel extends JPanel implements Observer {
 
 		// Help tab
 		JPanel tabHelp = new JPanel();
-		tabHelp.setPreferredSize(new Dimension(280, 660));
+		tabHelp.setPreferredSize(new Dimension(260, 1360));
+		JScrollPane helpScrollable = new JScrollPane(tabHelp, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		helpScrollable.setPreferredSize(new Dimension(280, 660));
+		tabHelp.setLayout(new BorderLayout());
 
 		// Add tabs to tabbedPane
 		tabbedPane.addTab("Options", null, tabOptions);
 		tabbedPane.addTab("Stats", null, tabStats);
 		tabbedPane.addTab("Import/Export", null, tabImportExport);
-		tabbedPane.addTab("Help", null, tabHelp);
+		tabbedPane.addTab("Help", null, helpScrollable);
 
 		time = 0;
 		alive = 90;
@@ -399,24 +408,24 @@ public class SidePanel extends JPanel implements Observer {
 		nbTime = new JLabel(Integer.toString(Math.round(time / 10)));
 		nbAlive = new JLabel(Integer.toString(alive));
 		nbDead = new JLabel(Integer.toString(dead));
-		
-		//Modifs stats current creature
-        JLabel lbSpeed = new JLabel("Speed:");
-        JLabel lbEnergy = new JLabel("Energy:");
-        nbSpeed = new JLabel("No creature selected");
-        nbEnergy = new JLabel("No creature selected");
+
+		// Modifs stats current creature
+		JLabel lbSpeed = new JLabel("Speed:");
+		JLabel lbEnergy = new JLabel("Energy:");
+		nbSpeed = new JLabel("No creature selected");
+		nbEnergy = new JLabel("No creature selected");
 
 		titres.add(lbTime);
 		titres.add(lbAlive);
 		titres.add(lbDead);
 		titres.add(lbSpeed);
-        titres.add(lbEnergy);
+		titres.add(lbEnergy);
 		values.add(nbTime);
 		values.add(nbAlive);
 		values.add(nbDead);
 		values.add(nbSpeed);
-        values.add(nbEnergy);
-        
+		values.add(nbEnergy);
+
 		ligne.add(titres);
 		ligne.add(values);
 
@@ -445,7 +454,7 @@ public class SidePanel extends JPanel implements Observer {
 		while (sc.hasNextLine()) {
 
 			str.append(sc.nextLine());
-			
+
 		}
 		JLabel labelHelp = new JLabel(str.toString());
 		labelHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -847,16 +856,17 @@ public class SidePanel extends JPanel implements Observer {
 	public JButton getResetButton() {
 		return this.reset;
 	}
-	
-	public void updateCurrentCreature(Creature currentCreature){
-		if(currentCreature==null){
+
+	public void updateCurrentCreature(Creature currentCreature) {
+		if (currentCreature == null) {
 			this.nbSpeed.setText("No creature selected");
 			this.nbEnergy.setText("No creature selected");
-		}else{
+		} else {
 			this.nbSpeed.setText(df.format(currentCreature.getSpeed()));
-			this.nbEnergy.setText(currentCreature.getEnergy()!=0?Integer.toString(currentCreature.getEnergy()):"DEAD");
+			this.nbEnergy
+					.setText(currentCreature.getEnergy() != 0 ? Integer.toString(currentCreature.getEnergy()) : "DEAD");
 		}
-		
+
 	}
 
 }
