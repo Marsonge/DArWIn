@@ -1,19 +1,19 @@
 package darwin.darwin.view;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.Utils;
@@ -26,6 +26,7 @@ public class ViewCreature extends JLabel {
 	private WorldControler wc;
 	private int x;
 	private int y;
+	private ViewGrid vg;
 	private ViewCreature self = this;
 	private static URL[] IMAGESURL = {
 			Utils.getResource("img/creature0.png"),
@@ -40,13 +41,14 @@ public class ViewCreature extends JLabel {
 	
 	private static ArrayList<BufferedImage> IMAGES= null;
 	
-	public ViewCreature(int size, int x, int y, float speed, WorldControler wc){
+	public ViewCreature(int size, int x, int y, float speed, WorldControler wc, ViewGrid vg){
 		super();
 		this.size = size;
 		this.setLocation(x,y);
 		this.x = x;
 		this.y = y;
 		this.wc = wc;
+		this.vg = vg;
 		this.setSize(size,size);
 		/* Getting all the images only once
 		 * Because ImageIO.read(URL) is so slow
@@ -87,6 +89,8 @@ public class ViewCreature extends JLabel {
 	   public void mouseClicked(MouseEvent e) {
 		   //TODO display creature info
 		   wc.setCurrentCreature(x, y);
+		   vg.clearBorders();
+		   self.setBorder(new LineBorder(Color.RED, 3, true));
 		   System.out.println("current creature : " + wc.getCurrentCreature().getX() + " " + wc.getCurrentCreature().getY());
 	   }
 
