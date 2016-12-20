@@ -390,7 +390,8 @@ public class SidePanel extends JPanel implements Observer {
 		// Add tabs to tabbedPane
 		tabbedPane.addTab("Options", null, tabOptions);
 		tabbedPane.addTab("Stats", null, tabStats);
-		tabbedPane.addTab("Import/Export", null, tabImportExport);
+		//TODO : Get this back
+		//tabbedPane.addTab("Import/Export", null, tabImportExport);
 		tabbedPane.addTab("Help", null, helpScrollable);
 
 		time = 0;

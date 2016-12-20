@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>darwin</groupId>
 	<artifactId>darwin</artifactId>
-	<version>0.7.0</version>
+	<version>1.0.0</version>
 	<name>DArWIn</name>
 	<description>Darwin: Artificial Wildlife Intelligence</description>
 
