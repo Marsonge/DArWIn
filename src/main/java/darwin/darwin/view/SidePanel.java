@@ -370,7 +370,7 @@ public class SidePanel extends JPanel implements Observer {
 		JPanel tabStats = new JPanel();
 		tabStats.setPreferredSize(new Dimension(280, 660));
 
-		// Help tab
+		// Import Export tab
 		JPanel tabImportExport = new JPanel();
 		tabImportExport.setPreferredSize(new Dimension(280, 660));
 
@@ -441,14 +441,15 @@ public class SidePanel extends JPanel implements Observer {
 
 		tabHelp.setLayout(new BoxLayout(tabHelp, BoxLayout.PAGE_AXIS));
 		Scanner sc = new Scanner(Utils.getResource(HELPFILE).openStream());
-
+		StringBuilder str = new StringBuilder();
 		while (sc.hasNextLine()) {
 
-			JLabel label = new JLabel(sc.nextLine());
-			label.setAlignmentX(Component.CENTER_ALIGNMENT);
-			tabHelp.add(label);
+			str.append(sc.nextLine());
+			
 		}
-
+		JLabel labelHelp = new JLabel(str.toString());
+		labelHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		tabHelp.add(labelHelp);
 		sc.close();
 
 		JButton websiteButton = new JButton("Go to website");
