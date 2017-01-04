@@ -2,13 +2,13 @@ package darwin.darwin.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JSlider;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -121,7 +121,7 @@ public class MainView extends JFrame {
 		if (this.sP.getSeed() != 0) {
 			seed = Utils.borderVar(this.sP.getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
-		Float[] depths = new Float[7];
+		double[] depths = new double[7];
 		int i = 0;
 		List<JSlider> depthSliders = this.sP.getDepthSliders();
 		for (JSlider j : depthSliders) {
@@ -153,7 +153,7 @@ public class MainView extends JFrame {
 		// When map is created the first time, vG is null
 		if (vG != null)
 			this.remove(vG);
-		Float[] depths = new Float[7];
+		double[] depths = new double[7];
 		int i = 0;
 		List<JSlider> depthSliders = this.sP.getDepthSliders();
 		for (JSlider j : depthSliders) {

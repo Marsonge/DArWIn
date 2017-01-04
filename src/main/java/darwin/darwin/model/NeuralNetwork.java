@@ -1,5 +1,6 @@
 package darwin.darwin.model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.json.simple.JSONArray;
@@ -23,18 +24,19 @@ public class NeuralNetwork {
 	private static final int NB_INPUT = 17;
 	private static final int NB_OUTPUT = 2;
 	private static final int NB_HIDDENNODES = 17;
-	private float[] input;
-	private float[] matrix;
-	private float[] output;
-	private float[][] inputAxiom;
-	private float[][] outputAxiom;
+	private Node[] input;
+	private Node[] matrix;
+	private Node[] output;
+	private double[][] inputAxiom;
+	private double[][] outputAxiom;
 	private static Random rand = new Random();
 
 	public NeuralNetwork() {
-		inputAxiom = new float[NB_HIDDENNODES][NB_INPUT];
-		outputAxiom = new float[NB_OUTPUT][NB_HIDDENNODES];
-		input = new float[NB_INPUT];
-		matrix = new float[NB_HIDDENNODES];
+		this.inputAxiom = new double[NB_HIDDENNODES][NB_INPUT];
+		this.outputAxiom = new double[NB_OUTPUT][NB_HIDDENNODES];
+		this.input = new Node[NB_INPUT];
+		this.matrix = new Node[NB_HIDDENNODES];
+		this.output = new Node[NB_OUTPUT];
 	}
 
 	/**
@@ -45,14 +47,25 @@ public class NeuralNetwork {
 	 *            : The neural network to mutate from to create a new one
 	 */
 	public NeuralNetwork(NeuralNetwork nn) {
-		input = new float[NB_INPUT];
-		this.matrix = new float[NB_HIDDENNODES];
-		this.inputAxiom = Utils.deepCopyFloatMatrix(nn.getInputAxiom()); // Clones
-																			// properly
-																			// a
-																			// 2D
-																			// array
-		this.outputAxiom = Utils.deepCopyFloatMatrix(nn.getOutputAxiom());
+		this.input = new Node[NB_INPUT];
+		this.matrix = new Node[NB_HIDDENNODES];
+		this.output = new Node[NB_OUTPUT];
+
+		// init
+		int i;
+		for (i = 0; i < NB_INPUT; i++) {
+			input[i] = new Node(0, "");
+		}
+		for (i = 0; i < NB_HIDDENNODES; i++) {
+			matrix[i] = new Node(0, "");
+		}
+		for (i = 0; i < NB_OUTPUT; i++) {
+			output[i] = new Node(0, "");
+		}
+
+		// deepCopydoubleMatrix clones properly a 2D array
+		this.inputAxiom = Utils.deepCopydoubleMatrix(nn.getInputAxiom());
+		this.outputAxiom = Utils.deepCopydoubleMatrix(nn.getOutputAxiom());
 		mutateInput();
 		mutateOutput();
 	}
@@ -70,15 +83,15 @@ public class NeuralNetwork {
 		for (i = 0; i < NB_OUTPUT; i++) {
 			for (j = 0; j < NB_HIDDENNODES; j++) {
 				if (rand.nextInt(10) == 9) {
-					outputAxiom[i][j] += (float) ((rand.nextFloat() - 0.5)); // Grosse
+					outputAxiom[i][j] += (double) ((rand.nextDouble() - 0.5)); // Grosse
 																				// mutation
 				} else {
 					if (rand.nextInt(3) == 2) {
-						outputAxiom[i][j] += (float) ((rand.nextFloat() / 2 - 0.25)); // Petite
+						outputAxiom[i][j] += (double) ((rand.nextDouble() / 2 - 0.25)); // Petite
 																						// mutation
 					} else {
-						outputAxiom[i][j] += (float) ((rand.nextFloat() / 10 - 0.05)); // Mutation
-																						// b�nigne
+						outputAxiom[i][j] += (double) ((rand.nextDouble() / 10 - 0.05)); // Mutation
+																							// b�nigne
 					}
 				}
 				if (outputAxiom[i][j] < -1)
@@ -102,14 +115,14 @@ public class NeuralNetwork {
 		for (i = 0; i < NB_HIDDENNODES; i++) {
 			for (j = 0; j < NB_INPUT; j++) {
 				if (rand.nextInt(10) == 9) {
-					inputAxiom[i][j] += (float) ((rand.nextFloat() - 0.5)); // Grosse
-																			// mutation
+					inputAxiom[i][j] += (double) ((rand.nextDouble() - 0.5)); // Grosse
+																				// mutation
 				} else {
 					if (rand.nextInt(3) == 2) {
-						inputAxiom[i][j] += (float) ((rand.nextFloat() / 2 - 0.25)); // Petite
+						inputAxiom[i][j] += (double) ((rand.nextDouble() / 2 - 0.25)); // Petite
 																						// mutation
 					} else {
-						// inputAxiom[i][j] += (float) ((rand.nextFloat()/10 -
+						// inputAxiom[i][j] += (double) ((rand.nextdouble()/10 -
 						// 0.05)); //Mutation b�nigne
 					}
 				}
@@ -130,19 +143,24 @@ public class NeuralNetwork {
 	 *            time
 	 */
 	public void initialise(Random rand) {
+
 		int i, j;
+
+		for (i = 0; i < NB_INPUT; i++) {
+			input[i] = new Node(0, "");
+		}
+
 		for (i = 0; i < NB_HIDDENNODES; i++) {
+			matrix[i] = new Node(0, "");
 			for (j = 0; j < NB_INPUT; j++) {
-				this.inputAxiom[i][j] = rand.nextFloat() * 2 - 1; // Gives a
-																	// random
-																	// value
-																	// between
-																	// -1 and 1
+				// Gives a random value between -1 and 1
+				this.inputAxiom[i][j] = rand.nextDouble() * 2 - 1;
 			}
 		}
 		for (i = 0; i < NB_OUTPUT; i++) {
+			output[i] = new Node(0, "");
 			for (j = 0; j < NB_HIDDENNODES; j++) {
-				this.outputAxiom[i][j] = rand.nextFloat() * 2 - 1;
+				this.outputAxiom[i][j] = rand.nextDouble() * 2 - 1;
 			}
 		}
 	}
@@ -155,25 +173,24 @@ public class NeuralNetwork {
 	 * @return output[] : An array of values representing the answers given by
 	 *         the network
 	 */
-	public float[] compute(float[] input) {
-		output = new float[NB_OUTPUT];
+	public double[] compute(double[] input) {
 		int i, j;
 		for (i = 0; i < NB_HIDDENNODES; i++) {
-			float result = 0;
+			double result = 0;
 			for (j = 0; j < NB_INPUT; j++) {
-				this.input[j] = input[j];
+				this.input[j].setValue(input[j]);
 				result += this.inputAxiom[i][j] * input[j];
 			}
-			matrix[i] = result;
+			this.matrix[i].setValue(result);
 		}
 		for (i = 0; i < NB_OUTPUT; i++) {
-			float result = 0;
+			double result = 0;
 			for (j = 0; j < NB_HIDDENNODES; j++) {
-				result += this.outputAxiom[i][j] * matrix[j];
+				result += this.outputAxiom[i][j] * matrix[j].getValue();
 			}
-			output[i] = result;
+			this.output[i].setValue(result);
 		}
-		return output.clone();
+		return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
 	}
 
 	@Override
@@ -199,11 +216,11 @@ public class NeuralNetwork {
 		return out;
 	}
 
-	public float[][] getInputAxiom() {
+	public double[][] getInputAxiom() {
 		return inputAxiom;
 	}
 
-	public float[][] getOutputAxiom() {
+	public double[][] getOutputAxiom() {
 		return outputAxiom;
 	}
 
@@ -218,19 +235,34 @@ public class NeuralNetwork {
 	public static int getNbHiddennodes() {
 		return NB_HIDDENNODES;
 	}
-	
-	
 
-	public float[] getInput() {
+	public Node[] getInput() {
 		return input;
 	}
 
-	public float[] getMatrix() {
+	/**
+	 * Allows to get values only from Node array
+	 * 
+	 * @return a double array
+	 */
+	public double[] getInputValue() {
+		return Arrays.stream(input).mapToDouble(Node::getValue).toArray();
+	}
+
+	public Node[] getMatrix() {
 		return matrix;
 	}
 
-	public float[] getOutput() {
+	public double[] getMatrixValue() {
+		return Arrays.stream(matrix).mapToDouble(Node::getValue).toArray();
+	}
+
+	public Node[] getOutput() {
 		return output;
+	}
+
+	public double[] getOutputValue() {
+		return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
 	}
 
 	/**

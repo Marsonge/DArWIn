@@ -41,7 +41,7 @@ public class ViewCreature extends JLabel {
 	
 	private static ArrayList<BufferedImage> IMAGES= null;
 	
-	public ViewCreature(int size, int x, int y, float speed, WorldControler wc, ViewGrid vg){
+	public ViewCreature(int size, int x, int y, double speed, WorldControler wc, ViewGrid vg) {
 		super();
 		this.size = size;
 		this.setLocation(x,y);
@@ -64,8 +64,10 @@ public class ViewCreature extends JLabel {
 				e.printStackTrace();
 			}
 		}
-		
-		this.img = IMAGES.get(Math.round(speed)).getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
+
+		// Resizes the image. Try to keep size a power of 2!
+		this.img = IMAGES.get((int) Math.round(speed)).getScaledInstance(size, size, Image.SCALE_SMOOTH);
+
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 

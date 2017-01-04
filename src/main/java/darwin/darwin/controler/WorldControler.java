@@ -33,24 +33,25 @@ public class WorldControler extends Observable{
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
-	
-	public WorldControler(int size,int tilesize, float roughness,int seed, int creatureCount,Float depths[]){
+
+	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, double depths[]) {
 		this.tileSize = tilesize;
-		this.grid = new Grid(size,roughness,seed,depths);
+		this.grid = new Grid(size, roughness, seed, depths);
 		this.seed = grid.getSeed();
 		this.currentCreature = null;
 		this.notifyObservers(this.creatureList); 
 		creatureList = new LinkedList<Creature>();
-		this.nbdead=0;
+		this.nbdead = 0;
 		Random rand = new Random();
-		for(int i=0; i<creatureCount;i++){
-			Creature c = new Creature(rand.nextInt(size*this.tileSize),rand.nextInt(size*this.tileSize));
+		for (int i = 0; i < creatureCount; i++) {
+			Creature c = new Creature(rand.nextInt(size * this.tileSize), rand.nextInt(size * this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
 		}
 		/*this.softcap = 150;
 		this.hardcap = 200;*/
 	}
+
 	/**
 	 *  
 	 * @param i
@@ -232,12 +233,12 @@ public class WorldControler extends Observable{
 		int y = c.getY();
 		int rot = c.getRot();
 		double rad = Math.toRadians(rot);
-		float speed = c.getSpeed();
-		int newX = (int) Math.round((Math.cos(rad)*speed + x));
-		int newY = (int) Math.round((Math.sin(rad)*speed + y));
-		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols()*tileSize, 5);
-		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows()*tileSize, 5);
-		c.move(newX,newY);
+		double speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad) * speed + x));
+		int newY = (int) Math.round((Math.sin(rad) * speed + y));
+		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols() * tileSize, 5);
+		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows() * tileSize, 5);
+		c.move(newX, newY);
 		return true;
 	}
 	
@@ -280,11 +281,11 @@ public class WorldControler extends Observable{
 		}
 		return 0;
 	}
-	
-	//TODO opti ?
-	public float getCreatureSpeed(int x, int y){
-		for (Creature c : creatureList){
-			if (c.getX() == x && c.getY() == y){
+
+	// TODO opti ?
+	public double getCreatureSpeed(int x, int y) {
+		for (Creature c : creatureList) {
+			if (c.getX() == x && c.getY() == y) {
 				return c.getSpeed();
 			}
 		}

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.swing.JDialog;
 
 import com.mxgraph.model.mxCell;
@@ -41,28 +42,28 @@ public class ViewNeuralNetwork extends JDialog{
 	private List<Object> inputNodeList;
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
-	private Map<Object, Float> edgesValuesMap;
-	private float[] input;
-	private float[] matrix;
-	private float[] output;
-	
-	public ViewNeuralNetwork(NeuralNetwork nn){
+	private Map<Object, Double> edgesValuesMap;
+	private double[] input;
+	private double[] matrix;
+	private double[] output;
+
+	public ViewNeuralNetwork(NeuralNetwork nn) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
 		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2);
 		this.setPreferredSize(new Dimension(width,height));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
-		this.edgesValuesMap = new HashMap<Object, Float>();
-		
+		this.edgesValuesMap = new HashMap<Object, Double>();
+
 		DecimalFormat df = new DecimalFormat("#.##");
-		
-		float[][] inputAxiom = nn.getInputAxiom();
-		float[][] outputAxiom = nn.getOutputAxiom();
-		input = nn.getInput();
-		matrix = nn.getMatrix();
-		output = nn.getOutput();
-		
+
+		double[][] inputAxiom = nn.getInputAxiom();
+		double[][] outputAxiom = nn.getOutputAxiom();
+		input = nn.getInputValue();
+		matrix = nn.getMatrixValue();
+		output = nn.getOutputValue();
+
 		// graph settings
 		mxGraph graph = new mxGraph();
 		graph.setCellsResizable(false);
@@ -124,7 +125,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object hidden : hiddenNodeList) {
 				for (Object input : inputNodeList){
 					Object edge = graph.insertEdge(parent, null, null, input, hidden);
-					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
+					double value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
@@ -135,7 +136,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object output : outputNodeList) {
 				for (Object hidden : hiddenNodeList){
 					Object edge = graph.insertEdge(parent, null, null, hidden, output);
-					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
+					double value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
@@ -186,9 +187,9 @@ public class ViewNeuralNetwork extends JDialog{
 			            mxCell[] cellArray = {cell}; // transforme la cellule cliqu�e en array ...
 			            Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette m�thode
 			            
-			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+						Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
 			            while (it.hasNext()) { // parcours de toutes les edges
-			                Entry<Object, Float> pair = it.next();
+							Entry<Object, Double> pair = it.next();
 			                mxCell edge = ((mxCell) pair.getKey());
 			                if (!(Arrays.asList(edges).contains(edge))) {
 			                	edge.setVisible(false);
@@ -245,9 +246,9 @@ public class ViewNeuralNetwork extends JDialog{
 	    for (Object c : outputNodeList){
 	    		model.setStyle(c, styleDefault);
 	    }
-	    Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+		Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
 	    while (it.hasNext()) {
-	        Entry<Object, Float> pair = it.next();
+			Entry<Object, Double> pair = it.next();
 	        ((mxCell) pair.getKey()).setValue(null);
 	        ((mxCell) pair.getKey()).setVisible(true);
 	    }
@@ -260,15 +261,17 @@ public class ViewNeuralNetwork extends JDialog{
 	 * @param value poids de l'ar�te
 	 * @return valeur en hexadecimal de la couleur
 	 */
-	private String getEdgeColor(float value){
-		
-		float r = (-value) / 2f+0.5f;
-		float g = (1-(Math.abs(value)))*0.5f;
-		float b = value / 2f + 0.5f;
-		
-		Color color = new Color(r,g,b);
-		String hex = "#"+Integer.toHexString(color.getRGB()).substring(2);
-		
+	private String getEdgeColor(double value) {
+
+		float floatValue = (float) value;
+
+		float r = (-floatValue) / 2f + 0.5f;
+		float g = (1 - (Math.abs(floatValue))) * 0.5f;
+		float b = floatValue / 2f + 0.5f;
+
+		Color color = new Color(r, g, b);
+		String hex = "#" + Integer.toHexString(color.getRGB()).substring(2);
+
 		return hex;
 	}
 }
