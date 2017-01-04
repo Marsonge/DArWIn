@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,6 +23,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -134,8 +139,10 @@ public class SidePanel extends JPanel implements Observer {
 	private JPanel custPanel = new JPanel();
 	JButton exportPngButton = new JButton("Export map to PNG");
 	JButton importPngButton = new JButton("Import map from PNG");
-	JButton exportButton = new JButton("Export to JSON");
-	JButton importButton = new JButton("Import from JSON");
+	JButton exportJSONButton = new JButton("Export to JSON");
+	JButton importJSONButton = new JButton("Import from JSON");
+	JButton exportAllButton = new JButton("Export All (zip)");
+	JButton importAllButton = new JButton("Import All (zip)");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	private DecimalFormat df = new DecimalFormat("0.00");
 
@@ -488,17 +495,22 @@ public class SidePanel extends JPanel implements Observer {
 		tabHelp.add(websiteButton);
 
 		addActionListenerExportImport();
-		tabImportExport.add(exportButton);
-		tabImportExport.add(importButton);
+		tabImportExport.add(exportJSONButton);
+		tabImportExport.add(importJSONButton);
 		tabImportExport.add(exportPngButton);
 		tabImportExport.add(importPngButton);
+		tabImportExport.add(exportAllButton);
+		tabImportExport.add(importAllButton);
 
 		// Add tabbedPane to viewPanel
 		this.add(tabbedPane);
 	}
 
+	/**
+	 * addActionListenerExportImport
+	 */
 	private void addActionListenerExportImport() {
-		exportButton.addActionListener(e -> {
+		exportJSONButton.addActionListener(e -> {
 
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -516,7 +528,7 @@ public class SidePanel extends JPanel implements Observer {
 			// When file is selected, we call the export function
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					Export.export(fileChooser.getSelectedFile(), parent.getWorldControler(), parent.getWorldControler().getCreatureList());
+				Export.export(fileChooser.getSelectedFile(), parent.getWorldControler(), parent.getWorldControler().getCreatureList());
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 					return;
@@ -525,7 +537,7 @@ public class SidePanel extends JPanel implements Observer {
 			}
 		});
 		
-		importButton.addActionListener(e -> {
+		importJSONButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
 
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Save files", "json");
@@ -594,7 +606,141 @@ public class SidePanel extends JPanel implements Observer {
 			}
 
 		});
+		
+		// Global export to zip button
+		exportAllButton.addActionListener(e -> {
+			
+			JFileChooser fileChooser = new JFileChooser();
+
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("ZIP archive", "zip");
+			fileChooser.setFileFilter(filter);
+
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+			fileChooser.setSelectedFile(new File("DArWIn_export_" + sdf.format(cal.getTime()) + ".zip"));
+
+			fileChooser.setDialogTitle("Select File");
+
+			int rVal = fileChooser.showOpenDialog(self);
+
+			// When file is selected, we call the export function
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+				try {
+
+					ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileChooser.getSelectedFile()));
+					
+					// Ajout du fichier image
+					File image = new File("DArWIn_export_" + sdf.format(cal.getTime()) + ".png");
+					wc = parent.getWorldControler();
+					wc.exportToPng(image);
+					
+					ZipEntry imageZip = new ZipEntry("DArWIn_export_" + sdf.format(cal.getTime()) + ".png");
+					out.putNextEntry(imageZip);
+					FileInputStream fis = null;
+				      try {
+				        fis = new FileInputStream(image);
+				        byte[] byteBuffer = new byte[1024];
+				        int bytesRead = -1;
+				        while ((bytesRead = fis.read(byteBuffer)) != -1) {
+				          out.write(byteBuffer, 0, bytesRead);
+				        }
+				        out.flush();
+				      } finally {
+				        try {
+				          fis.close();
+				        } catch (Exception e3) {
+				        }
+				      }
+					out.closeEntry();
+					
+					// Ajout du fichier JSON
+					File json = new File("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
+					Export.export(json, wc, wc.getCreatureList());
+					
+					
+					ZipEntry jsonZip = new ZipEntry("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
+					out.putNextEntry(jsonZip);
+					FileInputStream fis2 = null;
+				      try {
+				        fis2 = new FileInputStream(json);
+				        byte[] byteBuffer = new byte[1024];
+				        int bytesRead = -1;
+				        while ((bytesRead = fis2.read(byteBuffer)) != -1) {
+				          out.write(byteBuffer, 0, bytesRead);
+				        }
+				        out.flush();
+				      } finally {
+				        try {
+				          fis2.close();
+				        } catch (Exception e3) {
+				        }
+				      }
+					out.closeEntry();
+					
+					out.finish();
+					out.close();
+					
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
+					return;
+				}
+				JOptionPane.showMessageDialog(null, "Export successful.");
+			}
+		});
+		
+		
+		// Import all from zip
+		importAllButton.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("ZIP archive", "zip");
+			fileChooser.setFileFilter(filter);
+			fileChooser.setDialogTitle("Select File");
+			int rVal = fileChooser.showOpenDialog(self);
+
+			// When file is selected, we call the import function
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					
+					System.out.println(fileChooser.getSelectedFile());
+					ZipInputStream zipIn = new ZipInputStream(new FileInputStream(fileChooser.getSelectedFile()));
+
+					ZipEntry entry = zipIn.getNextEntry();
+			        // iterates over entries in the zip file
+			        while (entry != null) {
+			            String filePath = fileChooser.getSelectedFile().getPath();
+			            
+			            if (!entry.isDirectory()) {
+			                if (entry.getName().contains(".png")){
+			
+			                	wc = parent.getWorldControler();
+								wc.importFromPng(new File(entry.getName()));
+			                }
+			                
+			                if (entry.getName().contains(".json")){
+			                	Import.importFromJson(new File(entry.getName()));
+			                }
+			            } else {
+			                // if the entry is a directory, make the directory
+			                File dir = new File(filePath);
+			                dir.mkdir();
+			            }
+			            zipIn.closeEntry();
+			            entry = zipIn.getNextEntry();
+			        }
+			   
+					 zipIn.close();
+					
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
+					return;
+				}
+				cSeed.setText("Imported");
+			}
+
+		});
 	}
+	
 
 	private void initDepthSliders() {
 		int width = 70;
