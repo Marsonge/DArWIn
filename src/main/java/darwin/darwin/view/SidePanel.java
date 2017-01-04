@@ -43,6 +43,7 @@ import org.apache.commons.lang3.StringUtils;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
 import darwin.darwin.utils.Export;
+import darwin.darwin.utils.Import;
 import darwin.darwin.utils.Utils;
 
 /**
@@ -134,6 +135,7 @@ public class SidePanel extends JPanel implements Observer {
 	JButton exportPngButton = new JButton("Export map to PNG");
 	JButton importPngButton = new JButton("Import map from PNG");
 	JButton exportButton = new JButton("Export to JSON");
+	JButton importButton = new JButton("Import from JSON");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	private DecimalFormat df = new DecimalFormat("0.00");
 
@@ -487,6 +489,7 @@ public class SidePanel extends JPanel implements Observer {
 
 		addActionListenerExportImport();
 		tabImportExport.add(exportButton);
+		tabImportExport.add(importButton);
 		tabImportExport.add(exportPngButton);
 		tabImportExport.add(importPngButton);
 
@@ -513,7 +516,7 @@ public class SidePanel extends JPanel implements Observer {
 			// When file is selected, we call the export function
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					Export.export(fileChooser.getSelectedFile(), parent.getWorldControler().getCreatureList());
+					Export.export(fileChooser.getSelectedFile(), parent.getWorldControler(), parent.getWorldControler().getCreatureList());
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 					return;
@@ -521,6 +524,28 @@ public class SidePanel extends JPanel implements Observer {
 				JOptionPane.showMessageDialog(null, "Export successful.");
 			}
 		});
+		
+		importButton.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Save files", "json");
+			fileChooser.setFileFilter(filter);
+			fileChooser.setDialogTitle("Select File");
+			int rVal = fileChooser.showOpenDialog(self);
+
+			// When file is selected, we call the import function
+			if (rVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					Import.importFromJson(fileChooser.getSelectedFile());
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
+					return;
+				}
+				cSeed.setText("Imported");
+			}
+
+		});
+		
 		exportPngButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -547,6 +572,7 @@ public class SidePanel extends JPanel implements Observer {
 				JOptionPane.showMessageDialog(null, "Export successful.");
 			}
 		});
+		
 		importPngButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
 
