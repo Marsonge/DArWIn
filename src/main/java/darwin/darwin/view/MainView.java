@@ -446,7 +446,8 @@ public class MainView extends JFrame {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
-
+		System.setProperty("sun.java2d.opengl", "True");
+		System.out.println("accelerated? : "+System.getProperty("sun.java2d.opengl"));
 		// Noice Look and Feel for the application
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
