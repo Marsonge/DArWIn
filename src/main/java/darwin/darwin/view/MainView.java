@@ -86,13 +86,13 @@ public class MainView extends JFrame {
 		this.add(sP, BorderLayout.EAST);
 
 		// Add listeners
-		this.setStartButtonListener(sP);
-		this.setChangeMapButtonListener(sP);
-		this.setNbCreaturesListener(sP);
-		this.setNbCreaturesSoftCapListener(sP);
-		this.setNbCreaturesHardCapListener(sP);
-		this.setTimeControlListener(sP);
-		this.resetListener(sP);
+		this.setStartButtonListener();
+		this.setChangeMapButtonListener();
+		this.setNbCreaturesListener();
+		this.setNbCreaturesSoftCapListener();
+		this.setNbCreaturesHardCapListener();
+		this.setTimeControlListener();
+		this.resetListener();
 
 		// Add a map
 		changeMap();
@@ -181,7 +181,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param sP
 	 */
-	public void setNbCreaturesListener(final SidePanel sP) {
+	public void setNbCreaturesListener() {
 
 		sP.getInitialNbSlider().addChangeListener(new ChangeListener() {
 
@@ -197,13 +197,13 @@ public class MainView extends JFrame {
 	 * 
 	 * @param vp
 	 */
-	public void setNbCreaturesSoftCapListener(final SidePanel vp) {
+	public void setNbCreaturesSoftCapListener() {
 
-		vp.getSoftCapSlider().addChangeListener(new ChangeListener() {
+		sP.getSoftCapSlider().addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				wc.setSoftCap(vp.getSoftCapSlider().getValue());
+				wc.setSoftCap(sP.getSoftCapSlider().getValue());
 			}
 
 		});
@@ -213,13 +213,13 @@ public class MainView extends JFrame {
 	 * 
 	 * @param vp
 	 */
-	public void setNbCreaturesHardCapListener(final SidePanel vp) {
+	public void setNbCreaturesHardCapListener() {
 
-		vp.getHardCapSlider().addChangeListener(new ChangeListener() {
+		sP.getHardCapSlider().addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				wc.setHardCap(vp.getHardCapSlider().getValue());
+				wc.setHardCap(sP.getHardCapSlider().getValue());
 			}
 
 		});
@@ -230,7 +230,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param sP
 	 */
-	public void setStartButtonListener(final SidePanel sP) {
+	public void setStartButtonListener() {
 
 		// When start is clicked, simulation start and button displays stop
 		// When it is clicked on stop, simulation pauses
@@ -271,7 +271,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param sP
 	 */
-	public void setChangeMapButtonListener(final SidePanel sP) {
+	public void setChangeMapButtonListener() {
 
 		sP.getChangeMapButton().addActionListener(e -> {
 			if (!simulationLaunched) {
@@ -313,6 +313,8 @@ public class MainView extends JFrame {
 		self.sP.getInitialNbLabel().setEnabled(true);
 		self.sP.removeTimeControl();
 		self.sP.enableDepthTailoring();
+		self.sP.revalidate();
+		self.sP.repaint();
 	}
 
 	/**
@@ -320,7 +322,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param sP2
 	 */
-	private void resetListener(SidePanel sP2) {
+	private void resetListener() {
 		sP.getResetButton().addActionListener(e -> {
 
 			boolean paused = true;
@@ -354,7 +356,7 @@ public class MainView extends JFrame {
 	 * 
 	 * @param sP2
 	 */
-	private void setTimeControlListener(SidePanel sP2) {
+	private void setTimeControlListener() {
 		sP.getSlow2Button().addActionListener(e -> {
 			changeSpeed(-2);
 		});
