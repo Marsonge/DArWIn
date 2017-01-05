@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -30,7 +32,8 @@ public class ViewGrid extends JPanel implements Observer {
 	private final int TILE_SIZE;
 	protected EventListenerList listenerList = new EventListenerList();
 	private boolean endOfGame = false;
-	private List<ViewCreature> listVc;
+	private ViewCreature borderCreature;
+	private Map<Creature,ViewCreature> cMap;
 
 	/**
 	 * Constructor
@@ -41,7 +44,6 @@ public class ViewGrid extends JPanel implements Observer {
 	public ViewGrid(WorldControler wc) {
 		super(null);
 		this.wc = wc;
-		listVc = new LinkedList<>();
 		wc.addObserver(this);
 		TILE_SIZE = wc.getTileSize();
 		int preferredWidth = wc.getSize() * TILE_SIZE;
@@ -89,7 +91,6 @@ public class ViewGrid extends JPanel implements Observer {
 		UpdateInfoWrapper wrapper = (UpdateInfoWrapper) arg;
 
 		// update creatures
-		this.removeAll();
 		List<Creature> lc = wrapper.getCreatureList();
 		// checks if there are still creatures on the grid
 		if (lc.isEmpty() && !endOfGame) {
@@ -99,23 +100,18 @@ public class ViewGrid extends JPanel implements Observer {
 			this.fireEndOfGame(new EndOfGameEvent(this));
 
 		} else {
+			cMap = wrapper.getCreatureMap();
+			removeDeadCreatures(wrapper.getDeadList());
 			paintCreatures(lc);
-			paintTiles(wrapper.getTileList());
 			this.revalidate();
 			this.repaint();
 		}
 	}
 
-	private void paintTiles(List<Tile> tileList) {
-		int rectWidth = getWidth() / wc.getSize();
-		int rectHeight = getHeight() / wc.getSize();
-		Graphics g = getGraphics();
-		for (Tile t : tileList) {
-			int x = t.getX() * rectWidth;
-			int y = t.getY() * rectHeight;
-			Color terrainColor = wc.getTileColour(x, y);
-			g.setColor(terrainColor);
-			g.fillRect(x, y, rectWidth, rectHeight);
+
+	private void removeDeadCreatures(List<Creature> deadList) {
+		for(Creature c: deadList){
+			this.remove(cMap.get(c));
 		}
 	}
 
@@ -126,26 +122,31 @@ public class ViewGrid extends JPanel implements Observer {
 	 *            WorldControler
 	 */
 	private void paintCreatures(List<Creature> cList) {
-		listVc.clear();
+		long timeBorder = 0;
 		for (Creature c : cList) {
+			ViewCreature vc = cMap.get(c);
+			if(vc.getVG() == null){
+				vc.setVG(this);
+				this.add(vc);
+			}
 
-			ViewCreature vc = new ViewCreature(16, c.getX(), c.getY(), c.getSpeed(), this.wc, this);
-			this.add(vc);
+			vc.setLocation(c.getX(), c.getY());
+			vc.setSpeed(c.getSpeed());
 			if (c.equals(this.wc.getCurrentCreature())) {
 				Border border = new LineBorder(Color.RED, 3, true);
 				vc.setBorder(border);
 			}
 			vc.setVisible(true);
-			vc.setSize(16, 16);
-			listVc.add(vc);
+			//vc.setSize(16, 16);
+			
 		}
-	}
-	
-	public void clearBorders(){
 		
-		for(ViewCreature vc :listVc){
-			vc.setBorder(BorderFactory.createEmptyBorder());
+	}
+	public void clearBorders(ViewCreature vc){
+		if(borderCreature != null){
+			borderCreature.setBorder(BorderFactory.createEmptyBorder());
 		}
+		borderCreature = vc;
 	}
 
 	/**

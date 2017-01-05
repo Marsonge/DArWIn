@@ -49,11 +49,11 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.vg = vg;
-		this.setSize(size,size);
+		this.setSize(size+4,size+4);
 		/* Getting all the images only once
 		 * Because ImageIO.read(URL) is so slow
 		 */
-		if(IMAGES==null){
+		if(IMAGES==null || IMAGES.size() < 8){
 			IMAGES = new ArrayList<>();
 			try {
 				for(int i=0; i<8; i++){
@@ -66,7 +66,6 @@ public class ViewCreature extends JLabel {
 				e.printStackTrace();
 			}
 		}
-		
 		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
@@ -76,6 +75,8 @@ public class ViewCreature extends JLabel {
 	@Override
 	public void setLocation(int x, int y) {
 		super.setLocation(x-(size/2), y-(size/2)); //Offsets the label position so that its center corresponds to the creature's coordinates
+		this.x = x;
+		this.y = y;
 	}
 	@Override
 	public void setLocation(Point p) {
@@ -89,11 +90,10 @@ public class ViewCreature extends JLabel {
 	 */
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
-		   //TODO display creature info
 		   wc.setCurrentCreature(x, y);
-		   vg.clearBorders();
+		   System.out.println(wc.getCurrentCreature());
+		   vg.clearBorders(self);
 		   self.setBorder(new LineBorder(Color.RED, 3, true));
-		   System.out.println("current creature : " + wc.getCurrentCreature().getX() + " " + wc.getCurrentCreature().getY());
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -109,6 +109,22 @@ public class ViewCreature extends JLabel {
 
 	   public void mouseExited(MouseEvent e) {
 	   }
+	}
+
+	public void setWC(WorldControler wc){
+		this.wc = wc;
+	}
+	public void setVG(ViewGrid vg){
+		this.vg = vg;
+	}
+
+	public void setSpeed(float speed) {
+		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
+		this.setIcon(new ImageIcon(this.img));
+	}
+
+	public ViewGrid getVG() {
+		return vg;
 	}
 
 	
