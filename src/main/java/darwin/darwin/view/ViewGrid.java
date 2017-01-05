@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,7 @@ public class ViewGrid extends JPanel implements Observer {
 	protected EventListenerList listenerList = new EventListenerList();
 	private boolean endOfGame = false;
 	private Creature borderCreature;
+	private Map<Creature,ViewCreature> cMap;
 
 	/**
 	 * Constructor
@@ -89,7 +91,6 @@ public class ViewGrid extends JPanel implements Observer {
 		UpdateInfoWrapper wrapper = (UpdateInfoWrapper) arg;
 
 		// update creatures
-		//this.removeAll();
 		List<Creature> lc = wrapper.getCreatureList();
 		// checks if there are still creatures on the grid
 		if (lc.isEmpty() && !endOfGame) {
@@ -99,6 +100,7 @@ public class ViewGrid extends JPanel implements Observer {
 			this.fireEndOfGame(new EndOfGameEvent(this));
 
 		} else {
+			cMap = wrapper.getCreatureMap();
 			removeDeadCreatures(wrapper.getDeadList());
 			paintCreatures(lc);
 			this.revalidate();
@@ -108,8 +110,9 @@ public class ViewGrid extends JPanel implements Observer {
 
 
 	private void removeDeadCreatures(List<Creature> deadList) {
-		for(Creature c: deadList)
-			this.remove(c.getVc());
+		for(Creature c: deadList){
+			this.remove(cMap.get(c));
+		}
 	}
 
 	/**
@@ -121,18 +124,14 @@ public class ViewGrid extends JPanel implements Observer {
 	private void paintCreatures(List<Creature> cList) {
 		long timeBorder = 0;
 		for (Creature c : cList) {
-			ViewCreature vc = c.getVc();
-			if(vc.getWC() == null){
-				vc.setWC(this.wc);
+			ViewCreature vc = cMap.get(c);
+			if(vc.getVG() == null){
 				vc.setVG(this);
 				this.add(vc);
 			}
 
 			vc.setLocation(c.getX(), c.getY());
 			vc.setSpeed(c.getSpeed());
-			final long then = System.nanoTime();
-			final long millis = System.nanoTime() - then;
-			timeBorder+= millis;
 			if (c.equals(this.wc.getCurrentCreature())) {
 				Border border = new LineBorder(Color.RED, 3, true);
 				vc.setBorder(border);
@@ -142,11 +141,10 @@ public class ViewGrid extends JPanel implements Observer {
 			//vc.setSize(16, 16);
 			
 		}
-		System.out.println("Time for border " + timeBorder/1000000);
 		
 	}
 	public void clearBorders(){
-		borderCreature.getVc().setBorder(BorderFactory.createEmptyBorder());
+		cMap.get(borderCreature).setBorder(BorderFactory.createEmptyBorder());
 	}
 
 	/**

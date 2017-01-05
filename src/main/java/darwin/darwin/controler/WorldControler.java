@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -23,6 +25,7 @@ import darwin.darwin.model.grid.Tile;
 import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.ViewCreature;
 
 /**
  * General Controler
@@ -38,6 +41,7 @@ public class WorldControler extends Observable {
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
+	private Map<Creature,ViewCreature> creatureMap;
 
 	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[]) {
 		this.tileSize = tilesize;
@@ -46,16 +50,16 @@ public class WorldControler extends Observable {
 		this.currentCreature = null;
 		this.notifyObservers(this.creatureList);
 		creatureList = new LinkedList<Creature>();
+		creatureMap = new HashMap<Creature,ViewCreature>();
 		this.nbdead = 0;
 		Random rand = new Random();
 		for (int i = 0; i < creatureCount; i++) {
 			Creature c = new Creature(rand.nextInt(size * this.tileSize), rand.nextInt(size * this.tileSize));
 			c.initializeNetwork(rand);
 			creatureList.add(c);
+			ViewCreature viewC = new ViewCreature(16,c.getX(),c.getY(),c.getSpeed(),this,null);
+			creatureMap.put(c,  viewC);
 		}
-		/*
-		 * this.softcap = 150; this.hardcap = 200;
-		 */
 	}
 
 	/**
@@ -109,6 +113,8 @@ public class WorldControler extends Observable {
 				// Babies aren't added to the list if we reached the hardcap
 				if (baby != null && nbCreature < hardcap) {
 					iterator.add(baby);
+					ViewCreature viewBaby = new ViewCreature(16,baby.getX(),baby.getY(),baby.getSpeed(),this,null);
+					creatureMap.put(baby,  viewBaby);
 				}
 				this.move(c);
 				this.eat(c);
@@ -121,7 +127,7 @@ public class WorldControler extends Observable {
 		System.out.println("Time to process all creatures (ms): " + millis);
 
 		final long notifyThen = System.nanoTime();
-		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList, deadCreatures);
+		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList, deadCreatures,creatureMap);
 		this.notifyObservers(wrapper);
 		final long notifyMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - notifyThen);
 		System.out.println("Time to paint all creatures (ms): " + notifyMillis);

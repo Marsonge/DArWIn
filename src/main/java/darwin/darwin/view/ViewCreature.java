@@ -110,10 +110,6 @@ public class ViewCreature extends JLabel {
 	   }
 	}
 
-	public WorldControler getWC() {
-		return wc;
-	}
-	
 	public void setWC(WorldControler wc){
 		this.wc = wc;
 	}
@@ -124,6 +120,10 @@ public class ViewCreature extends JLabel {
 	public void setSpeed(float speed) {
 		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
+	}
+
+	public ViewGrid getVG() {
+		return vg;
 	}
 
 	
