@@ -59,8 +59,8 @@ public class Creature implements Cloneable {
 		for(int i=0;i<15;i++){//Normalize input : Colors
 			input[i] = ((float)intput[i])/(255);
 		}
-		input[15] = this.previousRot/180;
-		input[16] = this.energy/150;
+		input[15] = (float)this.previousRot/180;
+		input[16] = (float)this.energy/150;
 		float result[] = this.nn.compute(input);
 		this.speed = getShortSigmoid(result[0])*MAXSPEED;
 		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
