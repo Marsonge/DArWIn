@@ -37,6 +37,7 @@ public class WorldControler extends Observable {
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
+	private int countdownGrow;
 
 	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[]) {
 		this.tileSize = tilesize;
@@ -46,6 +47,7 @@ public class WorldControler extends Observable {
 		this.notifyObservers(this.creatureList);
 		creatureList = new LinkedList<Creature>();
 		this.nbdead = 0;
+		this.countdownGrow = 0;
 		Random rand = new Random();
 		for (int i = 0; i < creatureCount; i++) {
 			Creature c = new Creature(rand.nextInt(size * this.tileSize), rand.nextInt(size * this.tileSize));
@@ -93,7 +95,18 @@ public class WorldControler extends Observable {
 		} else { // Easy mode
 			minenergy = 0;
 		}
-
+		if(countdownGrow==0){
+			new Thread(new Runnable() {
+		           public void run() {
+		        	   grow();             
+		    }
+			}).start();
+			
+		}
+		System.out.println("countdownGrow : " + countdownGrow);
+		countdownGrow=(++countdownGrow)%2;
+		
+		
 		final long then = System.nanoTime();
 		for (ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();) {
 			Creature c = iterator.next();
@@ -208,9 +221,8 @@ public class WorldControler extends Observable {
 		int b = colorTile.getBlue();
 		Random rand = new Random();
 		int grows = rand.nextInt(20);
-		if (Terrain.WOODS.equals(t.getTerrain())) {
-			if (g < 180 && grows < 2) { // Mountains are harsh places : food
-										// doesn't always grow
+		if (Terrain.WOODS.equals(t.getTerrain())) { // Woods, doesn't grow everytime, but still grows from times to times
+			if (g < 180 && grows < 4) { 
 				g += 2;
 			}
 		} else {// Mountain

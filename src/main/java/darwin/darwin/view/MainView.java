@@ -19,7 +19,6 @@ import javax.swing.event.ChangeListener;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.EndOfGameEvent;
 import darwin.darwin.utils.EndOfGameEventListener;
-import darwin.darwin.utils.GrowTimerActionListener;
 import darwin.darwin.utils.TimerActionListener;
 import darwin.darwin.utils.Utils;
 
@@ -37,16 +36,12 @@ public class MainView extends JFrame {
 	static int TICK_GAMETURN = 100;
 	static final int TICK_GAMETURN_MAX = 5000;
 	static final int TICK_GAMETURN_MIN = 10;
-	static int TICK_GROW = 1000;
-	static final int TICK_GROW_MAX = 50000;
-	static final int TICK_GROW_MIN = 100;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
 	private Timer timer;
-	private Timer growTimer;
 	WorldControler wc;
 	ViewGrid vG;
 	SidePanel sP = new SidePanel(this);
@@ -105,9 +100,6 @@ public class MainView extends JFrame {
 		this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc, sP));
 	}
 
-	public void initGrowTimer() {
-		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
-	}
 
 	/**
 	 * Change the map
@@ -142,7 +134,6 @@ public class MainView extends JFrame {
 
 		wc.simulateForward();
 		initTimer();
-		initGrowTimer();
 	}
 
 	/**
@@ -174,7 +165,6 @@ public class MainView extends JFrame {
 
 		wc.simulateForward();
 		initTimer();
-		initGrowTimer();
 	}
 
 	/**
@@ -243,7 +233,6 @@ public class MainView extends JFrame {
 				if (btn.getText().equals("Start")) {
 
 					timer.start();
-					growTimer.start();
 					btn.setText("Pause");
 					if (simulationLaunched == false) {
 						simulationLaunched = true;
@@ -256,7 +245,6 @@ public class MainView extends JFrame {
 
 				} else if (btn.getText().equals("Pause")) {
 					timer.stop();
-					growTimer.stop();
 					btn.setText("Start");
 				}
 
@@ -333,7 +321,6 @@ public class MainView extends JFrame {
 
 			if (!paused) {
 				timer.stop();
-				growTimer.stop();
 				sP.getStartButton().setText("Start");
 			}
 
@@ -344,7 +331,6 @@ public class MainView extends JFrame {
 				reset();
 			} else if (!paused) {
 				timer.start();
-				growTimer.start();
 				sP.getStartButton().setText("Pause");
 			}
 
@@ -376,7 +362,6 @@ public class MainView extends JFrame {
 
 	protected void changeSpeed(int i) {
 		timer.stop();
-		growTimer.stop();
 		switch (i) {
 		case 1:
 			sP.enableDecceleration();
@@ -386,20 +371,14 @@ public class MainView extends JFrame {
 				sP.disableAcceleration();
 				sP.enableDecceleration();
 			}
-			TICK_GROW -= 100;
-			if (TICK_GROW < TICK_GROW_MIN) {
-				TICK_GROW = TICK_GROW_MIN;
-			}
 			break;
 		case 2:
 			TICK_GAMETURN = TICK_GAMETURN_MIN;
-			TICK_GROW = TICK_GROW_MIN;
 			sP.disableAcceleration();
 			sP.enableDecceleration();
 			break;
 		case 0:
 			TICK_GAMETURN = 100;
-			TICK_GROW = 1000;
 			sP.enableAcceleration();
 			sP.enableDecceleration();
 			break;
@@ -411,23 +390,16 @@ public class MainView extends JFrame {
 				sP.enableAcceleration();
 				sP.disableDecceleration();
 			}
-			TICK_GROW += 100;
-			if (TICK_GROW > TICK_GROW_MAX) {
-				TICK_GROW = TICK_GROW_MAX;
-			}
 			break;
 		case -2:
 			TICK_GAMETURN = TICK_GAMETURN_MAX;
-			TICK_GROW = TICK_GROW_MAX;
 			sP.enableAcceleration();
 			sP.disableDecceleration();
 			break;
 		}
 
 		timer.setDelay(TICK_GAMETURN);
-		growTimer.setDelay(TICK_GROW);
 		timer.start();
-		growTimer.start();
 	}
 
 	public static int getNumberOfCreaturesDead() {
