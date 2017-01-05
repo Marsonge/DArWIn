@@ -49,7 +49,7 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.vg = vg;
-		this.setSize(size,size);
+		this.setSize(size+4,size+4);
 		/* Getting all the images only once
 		 * Because ImageIO.read(URL) is so slow
 		 */
@@ -75,6 +75,8 @@ public class ViewCreature extends JLabel {
 	@Override
 	public void setLocation(int x, int y) {
 		super.setLocation(x-(size/2), y-(size/2)); //Offsets the label position so that its center corresponds to the creature's coordinates
+		this.x = x;
+		this.y = y;
 	}
 	@Override
 	public void setLocation(Point p) {
@@ -88,11 +90,10 @@ public class ViewCreature extends JLabel {
 	 */
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
-		   //TODO display creature info
 		   wc.setCurrentCreature(x, y);
-		   vg.clearBorders();
+		   System.out.println(wc.getCurrentCreature());
+		   vg.clearBorders(self);
 		   self.setBorder(new LineBorder(Color.RED, 3, true));
-		   System.out.println("current creature : " + wc.getCurrentCreature().getX() + " " + wc.getCurrentCreature().getY());
 	   }
 
 	   public void mousePressed(MouseEvent e) {

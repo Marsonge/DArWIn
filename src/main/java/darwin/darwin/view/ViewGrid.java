@@ -32,7 +32,7 @@ public class ViewGrid extends JPanel implements Observer {
 	private final int TILE_SIZE;
 	protected EventListenerList listenerList = new EventListenerList();
 	private boolean endOfGame = false;
-	private Creature borderCreature;
+	private ViewCreature borderCreature;
 	private Map<Creature,ViewCreature> cMap;
 
 	/**
@@ -135,7 +135,6 @@ public class ViewGrid extends JPanel implements Observer {
 			if (c.equals(this.wc.getCurrentCreature())) {
 				Border border = new LineBorder(Color.RED, 3, true);
 				vc.setBorder(border);
-				borderCreature = c;
 			}
 			vc.setVisible(true);
 			//vc.setSize(16, 16);
@@ -143,8 +142,11 @@ public class ViewGrid extends JPanel implements Observer {
 		}
 		
 	}
-	public void clearBorders(){
-		cMap.get(borderCreature).setBorder(BorderFactory.createEmptyBorder());
+	public void clearBorders(ViewCreature vc){
+		if(borderCreature != null){
+			borderCreature.setBorder(BorderFactory.createEmptyBorder());
+		}
+		borderCreature = vc;
 	}
 
 	/**
