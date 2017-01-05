@@ -9,12 +9,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
 
 public class Import {
 
-	public static void importFromJson(File file) throws IOException{
+	public static void importFromJson(File file, WorldControler wc) throws IOException{
 	
 		JSONParser jsonParser = new JSONParser();
 
@@ -25,25 +26,50 @@ public class Import {
 			
 			//String seed = (String) obj2.get("Seed");
 			JSONArray creaturesArray = (JSONArray) obj2.get("Creatures");
+		
+			int creatureListSize = wc.getCreatureList().size();
 			
-			for (Object o : creaturesArray){
-				
-				// Get jsonobject 
-				JSONObject jobj = (JSONObject) o;
-				
-				Long id = (Long) jobj.get("id");
-				Long x = (Long) jobj.get("x");
-				Integer trueX = Integer.getInteger(x.toString());
-				Long y = (Long) jobj.get("y");
-				Integer trueY = Integer.getInteger(y.toString());
-				Long energy = (Long) jobj.get("energy");
-				Integer trueEnergy = Integer.getInteger(energy.toString());
-				Double speed = (Double) jobj.get("speed");
-				Float trueSpeed = Float.parseFloat(speed.toString());
-			
+			// Delete all creatures from list, starting from the end
+			for (int j = creatureListSize-1; j >= 0;  j--) {
+				wc.getCreatureList().remove(j);
 			}
 			
-			//System.out.println(seed);
+			int i = 0;
+			for (Object o : creaturesArray){
+				
+				// Get creature from JSON 
+				JSONObject jobj = (JSONObject) o;
+				
+				long id = (long) jobj.get("id");
+				
+				long x = (long) jobj.get("x");
+				int trueX = (int) x;
+				
+				long y = (long) jobj.get("y");
+				int trueY = (int) y;
+				
+				long energy = (long) jobj.get("energy");
+				int trueEnergy = (int) energy;
+				
+				double speed = (double) jobj.get("speed");
+				float trueSpeed = (float) speed;
+			
+				
+				// Get creature's neural network from JSON
+				JSONObject objNeuralNetwork = (JSONObject) jobj.get("neural network");
+				
+				JSONArray jsonArrayInput = (JSONArray) objNeuralNetwork.get("input_axiom") ;
+				JSONArray jsonArrayOutput = (JSONArray) objNeuralNetwork.get("output_axiom") ;
+
+				NeuralNetwork nn = new NeuralNetwork();
+				
+				// Adding creatures to list
+				wc.getCreatureList().add(new Creature(id, trueX, trueY, trueEnergy, trueSpeed, nn));		
+
+				++i;
+			}
+		
+			wc.simulateForward();
 			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

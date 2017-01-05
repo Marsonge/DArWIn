@@ -33,12 +33,13 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 	
-	public Creature(long id, int x, int y, int energy, float speed){
+	public Creature(long id, int x, int y, int energy, float speed, NeuralNetwork nn){
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.energy = energy;
 		this.speed = speed;
+		this.nn = nn;
 	}
 	
 	protected Creature(int x, int y, float speed, NeuralNetwork nn){

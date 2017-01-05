@@ -548,7 +548,8 @@ public class SidePanel extends JPanel implements Observer {
 			// When file is selected, we call the import function
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					Import.importFromJson(fileChooser.getSelectedFile());
+					wc = parent.getWorldControler();
+					Import.importFromJson(fileChooser.getSelectedFile(),wc);
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
 					return;
@@ -702,7 +703,6 @@ public class SidePanel extends JPanel implements Observer {
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					
-					System.out.println(fileChooser.getSelectedFile());
 					ZipInputStream zipIn = new ZipInputStream(new FileInputStream(fileChooser.getSelectedFile()));
 
 					ZipEntry entry = zipIn.getNextEntry();
@@ -710,15 +710,16 @@ public class SidePanel extends JPanel implements Observer {
 			        while (entry != null) {
 			            String filePath = fileChooser.getSelectedFile().getPath();
 			            
+			            wc = parent.getWorldControler();
+			           
 			            if (!entry.isDirectory()) {
 			                if (entry.getName().contains(".png")){
-			
-			                	wc = parent.getWorldControler();
+		
 								wc.importFromPng(new File(entry.getName()));
 			                }
 			                
 			                if (entry.getName().contains(".json")){
-			                	Import.importFromJson(new File(entry.getName()));
+			                	Import.importFromJson(new File(entry.getName()), wc);
 			                }
 			            } else {
 			                // if the entry is a directory, make the directory
