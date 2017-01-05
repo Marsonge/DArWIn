@@ -137,6 +137,8 @@ public class SidePanel extends JPanel implements Observer {
 	private JLabel cSeed = new JLabel("");
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
 	private JPanel custPanel = new JPanel();
+	private JPanel custPanelImport = new JPanel();
+	private JPanel custPanelExport = new JPanel();
 	JButton exportPngButton = new JButton("Export map to PNG");
 	JButton importPngButton = new JButton("Import map from PNG");
 	JButton exportJSONButton = new JButton("Export to JSON");
@@ -495,13 +497,30 @@ public class SidePanel extends JPanel implements Observer {
 		tabHelp.add(websiteButton);
 
 		addActionListenerExportImport();
-		tabImportExport.add(exportJSONButton);
-		tabImportExport.add(importJSONButton);
-		tabImportExport.add(exportPngButton);
-		tabImportExport.add(importPngButton);
-		tabImportExport.add(exportAllButton);
-		tabImportExport.add(importAllButton);
+		tabImportExport.setLayout(new FlowLayout());
+		exportJSONButton.setPreferredSize(new Dimension(180, 30));
+		importJSONButton.setPreferredSize(new Dimension(180, 30));
+		exportPngButton.setPreferredSize(new Dimension(180, 30));
+		importPngButton.setPreferredSize(new Dimension(180, 30));
+		exportAllButton.setPreferredSize(new Dimension(180, 30));
+		importAllButton.setPreferredSize(new Dimension(180, 30));
+		
+		custPanelExport.add(exportJSONButton);
+		custPanelExport.add(exportPngButton);
+		custPanelExport.add(exportAllButton);
+		custPanelExport.setPreferredSize(new Dimension(290, 160));
+		custPanelExport.setBorder(new TitledBorder("Export"));
+		tabImportExport.add(custPanelExport);
 
+		
+		custPanelImport.add(importJSONButton);
+		custPanelImport.add(importPngButton);
+		custPanelImport.add(importAllButton);
+		custPanelImport.setPreferredSize(new Dimension(290, 160));
+		custPanelImport.setBorder(new TitledBorder("Import"));
+		tabImportExport.add(custPanelImport);
+		
+		
 		// Add tabbedPane to viewPanel
 		this.add(tabbedPane);
 	}
