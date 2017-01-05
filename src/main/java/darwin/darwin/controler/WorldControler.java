@@ -3,6 +3,7 @@ package darwin.darwin.controler;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,10 +83,10 @@ public class WorldControler extends Observable {
 	 * @return
 	 */
 	public boolean simulateForward() {
-		List<Tile> tileList = new LinkedList<>(); // Not used
 		// Minimum energy required to survive depends on softcap
 		int minenergy;
 		int nbCreature = creatureList.size();
+		List <Creature> deadCreatures = new ArrayList<>();
 		if (nbCreature > softcap * 1.5) { // Really hard to live there huh?
 			minenergy = 30;
 		} else if (nbCreature > softcap) { // Life is tough but fair
@@ -102,6 +103,7 @@ public class WorldControler extends Observable {
 				// creature dies
 				this.nbdead++;
 				iterator.remove();
+				deadCreatures.add(c);
 			} else {
 				Creature baby = this.reproduce(c);
 				// Babies aren't added to the list if we reached the hardcap
@@ -119,7 +121,7 @@ public class WorldControler extends Observable {
 		System.out.println("Time to process all creatures (ms): " + millis);
 
 		final long notifyThen = System.nanoTime();
-		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList, tileList);
+		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList, deadCreatures);
 		this.notifyObservers(wrapper);
 		final long notifyMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - notifyThen);
 		System.out.println("Time to paint all creatures (ms): " + notifyMillis);
@@ -209,8 +211,7 @@ public class WorldControler extends Observable {
 		Random rand = new Random();
 		int grows = rand.nextInt(20);
 		if (Terrain.WOODS.equals(t.getTerrain())) {
-			if (g < 180 && grows < 2) { // Mountains are harsh places : food
-										// doesn't always grow
+			if (g < 180 && grows < 2) { // Woods are fair place : food grows more often
 				g += 2;
 			}
 		} else {// Mountain

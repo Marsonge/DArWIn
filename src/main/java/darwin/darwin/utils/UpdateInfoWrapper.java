@@ -12,19 +12,19 @@ import darwin.darwin.model.grid.Tile;
  */
 public class UpdateInfoWrapper {
 	private List<Creature> creatureList;
-	private List<Tile> tileList;
+	private List<Creature> deadList;
 	//TODO : Supprimer tileList, non utilisé
-	public UpdateInfoWrapper (List<Creature> creatureList, List<Tile> tileList){
+	public UpdateInfoWrapper (List<Creature> creatureList, List<Creature> deadList){
 		this.creatureList = creatureList;
-		this.tileList = tileList;
+		this.deadList = deadList;
 	}
 
 	public List<Creature> getCreatureList() {
 		return creatureList;
 	}
 
-	public List<Tile> getTileList() {
-		return tileList;
+	public List<Creature> getDeadList() {
+		return deadList;
 	}
 	
 	

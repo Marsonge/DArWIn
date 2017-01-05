@@ -53,7 +53,7 @@ public class ViewCreature extends JLabel {
 		/* Getting all the images only once
 		 * Because ImageIO.read(URL) is so slow
 		 */
-		if(IMAGES==null){
+		if(IMAGES==null || IMAGES.size() < 8){
 			IMAGES = new ArrayList<>();
 			try {
 				for(int i=0; i<8; i++){
@@ -66,7 +66,6 @@ public class ViewCreature extends JLabel {
 				e.printStackTrace();
 			}
 		}
-		
 		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
@@ -109,6 +108,22 @@ public class ViewCreature extends JLabel {
 
 	   public void mouseExited(MouseEvent e) {
 	   }
+	}
+
+	public WorldControler getWC() {
+		return wc;
+	}
+	
+	public void setWC(WorldControler wc){
+		this.wc = wc;
+	}
+	public void setVG(ViewGrid vg){
+		this.vg = vg;
+	}
+
+	public void setSpeed(float speed) {
+		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
+		this.setIcon(new ImageIcon(this.img));
 	}
 
 	

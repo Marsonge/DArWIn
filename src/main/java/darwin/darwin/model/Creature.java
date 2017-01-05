@@ -5,6 +5,8 @@ import java.util.Random;
 
 import org.json.simple.JSONObject;
 
+import darwin.darwin.view.ViewCreature;
+
 public class Creature implements Cloneable {
 	
 	Color xminus;
@@ -17,6 +19,7 @@ public class Creature implements Cloneable {
 	private int x;
 	private int y;
 	private int energy;
+	private ViewCreature vc;
 	private float speed;
 	private NeuralNetwork nn;
 	private int rot = 0;
@@ -31,6 +34,7 @@ public class Creature implements Cloneable {
 		this.energy = 50;
 		this.speed = 3;
 		this.nn = new NeuralNetwork();
+		this.vc = new ViewCreature(16, x, y, speed, null,null);
 	}
 	
 	protected Creature(int x, int y, float speed, NeuralNetwork nn){
@@ -153,6 +157,10 @@ public class Creature implements Cloneable {
 		jsonThis.put("neural network", this.nn.toJson());
 		
 		return jsonThis;
+	}
+
+	public ViewCreature getVc() {
+		return vc;
 	}
 
 	
