@@ -3,7 +3,11 @@ package darwin.darwin.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +17,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -65,6 +70,8 @@ public class MainView extends JFrame {
 	 * 
 	 */
 	public MainView() throws InterruptedException, IOException {
+		
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		// Create the main JFrame
 		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
@@ -96,8 +103,10 @@ public class MainView extends JFrame {
 
 		// Add a map
 		changeMap();
+		
 	}
 
+	
 	/**
 	 * Start the timer
 	 */

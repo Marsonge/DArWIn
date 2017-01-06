@@ -24,6 +24,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -726,30 +727,26 @@ public class SidePanel extends JPanel implements Observer {
 
 					ZipEntry entry = zipIn.getNextEntry();
 			        // iterates over entries in the zip file
+					
+			
 			        while (entry != null) {
-			            String filePath = fileChooser.getSelectedFile().getPath();
 			            
-			            wc = parent.getWorldControler();
+			        	wc = parent.getWorldControler();
 			           
-			            if (!entry.isDirectory()) {
-			                if (entry.getName().contains(".png")){
-		
-								wc.importFromPng(new File(entry.getName()));
-			                }
-			                
-			                if (entry.getName().contains(".json")){
-			                	Import.importFromJson(new File(entry.getName()), wc);
-			                }
-			            } else {
-			                // if the entry is a directory, make the directory
-			                File dir = new File(filePath);
-			                dir.mkdir();
+			            if (entry.getName().contains(".png")){
+			            	wc.importFromPng(new File(entry.getName()));
 			            }
+			                
+			            if (entry.getName().contains(".json")){
+			            	Import.importFromJson(new File(entry.getName()), wc);
+			            }
+			            
 			            zipIn.closeEntry();
 			            entry = zipIn.getNextEntry();
+			            
 			        }
 			   
-					 zipIn.close();
+					zipIn.close();
 					
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());

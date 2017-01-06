@@ -3,6 +3,7 @@ package darwin.darwin.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -62,6 +63,7 @@ public class Import {
 				JSONArray jsonArrayOutput = (JSONArray) objNeuralNetwork.get("output_axiom") ;
 
 				NeuralNetwork nn = new NeuralNetwork();
+				nn.initialise(new Random());
 				
 				// Adding creatures to list
 				wc.getCreatureList().add(new Creature(id, trueX, trueY, trueEnergy, trueSpeed, nn));		
@@ -75,7 +77,7 @@ public class Import {
 			// TODO Auto-generated catch block
 			
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 }
