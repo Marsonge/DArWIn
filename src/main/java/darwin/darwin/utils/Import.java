@@ -1,8 +1,11 @@
 package darwin.darwin.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,6 +20,7 @@ public class Import {
 
 	/**
 	 * importFromJson
+	 * 
 	 * @param file
 	 * @param wc
 	 * @throws IOException
@@ -27,24 +31,24 @@ public class Import {
 		JSONParser jsonParser = new JSONParser();
 
 		try {
-			Object object = jsonParser.parse(new FileReader(file));
-
-			JSONObject obj2 = (JSONObject) object;
-			
-			//String seed = (String) obj2.get("Seed");
-			JSONArray creaturesArray = (JSONArray) obj2.get("Creatures");
-		
-			int creatureListSize = wc.getCreatureList().size();
 			
 			// Delete all creatures from list, starting from the end
-			for (int j = creatureListSize-1; j >= 0;  j--) {
+			for (int j = wc.getCreatureList().size()-1; j >= 0;  j--) {
 				wc.getCreatureList().remove(j);
 			}
-		
+			
+			// Getting an array of creatures from the JSON
+			Object object = jsonParser.parse(new FileReader(file));
+			JSONObject obj2 = (JSONObject) object;		
+			JSONArray creaturesArray = (JSONArray) obj2.get("Creatures");
+
+			// For each creature on the JSON
 			int i = 0;
 			for (Object o : creaturesArray){
 				
-				// Get creature from JSON 
+				/**
+				 * Creature's values
+				 */
 				JSONObject jobj = (JSONObject) o;
 				
 				long id = (long) jobj.get("id");
@@ -61,24 +65,29 @@ public class Import {
 				double speed = (double) jobj.get("speed");
 				float trueSpeed = (float) speed;
 			
+				/**
+				 * Static Neural Network values
+				 */
+				JSONObject staticNN = (JSONObject) obj2.get("Static Neural Network");
 				
-				// Get creature's neural network from JSON
+				// Get the number of input, output and hidden nodes
+				long nb_input = (long) staticNN.get("input_nodes");
+				long hidden_nodes = (long) staticNN.get("hidden_nodes");
+				long nb_output = (long) staticNN.get("output_nodes");
+				
+				/**
+				 * Creature's neural network
+				 */
 				JSONObject objNeuralNetwork = (JSONObject) jobj.get("neural network");
 				
 				JSONArray jsonArrayInput = (JSONArray) objNeuralNetwork.get("input_axiom") ;
 				JSONArray jsonArrayOutput = (JSONArray) objNeuralNetwork.get("output_axiom") ;
 
-				NeuralNetwork nn = new NeuralNetwork();
-				
-				JSONObject staticNN = (JSONObject) obj2.get("Static Neural Network");
-				
-				long nb_input = (long) staticNN.get("input_nodes");
-				long hidden_nodes = (long) staticNN.get("hidden_nodes");
-				long nb_output = (long) staticNN.get("output_nodes");
-				
+				// Instanciate input/output axiom matrix
 				float[][] inputAxiom = new float[(int)hidden_nodes][(int)nb_input];
 				float[][] outputAxiom = new float[(int)nb_output][(int)hidden_nodes];
 				
+				// Recreating input axiom matrix from JSON
 				int ctrIn1 = 0;
 				int ctrIn2 = 0;
 				for ( Object obj : jsonArrayInput){
@@ -90,19 +99,22 @@ public class Import {
 					ctrIn2 = 0;
 					ctrIn1++;
 				}
-								
-				int ctr1 = 0;
-				int ctr2 = 0;
+				
+				// Recreating output axiom matrix from JSON		
+				int ctrOut1 = 0;
+				int ctrOut2 = 0;
 				for ( Object obj : jsonArrayOutput){
 					JSONArray lineArray = (JSONArray) obj;
 					for (Object fArray : lineArray){
-						outputAxiom[ctr1][ctr2] = Float.parseFloat(fArray.toString());
-						ctr2++;
+						outputAxiom[ctrOut1][ctrOut2] = Float.parseFloat(fArray.toString());
+						ctrOut2++;
 					}
-					ctr2 = 0;
-					ctr1++;
+					ctrOut2 = 0;
+					ctrOut1++;
 				}
 				
+				// Recreating creature's neural network
+				NeuralNetwork nn = new NeuralNetwork();
 				nn.setInputAxiom(inputAxiom);
 				nn.setOutputAxiom(outputAxiom);
 				
@@ -119,6 +131,46 @@ public class Import {
 			
 			e.printStackTrace();
 		} 
+	}
+
+	/**
+	 * importFromZip
+	 * @param selectedFile
+	 * @param wc
+	 */
+	public static void importFromZip(File selectedFile, WorldControler wc) {
+		
+		ZipInputStream zipIn;
+		try {
+			zipIn = new ZipInputStream(new FileInputStream(selectedFile));
+		
+
+		ZipEntry entry = zipIn.getNextEntry();
+        // iterates over entries in the zip file
+		
+
+        while (entry != null) {
+        	
+            if (entry.getName().contains(".png")){
+            	wc.importFromPng(new File(entry.getName()));
+            }
+                
+            if (entry.getName().contains(".json")){
+            	importFromJson(new File(entry.getName()), wc);
+            }
+            
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
+            
+        }
+   
+		zipIn.close();
+		
+		} catch ( IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
