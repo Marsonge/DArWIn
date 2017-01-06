@@ -4,17 +4,14 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import darwin.darwin.model.Creature;
@@ -34,14 +31,13 @@ import darwin.darwin.view.ViewCreature;
 public class WorldControler extends Observable {
 
 	private Grid grid;
-	private List<Creature> creatureList;
 	private int tileSize;
 	private int nbdead;
 	private int softcap;
 	private int hardcap;
 	private Creature currentCreature;
 	private int seed;
-	private Map<Creature,ViewCreature> creatureMap;
+	private Map<Creature, ViewCreature> creatureMap;
 	private int countdownGrow;
 
 	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[]) {
@@ -49,18 +45,16 @@ public class WorldControler extends Observable {
 		this.grid = new Grid(size, roughness, seed, depths);
 		this.seed = grid.getSeed();
 		this.currentCreature = null;
-		this.notifyObservers(this.creatureList);
-		creatureList = new LinkedList<Creature>();
-		creatureMap = new HashMap<Creature,ViewCreature>();
+		this.notifyObservers(this.creatureMap);
+		creatureMap = new HashMap<Creature, ViewCreature>();
 		this.nbdead = 0;
 		this.countdownGrow = 0;
 		Random rand = new Random();
 		for (int i = 0; i < creatureCount; i++) {
 			Creature c = new Creature(rand.nextInt(size * this.tileSize), rand.nextInt(size * this.tileSize));
 			c.initializeNetwork(rand);
-			creatureList.add(c);
-			ViewCreature viewC = new ViewCreature(16,c.getX(),c.getY(),c.getSpeed(),this,null);
-			creatureMap.put(c,  viewC);
+			ViewCreature viewC = new ViewCreature(16, c.getX(), c.getY(), c.getSpeed(), this, null);
+			creatureMap.put(c, viewC);
 		}
 	}
 
@@ -91,8 +85,9 @@ public class WorldControler extends Observable {
 	public boolean simulateForward() {
 		// Minimum energy required to survive depends on softcap
 		int minenergy;
-		int nbCreature = creatureList.size();
-		List <Creature> deadCreatures = new ArrayList<>();
+		int nbCreature = creatureMap.size();
+		List<ViewCreature> deadVc = new ArrayList<>();
+		Map<Creature, ViewCreature> toAdd = new HashMap<>();
 		if (nbCreature > softcap * 1.5) { // Really hard to live there huh?
 			minenergy = 30;
 		} else if (nbCreature > softcap) { // Life is tough but fair
@@ -100,47 +95,54 @@ public class WorldControler extends Observable {
 		} else { // Easy mode
 			minenergy = 0;
 		}
-		if(countdownGrow==0){
+		if (countdownGrow == 0) {
 			new Thread(new Runnable() {
-		           public void run() {
-		        	   grow();             
-		    }
+				public void run() {
+					grow();
+				}
 			}).start();
-			
+
 		}
 		System.out.println("countdownGrow : " + countdownGrow);
-		countdownGrow=(++countdownGrow)%2;
-		
-		
+		countdownGrow = (++countdownGrow) % 2;
+
 		final long then = System.nanoTime();
-		for (ListIterator<Creature> iterator = this.creatureList.listIterator(); iterator.hasNext();) {
-			Creature c = iterator.next();
+		for (Iterator<Entry<Creature, ViewCreature>> iterator = this.creatureMap.entrySet().iterator(); iterator
+				.hasNext();) {
+			Entry<Creature, ViewCreature> e = iterator.next();
+			Creature c = e.getKey();
+			ViewCreature vc = e.getValue();
 			compute(c);
 			if (c.getEnergy() <= minenergy) {
 				// creature dies
 				this.nbdead++;
 				iterator.remove();
-				deadCreatures.add(c);
+				deadVc.add(vc);
 			} else {
 				Creature baby = this.reproduce(c);
 				// Babies aren't added to the list if we reached the hardcap
 				if (baby != null && nbCreature < hardcap) {
-					iterator.add(baby);
-					ViewCreature viewBaby = new ViewCreature(16,baby.getX(),baby.getY(),baby.getSpeed(),this,null);
-					creatureMap.put(baby,  viewBaby);
+					ViewCreature viewBaby = new ViewCreature(16, baby.getX(), baby.getY(), baby.getSpeed(), this, null);
+					toAdd.put(baby, viewBaby);
 				}
 				this.move(c);
 				this.eat(c);
+				// update of viewcreature
+				vc.setLocation(c.getX(), c.getY());
+				vc.setSpeed(c.getSpeed());
+				vc.setVisible(true);
+				// vc.setSize(16, 16);
 
 			}
 
 		}
+		creatureMap.putAll(toAdd);
 
 		final long millis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - then);
 		System.out.println("Time to process all creatures (ms): " + millis);
 
 		final long notifyThen = System.nanoTime();
-		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(this.creatureList, deadCreatures,creatureMap);
+		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(deadVc, creatureMap.values());
 		this.notifyObservers(wrapper);
 		final long notifyMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - notifyThen);
 		System.out.println("Time to paint all creatures (ms): " + notifyMillis);
@@ -229,8 +231,10 @@ public class WorldControler extends Observable {
 		int b = colorTile.getBlue();
 		Random rand = new Random();
 		int grows = rand.nextInt(20);
-		if (Terrain.WOODS.equals(t.getTerrain())) { // Woods, doesn't grow everytime, but still grows from times to times
-			if (g < 180 && grows < 4) { 
+		if (Terrain.WOODS.equals(t.getTerrain())) { // Woods, doesn't grow
+													// everytime, but still
+													// grows from times to times
+			if (g < 180 && grows < 4) {
 				g += 2;
 			}
 		} else {// Mountain
@@ -313,7 +317,7 @@ public class WorldControler extends Observable {
 	}
 
 	public NeuralNetwork getCreatureNn(int x, int y) {
-		for (Creature c : creatureList) {
+		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getNeuralNetwork();
 			}
@@ -323,7 +327,7 @@ public class WorldControler extends Observable {
 
 	// TODO opti ?
 	public int getCreatureEnergy(int x, int y) {
-		for (Creature c : creatureList) {
+		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getEnergy();
 			}
@@ -333,7 +337,7 @@ public class WorldControler extends Observable {
 
 	// TODO opti ?
 	public float getCreatureSpeed(int x, int y) {
-		for (Creature c : creatureList) {
+		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getSpeed();
 			}
@@ -357,7 +361,7 @@ public class WorldControler extends Observable {
 	}
 
 	public int getCountCreature() {
-		return creatureList.size();
+		return creatureMap.size();
 	}
 
 	public int getDeadCountCreature() {
@@ -377,11 +381,15 @@ public class WorldControler extends Observable {
 	}
 
 	public void setCurrentCreature(int x, int y) {
-		for (Creature c : creatureList) {
+		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				this.currentCreature = c;
 			}
 		}
+	}
+
+	public Map<Creature, ViewCreature> getCreatureMap() {
+		return creatureMap;
 	}
 
 	public void setHardCap(int val) {
@@ -390,10 +398,6 @@ public class WorldControler extends Observable {
 
 	public void exportToPng(File selectedFile) throws IOException {
 		IOPng.exportToPng(grid, selectedFile);
-	}
-
-	public List<Creature> getCreatureList() {
-		return this.creatureList;
 	}
 
 	public void importFromPng(File selectedFile) throws IOException {

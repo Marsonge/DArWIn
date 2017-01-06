@@ -5,8 +5,6 @@ import java.util.Random;
 
 import org.json.simple.JSONObject;
 
-import darwin.darwin.view.ViewCreature;
-
 public class Creature implements Cloneable {
 	
 	Color xminus;

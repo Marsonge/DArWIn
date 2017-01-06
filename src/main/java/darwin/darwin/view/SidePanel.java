@@ -18,8 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
@@ -53,7 +51,7 @@ import darwin.darwin.utils.Utils;
  * 
  *
  */
-public class SidePanel extends JPanel implements Observer {
+public class SidePanel extends JPanel {
 
 	public static int MIN_CREATURE = 0;
 	public static int MAX_CREATURE = 100;
@@ -390,7 +388,7 @@ public class SidePanel extends JPanel implements Observer {
 		// Add tabs to tabbedPane
 		tabbedPane.addTab("Options", null, tabOptions);
 		tabbedPane.addTab("Stats", null, tabStats);
-		//TODO : Get this back
+		// TODO : Get this back
 		tabbedPane.addTab("Import/Export", null, tabImportExport);
 		tabbedPane.addTab("Help", null, helpScrollable);
 
@@ -513,7 +511,7 @@ public class SidePanel extends JPanel implements Observer {
 			// When file is selected, we call the export function
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
-					Export.export(fileChooser.getSelectedFile(), parent.getWorldControler().getCreatureList());
+					Export.export(fileChooser.getSelectedFile(), parent.getWorldControler().getCreatureMap().keySet());
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 					return;
@@ -788,12 +786,6 @@ public class SidePanel extends JPanel implements Observer {
 			}
 		}
 		return 0;
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

@@ -1,9 +1,8 @@
 package darwin.darwin.utils;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import darwin.darwin.model.Creature;
 import darwin.darwin.view.ViewCreature;
 
 /**
@@ -12,28 +11,23 @@ import darwin.darwin.view.ViewCreature;
  *
  */
 public class UpdateInfoWrapper {
-	private List<Creature> creatureList;
-	private List<Creature> deadList;
-	private Map<Creature,ViewCreature> creatureMap;
+	private List<ViewCreature> deadList;
+	private Collection<ViewCreature> creatureList;
 
 	
-	public UpdateInfoWrapper (List<Creature> creatureList, List<Creature> deadList, Map<Creature,ViewCreature> creatureMap){
+	public UpdateInfoWrapper (List<ViewCreature> deadList, Collection<ViewCreature> creatureList){
 		this.creatureList = creatureList;
 		this.deadList = deadList;
-		this.creatureMap = creatureMap;
 	}
 
-	public List<Creature> getCreatureList() {
+	public Collection<ViewCreature> getCreatureList() {
 		return creatureList;
 	}
 
-	public List<Creature> getDeadList() {
+	public List<ViewCreature> getDeadList() {
 		return deadList;
 	}
-	
-	public Map<Creature,ViewCreature> getCreatureMap(){
-		return creatureMap;
-	}
+
 	
 	
 }
