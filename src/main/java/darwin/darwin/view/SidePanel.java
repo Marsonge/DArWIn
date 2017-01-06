@@ -765,8 +765,8 @@ public class SidePanel extends JPanel implements Observer {
 	public void tick() {
 		time++;
 		nbTime.setText(Integer.toString(Math.round(time / 10)));
-		this.revalidate();
-		this.repaint();
+		nbTime.repaint();
+		nbTime.revalidate();
 	}
 
 	public void updateNbCreature(int nbAlive, int nbDead) {
