@@ -1,15 +1,12 @@
 package darwin.darwin.utils;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
@@ -22,8 +19,6 @@ public class Export {
 		
 		JSONObject obj = new JSONObject();
 		
-		Integer seed = wc.getSeed();
-		obj.put("Seed", seed.toString() );
 		obj.put("Static Neural Network", NeuralNetwork.getStaticJson());
 
 		JSONArray jsonCreatures = new JSONArray();

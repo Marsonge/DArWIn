@@ -3,7 +3,6 @@ package darwin.darwin.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,6 +15,13 @@ import darwin.darwin.model.NeuralNetwork;
 
 public class Import {
 
+	/**
+	 * importFromJson
+	 * @param file
+	 * @param wc
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unused")
 	public static void importFromJson(File file, WorldControler wc) throws IOException{
 	
 		JSONParser jsonParser = new JSONParser();
@@ -34,7 +40,7 @@ public class Import {
 			for (int j = creatureListSize-1; j >= 0;  j--) {
 				wc.getCreatureList().remove(j);
 			}
-			
+		
 			int i = 0;
 			for (Object o : creaturesArray){
 				
@@ -63,7 +69,42 @@ public class Import {
 				JSONArray jsonArrayOutput = (JSONArray) objNeuralNetwork.get("output_axiom") ;
 
 				NeuralNetwork nn = new NeuralNetwork();
-				nn.initialise(new Random());
+				
+				JSONObject staticNN = (JSONObject) obj2.get("Static Neural Network");
+				
+				long nb_input = (long) staticNN.get("input_nodes");
+				long hidden_nodes = (long) staticNN.get("hidden_nodes");
+				long nb_output = (long) staticNN.get("output_nodes");
+				
+				float[][] inputAxiom = new float[(int)hidden_nodes][(int)nb_input];
+				float[][] outputAxiom = new float[(int)nb_output][(int)hidden_nodes];
+				
+				int ctrIn1 = 0;
+				int ctrIn2 = 0;
+				for ( Object obj : jsonArrayInput){
+					JSONArray lineArray = (JSONArray) obj;
+					for (Object fArray : lineArray){
+						inputAxiom[ctrIn1][ctrIn2] = Float.parseFloat(fArray.toString());
+						ctrIn2++;
+					}
+					ctrIn2 = 0;
+					ctrIn1++;
+				}
+								
+				int ctr1 = 0;
+				int ctr2 = 0;
+				for ( Object obj : jsonArrayOutput){
+					JSONArray lineArray = (JSONArray) obj;
+					for (Object fArray : lineArray){
+						outputAxiom[ctr1][ctr2] = Float.parseFloat(fArray.toString());
+						ctr2++;
+					}
+					ctr2 = 0;
+					ctr1++;
+				}
+				
+				nn.setInputAxiom(inputAxiom);
+				nn.setOutputAxiom(outputAxiom);
 				
 				// Adding creatures to list
 				wc.getCreatureList().add(new Creature(id, trueX, trueY, trueEnergy, trueSpeed, nn));		
