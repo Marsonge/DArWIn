@@ -29,7 +29,6 @@ public class ViewMapGrid extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private final int width = 129;
 	private final int height = 129;
-	private double zoomLevel = 1;
 	private ViewMapGrid self = this;
 	private Color grid[][];
 	private Color previousGrids[][][];
@@ -65,7 +64,7 @@ public class ViewMapGrid extends JPanel {
 	
 	@Override
 	public Dimension getPreferredSize(){
-		return new Dimension((int)(width * zoomLevel),(int) (height * zoomLevel));
+		return new Dimension((int)(width * TILESIZE),(int) (height * TILESIZE));
 	}
 	
 
@@ -79,7 +78,7 @@ public class ViewMapGrid extends JPanel {
 			}
 		}
 		this.previousGrids = new Color[width][height][5];
-		this.setPreferredSize(new Dimension((int)(width*zoomLevel),(int)(height*zoomLevel)));
+		this.setPreferredSize(new Dimension((int)(width * TILESIZE),(int)(height * TILESIZE)));
 		
 		this.addMouseMotionListener(new MouseMotionListener() {
 			
@@ -279,6 +278,9 @@ public class ViewMapGrid extends JPanel {
 		if(TILESIZE<=1){
 			TILESIZE = 1;
 		}
+	}
+	public void setZoomLevel(int z){
+		TILESIZE = z;
 	}
 
 	public Color[][] getTiles() {
