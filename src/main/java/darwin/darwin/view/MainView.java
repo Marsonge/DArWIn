@@ -38,7 +38,7 @@ public class MainView extends JFrame {
 	static final int NUMBER_OF_CREATURES_DEAD = 0;
 	static int TICK_GAMETURN = 100;
 	static final int TICK_GAMETURN_MAX = 5000;
-	static final int TICK_GAMETURN_MIN = 10;
+	static final int TICK_GAMETURN_MIN = 10;	
 	static final int GRID_SIZE = 129;
 	private int TILE_SIZE = 6;
 	private int CREATURE_SIZE = 16;

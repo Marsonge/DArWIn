@@ -101,7 +101,7 @@ public class TabOptions extends JPanel {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
         int height = gd.getDisplayMode().getHeight();
         if(height < 900){
-        	size -= 100;
+        	size -= 127;
         }
 		this.setPreferredSize(new Dimension(280, size));
 		

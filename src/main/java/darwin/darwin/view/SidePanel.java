@@ -132,7 +132,7 @@ public class SidePanel extends JPanel {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
         int height = gd.getDisplayMode().getHeight();
         if(height < 900){
-        	size -= 100;
+        	size -= 127;
         }
 		// Set size and color of panel
 		this.setPreferredSize(new Dimension(300, size));
