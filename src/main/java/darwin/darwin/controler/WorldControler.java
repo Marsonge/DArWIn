@@ -44,7 +44,7 @@ public class WorldControler extends Observable {
 	private int countdownGrow;
 	private int creatureSize;
 	
-	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[], int creatureSize) {
+	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, double depths[], int creatureSize) {
 		this.tileSize = tilesize;
 		this.grid = new Grid(size, roughness, seed, depths);
 		this.seed = grid.getSeed();
@@ -291,9 +291,9 @@ public class WorldControler extends Observable {
 		int y = c.getY();
 		int rot = c.getRot();
 		double rad = Math.toRadians(rot);
-		float speed = c.getSpeed();
-		int newX = (int) Math.round((Math.cos(rad) * speed * ((float)tileSize/6) + x));
-		int newY = (int) Math.round((Math.sin(rad) * speed * ((float)tileSize/6) + y));
+		double speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad) * speed + x));
+		int newY = (int) Math.round((Math.sin(rad) * speed + y));
 		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols() * tileSize, 5);
 		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows() * tileSize, 5);
 		c.move(newX, newY);
@@ -341,7 +341,7 @@ public class WorldControler extends Observable {
 	}
 
 	// TODO opti ?
-	public float getCreatureSpeed(int x, int y) {
+	public double getCreatureSpeed(int x, int y) {
 		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getSpeed();

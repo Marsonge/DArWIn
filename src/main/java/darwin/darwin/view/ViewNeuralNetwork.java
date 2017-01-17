@@ -1,5 +1,6 @@
 package darwin.darwin.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -12,7 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxIGraphModel;
@@ -31,38 +37,43 @@ import darwin.darwin.model.NeuralNetwork;
  */
 
 @SuppressWarnings("serial")
-public class ViewNeuralNetwork extends JDialog{
+public class ViewNeuralNetwork extends JDialog {
 
-	private static final int COLUMN_NUMBER = 3;
-	private static final int NB_INPUT = NeuralNetwork.getNbInput();
-	private static final int NB_OUTPUT = NeuralNetwork.getNbOutput();
-	private static final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
+	private final int COLUMN_NUMBER = 3;
+	private final int NB_INPUT = NeuralNetwork.getNbInput();
+	private final int NB_OUTPUT = NeuralNetwork.getNbOutput();
+	private final int NB_HIDDENNODES = NeuralNetwork.getNbHiddennodes();
 	private static final int NODE_SIZE = 25;
 	private List<Object> inputNodeList;
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
-	private Map<Object, Float> edgesValuesMap;
-	private float[] input;
-	private float[] matrix;
-	private float[] output;
-	
-	public ViewNeuralNetwork(NeuralNetwork nn){
+	private Map<Object, Double> edgesValuesMap; // mxGraph object 'edge' and its
+												// value
+	private String[] nodesTitles; // facultative strings to be associated with
+									// nodes
+	private double[] input;
+	private double[] matrix;
+	private double[] output;
+
+	public ViewNeuralNetwork(NeuralNetwork nn) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
-		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2);
+		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 + 150);
 		this.setPreferredSize(new Dimension(width,height));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
-		this.edgesValuesMap = new HashMap<Object, Float>();
-		
+		this.edgesValuesMap = new HashMap<Object, Double>();
+		ViewNeuralNetwork self = this;
+
 		DecimalFormat df = new DecimalFormat("#.##");
-		
-		float[][] inputAxiom = nn.getInputAxiom();
-		float[][] outputAxiom = nn.getOutputAxiom();
+
+		double[][] inputAxiom = nn.getInputAxiom();
+		double[][] outputAxiom = nn.getOutputAxiom();
 		input = nn.getInput();
 		matrix = nn.getMatrix();
 		output = nn.getOutput();
-		
+		this.nodesTitles = NeuralNetwork.getNodesTitles();
+
 		// graph settings
 		mxGraph graph = new mxGraph();
 		graph.setCellsResizable(false);
@@ -72,10 +83,12 @@ public class ViewNeuralNetwork extends JDialog{
 		graph.setAllowDanglingEdges(false);
 		graph.setConnectableEdges(false);
 		graph.setCellsSelectable(false);
+
 		Object parent = graph.getDefaultParent();
 		mxIGraphModel model = graph.getModel();
 		//mxStylesheet stylesheet = new mxStylesheet();
 		
+		// Nodes creation
 		model.beginUpdate();
 		try {
 			for (int i = 0; i<COLUMN_NUMBER; i++){
@@ -124,7 +137,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object hidden : hiddenNodeList) {
 				for (Object input : inputNodeList){
 					Object edge = graph.insertEdge(parent, null, null, input, hidden);
-					float value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
+					double value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
@@ -135,7 +148,7 @@ public class ViewNeuralNetwork extends JDialog{
 			for (Object output : outputNodeList) {
 				for (Object hidden : hiddenNodeList){
 					Object edge = graph.insertEdge(parent, null, null, hidden, output);
-					float value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
+					double value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
 					
 					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
@@ -148,9 +161,54 @@ public class ViewNeuralNetwork extends JDialog{
 		
 		// apply settings
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-	    getContentPane().add(graphComponent);
-	    this.add(graphComponent);
-	    
+		
+		// Affichage labels input
+		int i = 0;
+		for (; i < this.NB_INPUT; i++) {
+			if (this.nodesTitles.length > i) {
+				JLabel label = new JLabel(this.nodesTitles[i], JLabel.CENTER);
+				label.setVerticalAlignment(SwingConstants.CENTER);
+
+				label.setLayout(new BoxLayout(label, BoxLayout.PAGE_AXIS));
+				label.setBounds(10,
+						(((int) this.getPreferredSize().getHeight() / NB_INPUT) * i) - i, 120, 15);
+
+				label.setBackground(Color.LIGHT_GRAY); // marche pas ?
+				label.setBorder(BorderFactory.createLineBorder(Color.black));
+
+				label.setVisible(true);
+				this.getLayeredPane().add(label, new Integer(1));
+			} else {
+				break;
+			}
+		}
+		// Affichage labels output
+		for (int j = 0; j <= this.NB_OUTPUT; j++) {
+			if (this.nodesTitles.length > i) {
+				System.out.println("Loop if entered :" + i);
+				System.out.println("node title " + this.nodesTitles[i]);
+				JLabel label2 = new JLabel(this.nodesTitles[i], JLabel.CENTER);
+				label2.setVerticalAlignment(SwingConstants.CENTER);
+
+				label2.setLayout(new BoxLayout(label2, BoxLayout.PAGE_AXIS));
+				label2.setBounds((((((int) this.getPreferredSize().getWidth()) / 7)) + 25) * 5,
+						((((int) this.getPreferredSize().getHeight()) / NB_OUTPUT) * j) + 2 * NODE_SIZE, 80,
+						15);
+				label2.setBackground(Color.LIGHT_GRAY);
+				label2.setBorder(BorderFactory.createLineBorder(Color.black));
+
+				label2.setVisible(true);
+				this.getLayeredPane().add(label2, new Integer(1));
+
+				i++;
+			} else {
+				break;
+			}
+		}
+
+
+		this.add(graphComponent, BorderLayout.CENTER);
+
 	    /**
 	     * Classe interne MouseAdapter
 	     */
@@ -159,7 +217,6 @@ public class ViewNeuralNetwork extends JDialog{
 	    @Override
 	        public void mouseClicked(MouseEvent e) 
 	        {    
-	    		System.out.println("MOUSE CLICKED");
 	    		mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
     			mxGraph graph = graphComponent.getGraph();
     			mxIGraphModel model = graph.getModel();
@@ -171,10 +228,6 @@ public class ViewNeuralNetwork extends JDialog{
 	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
 	    		//String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
 	    		
-	            
-	            //TODO
-	            // - (facultatif) bouger le code vers une methode "mouseOver" plut�t que "mouseClicked"
-    			
 	            graph.getModel().beginUpdate();
 	            try {
 	            	// On remet � z�ro l'affichage avant toute op�ration
@@ -186,9 +239,9 @@ public class ViewNeuralNetwork extends JDialog{
 			            mxCell[] cellArray = {cell}; // transforme la cellule cliqu�e en array ...
 			            Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette m�thode
 			            
-			            Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+						Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
 			            while (it.hasNext()) { // parcours de toutes les edges
-			                Entry<Object, Float> pair = it.next();
+							Entry<Object, Double> pair = it.next();
 			                mxCell edge = ((mxCell) pair.getKey());
 			                if (!(Arrays.asList(edges).contains(edge))) {
 			                	edge.setVisible(false);
@@ -225,6 +278,26 @@ public class ViewNeuralNetwork extends JDialog{
 	            	graph.getModel().endUpdate();
 	            }
 	        }
+
+		});
+		graphComponent.getGraphControl().addMouseMotionListener(new MouseAdapter() {
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// Je laisse le code ici au cas où.
+				// Permet de faire un event sur le mouseEntered sur un node.
+
+				// mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(),
+				// e.getY());
+				// mxGraph graph = graphComponent.getGraph();
+				//
+				// // si on passe la souris sur un node
+				// if (cell != null && !cell.isEdge()) {
+				// System.out.println("tooltip?");
+				// } else {
+				//
+				// }
+			}
 	    });
 	    resetDisplay(model);
 	}
@@ -245,12 +318,13 @@ public class ViewNeuralNetwork extends JDialog{
 	    for (Object c : outputNodeList){
 	    		model.setStyle(c, styleDefault);
 	    }
-	    Iterator<Entry<Object, Float>> it = edgesValuesMap.entrySet().iterator();
+		Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
 	    while (it.hasNext()) {
-	        Entry<Object, Float> pair = it.next();
+			Entry<Object, Double> pair = it.next();
 	        ((mxCell) pair.getKey()).setValue(null);
 	        ((mxCell) pair.getKey()).setVisible(true);
 	    }
+
     }
 	
 	/**
@@ -260,15 +334,17 @@ public class ViewNeuralNetwork extends JDialog{
 	 * @param value poids de l'ar�te
 	 * @return valeur en hexadecimal de la couleur
 	 */
-	private String getEdgeColor(float value){
-		
-		float r = (-value) / 2f+0.5f;
-		float g = (1-(Math.abs(value)))*0.5f;
-		float b = value / 2f + 0.5f;
-		
-		Color color = new Color(r,g,b);
-		String hex = "#"+Integer.toHexString(color.getRGB()).substring(2);
-		
+	private String getEdgeColor(double value) {
+
+		float floatValue = (float) value;
+
+		float r = (-floatValue) / 2f + 0.5f;
+		float g = (1 - (Math.abs(floatValue))) * 0.5f;
+		float b = floatValue / 2f + 0.5f;
+
+		Color color = new Color(r, g, b);
+		String hex = "#" + Integer.toHexString(color.getRGB()).substring(2);
+
 		return hex;
 	}
 }

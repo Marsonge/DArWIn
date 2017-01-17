@@ -17,7 +17,7 @@ public class Creature implements Cloneable {
 	private int x;
 	private int y;
 	private int energy;
-	private float speed;
+	private double speed;
 	private NeuralNetwork nn;
 	private int rot = 0;
 	private int previousRot = 0;
@@ -32,6 +32,19 @@ public class Creature implements Cloneable {
 		this.speed = 3;
 		this.nn = new NeuralNetwork();
 	}
+
+	/**
+	 * Called only for reproduction purpose
+	 * 
+	 * @param x
+	 *            position on x axis
+	 * @param y
+	 *            position on y axis
+	 * @param speed
+	 *            initial speed of creature
+	 * @param nn
+	 *            neural network
+	 */
 	
 	public Creature(long id, int x, int y, int energy, float speed, NeuralNetwork nn){
 		this.id = id;
@@ -42,7 +55,7 @@ public class Creature implements Cloneable {
 		this.nn = nn;
 	}
 	
-	protected Creature(int x, int y, float speed, NeuralNetwork nn){
+	protected Creature(int x, int y, double speed, NeuralNetwork nn) {
 		this(x, y);
 		this.speed = speed;
 		this.nn = new NeuralNetwork(nn);
@@ -60,27 +73,26 @@ public class Creature implements Cloneable {
 		xplus = new Color(intput[6], intput[7], intput[8]);
 		yminus = new Color(intput[9], intput[10], intput[11]);
 		yplus = new Color(intput[12], intput[13], intput[14]);
-				
-		float input[] = new float[17];
-		//TODO : Normalize correctly ?
-		for(int i=0;i<15;i++){//Normalize input : Colors
-			input[i] = ((float)intput[i])/(255);
+
+		double input[] = new double[17];
+		// TODO : Normalize correctly ?
+		for (int i = 0; i < 15; i++) {// Normalize input : Colors
+			input[i] = ((double) intput[i]) / (255);
 		}
 		input[15] = (float)this.previousRot/180;
 		input[16] = (float)this.energy/150;
-		float result[] = this.nn.compute(input);
+		double result[] = this.nn.compute(input);
 		this.speed = getShortSigmoid(result[0])*MAXSPEED;
 		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
 		this.previousRot = (int) (getLargeSigmoid(result[1])-0.5)*360;
 	}
 
-	
-	private float getShortSigmoid(float f){
-		return (float) (1/(1+Math.exp(-f/3)));
+	private double getShortSigmoid(double f) {
+		return (double) (1 / (1 + Math.exp(-f / 3)));
 	}
-	
-	private float getLargeSigmoid(float f){
-		return (float) (1/(1+Math.exp(-f/10)));
+
+	private double getLargeSigmoid(double f) {
+		return (double) (1 / (1 + Math.exp(-f / 10)));
 	}
 	public long getId() {
 		return id;
@@ -97,8 +109,8 @@ public class Creature implements Cloneable {
 	public int getEnergy() {
 		return energy;
 	}
-	
-	public float getSpeed() {
+
+	public double getSpeed() {
 		return speed;
 	}
 	
