@@ -3,6 +3,7 @@ package darwin.darwin.view;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -77,7 +78,13 @@ public class TabImportExport extends JPanel {
 	 * addActionListenerExportImport
 	 */
 	private void addActionListenerExportImport() {
+		
 		exportJSONButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
 
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -106,6 +113,12 @@ public class TabImportExport extends JPanel {
 		});
 		
 		importJSONButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
+			
 			JFileChooser fileChooser = new JFileChooser();
 
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Save files", "json");
@@ -117,7 +130,7 @@ public class TabImportExport extends JPanel {
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					wc = parent.getWorldControler();
-					Import.importFromJson(fileChooser.getSelectedFile(),wc);
+					Import.importFromJson(new FileInputStream(fileChooser.getSelectedFile()),wc);
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
 					return;
@@ -125,10 +138,17 @@ public class TabImportExport extends JPanel {
 				
 				self.getTabOptions().updateSeed("Imported");
 			}
+			
 
 		});
 		
 		exportPngButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
+			
 			JFileChooser fileChooser = new JFileChooser();
 
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)", "png");
@@ -153,9 +173,16 @@ public class TabImportExport extends JPanel {
 				}
 				JOptionPane.showMessageDialog(null, "Export successful.");
 			}
+			
 		});
 		
 		importPngButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
+			
 			JFileChooser fileChooser = new JFileChooser();
 
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Portable Network Graphics (.png)", "png");
@@ -167,18 +194,23 @@ public class TabImportExport extends JPanel {
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					wc = parent.getWorldControler();
-					wc.importFromPng(fileChooser.getSelectedFile());
+					wc.importFromPng(new FileInputStream(fileChooser.getSelectedFile()));
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
 					return;
 				}
 				self.getTabOptions().updateSeed("Imported");
 			}
-
+		
 		});
 		
 		// Global export to zip button
 		exportAllButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
 			
 			JFileChooser fileChooser = new JFileChooser();
 
@@ -204,11 +236,18 @@ public class TabImportExport extends JPanel {
 				}
 				JOptionPane.showMessageDialog(null, "Export successful.");
 			}
+			
 		});
 		
 		
 		// Import all from zip
 		importAllButton.addActionListener(e -> {
+			
+			if (self.getTabOptions().getStartButton().getText() == "Pause"){
+				parent.pauseTimers();
+				self.getTabOptions().getStartButton().setText("Start"); 
+			}
+			
 			JFileChooser fileChooser = new JFileChooser();
 
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("ZIP archive", "zip");
@@ -221,12 +260,12 @@ public class TabImportExport extends JPanel {
 				try {
 					wc = parent.getWorldControler();
 					Import.importFromZip(fileChooser.getSelectedFile(), wc);
-		
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "The import has failed! Error: " + e1.getMessage());
 					return;
 				}
 				self.getTabOptions().updateSeed("Imported");
+			
 			}
 
 		});

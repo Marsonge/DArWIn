@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -96,6 +99,7 @@ public class Export {
 
 
 			ZipEntry jsonZip = new ZipEntry("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
+			
 			out.putNextEntry(jsonZip);
 			FileInputStream fis2 = null;
 			try {
@@ -117,11 +121,16 @@ public class Export {
 
 			out.finish();
 			out.close();
+			
+			Files.deleteIfExists(Paths.get(json.getPath()));
+			Files.deleteIfExists(Paths.get(image.getPath()));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 
 	}
 

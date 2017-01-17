@@ -3,7 +3,9 @@ package darwin.darwin.utils;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +23,7 @@ public static void exportToPng(Grid g,File f) throws IOException{
 		ImageIO.write(img, "png", f);
 	}
 
-public static void importFromPng(Grid g,File f) throws IOException{
+public static void importFromPng(Grid g,InputStream f) throws IOException{
 	BufferedImage img = ImageIO.read(f);
 	for(int i = 0;i<g.getNumCols();i++){
 		for(int j = 0;j<g.getNumRows();j++){
@@ -29,4 +31,6 @@ public static void importFromPng(Grid g,File f) throws IOException{
 		}
 	}
 }
+
+
 }

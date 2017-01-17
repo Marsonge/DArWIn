@@ -1,10 +1,13 @@
 package darwin.darwin.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.json.simple.JSONArray;
@@ -26,7 +29,7 @@ public class Import {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unused")
-	public static void importFromJson(File file, WorldControler wc) throws IOException{
+	public static void importFromJson(InputStream file, WorldControler wc) throws IOException{
 	
 		JSONParser jsonParser = new JSONParser();
 
@@ -38,7 +41,14 @@ public class Import {
 			}
 			
 			// Getting an array of creatures from the JSON
-			Object object = jsonParser.parse(new FileReader(file));
+			BufferedReader streamReader = new BufferedReader(new InputStreamReader(file, "UTF-8"));
+			StringBuilder responseStrBuilder = new StringBuilder();
+
+			String inputStr;
+			while ((inputStr = streamReader.readLine()) != null)
+			    responseStrBuilder.append(inputStr);
+			
+			Object object = jsonParser.parse(responseStrBuilder.toString());
 			JSONObject obj2 = (JSONObject) object;		
 			JSONArray creaturesArray = (JSONArray) obj2.get("Creatures");
 
@@ -138,39 +148,42 @@ public class Import {
 	 * @param selectedFile
 	 * @param wc
 	 */
+	@SuppressWarnings("resource")
 	public static void importFromZip(File selectedFile, WorldControler wc) {
 		
 		ZipInputStream zipIn;
+		
 		try {
+			ZipFile zipFile = new ZipFile(selectedFile);
 			zipIn = new ZipInputStream(new FileInputStream(selectedFile));
 		
-
-		ZipEntry entry = zipIn.getNextEntry();
-        // iterates over entries in the zip file
-		
-
-        while (entry != null) {
+			ZipEntry entry = zipIn.getNextEntry();
+			// iterates over entries in the zip file
+			
+			while (entry != null) {
         	
-            if (entry.getName().contains(".png")){
-            	wc.importFromPng(new File(entry.getName()));
-            }
+				InputStream stream = zipFile.getInputStream(entry);
+				
+				if (entry.getName().contains(".png")){
+					wc.importFromPng(stream);
+				}
                 
-            if (entry.getName().contains(".json")){
-            	importFromJson(new File(entry.getName()), wc);
-            }
-            
-            zipIn.closeEntry();
-            entry = zipIn.getNextEntry();
-            
+				if (entry.getName().contains(".json")){
+					importFromJson(stream, wc);
+				}
+				
+				zipIn.closeEntry();
+				entry = zipIn.getNextEntry();
+				stream.close();
         }
-   
+    
 		zipIn.close();
-		
+
 		} catch ( IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 	
 }

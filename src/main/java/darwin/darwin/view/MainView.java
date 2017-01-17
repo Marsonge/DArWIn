@@ -3,11 +3,7 @@ package darwin.darwin.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -445,6 +441,16 @@ public class MainView extends JFrame {
 
 	public WorldControler getWorldControler() {
 		return wc;
+	}
+	
+	public void pauseTimers(){
+		timer.stop();
+		growTimer.stop();
+	}
+	
+	public void startTimers(){
+		timer.start();
+		growTimer.start();
 	}
 
 	/**
