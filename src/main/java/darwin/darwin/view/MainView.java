@@ -13,6 +13,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -48,7 +49,7 @@ public class MainView extends JFrame {
 	public boolean simulationLaunched = false;
 	private MainView self = this;
 
-	private int NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();
+	private int NUMBER_OF_CREATURES = sP.getTabOptions().getInitialNbSlider().getValue();
 
 	/**
 	 * MainView()
@@ -60,6 +61,8 @@ public class MainView extends JFrame {
 	 * 
 	 */
 	public MainView() throws InterruptedException, IOException {
+		
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		// Create the main JFrame
 		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
@@ -76,7 +79,7 @@ public class MainView extends JFrame {
 		// Add view panel
 		sP = new SidePanel(this);
 
-		// sP.addPropertyChangeListener();
+		// sP.getTabOptions().addPropertyChangeListener();
 
 		this.add(sP, BorderLayout.EAST);
 
@@ -91,8 +94,10 @@ public class MainView extends JFrame {
 
 		// Add a map
 		changeMap();
+		
 	}
 
+	
 	/**
 	 * Start the timer
 	 */
@@ -110,21 +115,21 @@ public class MainView extends JFrame {
 		if (vG != null)
 			this.remove(vG);
 		int seed = 0;
-		if (this.sP.getSeed() != 0) {
-			seed = Utils.borderVar(this.sP.getSeed(), 0, Integer.MAX_VALUE, 0);
+		if (this.sP.getTabOptions().getSeed() != 0) {
+			seed = Utils.borderVar(this.sP.getTabOptions().getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
 		Float[] depths = new Float[7];
 		int i = 0;
-		List<JSlider> depthSliders = this.sP.getDepthSliders();
+		List<JSlider> depthSliders = this.sP.getTabOptions().getDepthSliders();
 		for (JSlider j : depthSliders) {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
 		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
-		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
-		this.wc.setHardCap(sP.getHardCapSlider().getValue());
+		this.wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
+		this.wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
-		this.sP.updateSeed(this.wc.getSeed());
+		this.sP.getTabOptions().updateSeed(this.wc.getSeed());
 		this.vG = new ViewGrid(wc);
 		this.setEndOfGameListener(this.vG);
 
@@ -146,16 +151,16 @@ public class MainView extends JFrame {
 			this.remove(vG);
 		Float[] depths = new Float[7];
 		int i = 0;
-		List<JSlider> depthSliders = this.sP.getDepthSliders();
+		List<JSlider> depthSliders = this.sP.getTabOptions().getDepthSliders();
 		for (JSlider j : depthSliders) {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
 		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
-		this.wc.setSoftCap(sP.getSoftCapSlider().getValue());
-		this.wc.setHardCap(sP.getHardCapSlider().getValue());
+		this.wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
+		this.wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
-		this.sP.updateSeed(this.wc.getSeed());
+		this.sP.getTabOptions().updateSeed(this.wc.getSeed());
 		this.vG = new ViewGrid(wc);
 		this.setEndOfGameListener(this.vG);
 
@@ -169,15 +174,15 @@ public class MainView extends JFrame {
 
 	/**
 	 * 
-	 * @param sP
+	 * @param tOp
 	 */
 	public void setNbCreaturesListener() {
 
-		sP.getInitialNbSlider().addChangeListener(new ChangeListener() {
+		sP.getTabOptions().getInitialNbSlider().addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				NUMBER_OF_CREATURES = sP.getInitialNbSlider().getValue();
+				NUMBER_OF_CREATURES = sP.getTabOptions().getInitialNbSlider().getValue();
 			}
 
 		});
@@ -189,11 +194,11 @@ public class MainView extends JFrame {
 	 */
 	public void setNbCreaturesSoftCapListener() {
 
-		sP.getSoftCapSlider().addChangeListener(new ChangeListener() {
+		sP.getTabOptions().getSoftCapSlider().addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				wc.setSoftCap(sP.getSoftCapSlider().getValue());
+				wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
 			}
 
 		});
@@ -205,11 +210,11 @@ public class MainView extends JFrame {
 	 */
 	public void setNbCreaturesHardCapListener() {
 
-		sP.getHardCapSlider().addChangeListener(new ChangeListener() {
+		sP.getTabOptions().getHardCapSlider().addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				wc.setHardCap(sP.getHardCapSlider().getValue());
+				wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
 			}
 
 		});
@@ -218,13 +223,13 @@ public class MainView extends JFrame {
 	/**
 	 * Will set the start button listener
 	 * 
-	 * @param sP
+	 * @param tOp
 	 */
 	public void setStartButtonListener() {
 
-		// When start is clicked, simulation start and button displays stop
+		// When start is clicked, simulation start and button ditOplays stop
 		// When it is clicked on stop, simulation pauses
-		sP.getStartButton().addActionListener(e -> {
+		sP.getTabOptions().getStartButton().addActionListener(e -> {
 			Object source = e.getSource();
 			if (source instanceof JButton) {
 
@@ -236,11 +241,11 @@ public class MainView extends JFrame {
 					btn.setText("Pause");
 					if (simulationLaunched == false) {
 						simulationLaunched = true;
-						sP.disable(sP.getChangeMapButton());
-						sP.disable(sP.getInitialNbSlider());
-						sP.disableSliders();
-						sP.disableLabels();
-						sP.addTimeControl();
+						sP.disable(sP.getTabOptions().getChangeMapButton());
+						sP.disable(sP.getTabOptions().getInitialNbSlider());
+						sP.getTabOptions().disableSliders();
+						sP.getTabOptions().disableLabels();
+						sP.getTabOptions().addTimeControl();
 					}
 
 				} else if (btn.getText().equals("Pause")) {
@@ -257,11 +262,11 @@ public class MainView extends JFrame {
 	 * 
 	 * Will set the change map button listener
 	 * 
-	 * @param sP
+	 * @param tOp
 	 */
 	public void setChangeMapButtonListener() {
 
-		sP.getChangeMapButton().addActionListener(e -> {
+		sP.getTabOptions().getChangeMapButton().addActionListener(e -> {
 			if (!simulationLaunched) {
 				changeMap();
 			}
@@ -294,35 +299,34 @@ public class MainView extends JFrame {
 
 		self.simulationLaunched = false;
 		self.resetMap(self.wc.getSeed());
-		self.sP.getChangeMapButton().setEnabled(true);
-		self.sP.getStartButton().setEnabled(true);
-		self.sP.getStartButton().setText("Start");
-		self.sP.getInitialNbSlider().setEnabled(true);
-		self.sP.getInitialNbLabel().setEnabled(true);
-		self.sP.removeTimeControl();
-		self.sP.enableDepthTailoring();
-		self.sP.resetTime();
-		self.sP.revalidate();
-		self.sP.repaint();
+		self.sP.getTabOptions().getChangeMapButton().setEnabled(true);
+		self.sP.getTabOptions().getStartButton().setEnabled(true);
+		self.sP.getTabOptions().getStartButton().setText("Start");
+		self.sP.getTabOptions().getInitialNbSlider().setEnabled(true);
+		self.sP.getTabOptions().getInitialNbLabel().setEnabled(true);
+		self.sP.getTabOptions().removeTimeControl();
+		self.sP.getTabOptions().enableDepthTailoring();
+		self.sP.getTabOptions().revalidate();
+		self.sP.getTabOptions().repaint();
 	}
 
 	/**
 	 * resetListener
 	 * 
-	 * @param sP2
+	 * @param tOp2
 	 */
 	private void resetListener() {
-		sP.getResetButton().addActionListener(e -> {
+		sP.getTabOptions().getResetButton().addActionListener(e -> {
 
 			boolean paused = true;
 
-			if (sP.getStartButton().getText().equals("Pause")) {
+			if (sP.getTabOptions().getStartButton().getText().equals("Pause")) {
 				paused = false;
 			}
 
 			if (!paused) {
 				timer.stop();
-				sP.getStartButton().setText("Start");
+				sP.getTabOptions().getStartButton().setText("Start");
 			}
 
 			int choice = JOptionPane.showConfirmDialog(null, "Do you want to start a new simulation ?",
@@ -332,7 +336,7 @@ public class MainView extends JFrame {
 				reset();
 			} else if (!paused) {
 				timer.start();
-				sP.getStartButton().setText("Pause");
+				sP.getTabOptions().getStartButton().setText("Pause");
 			}
 
 		});
@@ -341,61 +345,61 @@ public class MainView extends JFrame {
 	/**
 	 * setTimeControlListener
 	 * 
-	 * @param sP2
+	 * @param tOp2
 	 */
 	private void setTimeControlListener() {
-		sP.getSlow2Button().addActionListener(e -> {
-			changeSpeed(-2);
+		sP.getTabOptions().getSlow2Button().addActionListener(e -> {
+			changetOpeed(-2);
 		});
-		sP.getSlow1Button().addActionListener(e -> {
-			changeSpeed(-1);
+		sP.getTabOptions().getSlow1Button().addActionListener(e -> {
+			changetOpeed(-1);
 		});
-		sP.getRegularButton().addActionListener(e -> {
-			changeSpeed(0);
+		sP.getTabOptions().getRegularButton().addActionListener(e -> {
+			changetOpeed(0);
 		});
-		sP.getFast1Button().addActionListener(e -> {
-			changeSpeed(1);
+		sP.getTabOptions().getFast1Button().addActionListener(e -> {
+			changetOpeed(1);
 		});
-		sP.getFast2Button().addActionListener(e -> {
-			changeSpeed(2);
+		sP.getTabOptions().getFast2Button().addActionListener(e -> {
+			changetOpeed(2);
 		});
 	}
 
-	protected void changeSpeed(int i) {
+	protected void changetOpeed(int i) {
 		timer.stop();
 		switch (i) {
 		case 1:
-			sP.enableDecceleration();
+			sP.getTabOptions().enableDecceleration();
 			TICK_GAMETURN -= 10;
 			if (TICK_GAMETURN < TICK_GAMETURN_MIN) {
 				TICK_GAMETURN = TICK_GAMETURN_MIN;
-				sP.disableAcceleration();
-				sP.enableDecceleration();
+				sP.getTabOptions().disableAcceleration();
+				sP.getTabOptions().enableDecceleration();
 			}
 			break;
 		case 2:
 			TICK_GAMETURN = TICK_GAMETURN_MIN;
-			sP.disableAcceleration();
-			sP.enableDecceleration();
+			sP.getTabOptions().disableAcceleration();
+			sP.getTabOptions().enableDecceleration();
 			break;
 		case 0:
 			TICK_GAMETURN = 100;
-			sP.enableAcceleration();
-			sP.enableDecceleration();
+			sP.getTabOptions().enableAcceleration();
+			sP.getTabOptions().enableDecceleration();
 			break;
 		case -1:
-			sP.enableAcceleration();
+			sP.getTabOptions().enableAcceleration();
 			TICK_GAMETURN += 10;
 			if (TICK_GAMETURN > TICK_GAMETURN_MAX) {
 				TICK_GAMETURN = TICK_GAMETURN_MAX;
-				sP.enableAcceleration();
-				sP.disableDecceleration();
+				sP.getTabOptions().enableAcceleration();
+				sP.getTabOptions().disableDecceleration();
 			}
 			break;
 		case -2:
 			TICK_GAMETURN = TICK_GAMETURN_MAX;
-			sP.enableAcceleration();
-			sP.disableDecceleration();
+			sP.getTabOptions().enableAcceleration();
+			sP.getTabOptions().disableDecceleration();
 			break;
 		}
 
@@ -409,6 +413,14 @@ public class MainView extends JFrame {
 
 	public WorldControler getWorldControler() {
 		return wc;
+	}
+	
+	public void pauseTimers(){
+		timer.stop();
+	}
+	
+	public void startTimers(){
+		timer.start();
 	}
 
 	/**

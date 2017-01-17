@@ -219,6 +219,29 @@ public class NeuralNetwork {
 		return NB_HIDDENNODES;
 	}
 	
+	public void setInputAxiom(float[][] input){
+		int i;
+		int j;
+		
+		for (i = 0; i < NB_HIDDENNODES; i++) {
+			for (j = 0; j < NB_INPUT; j++) {
+				this.inputAxiom[i][j] = input[i][j];
+			}
+			
+		}
+	}
+	
+	public void setOutputAxiom(float[][] output){
+		int i;
+		int j;
+		
+		for (i = 0; i < NB_OUTPUT; i++) {
+			for (j = 0; j < NB_HIDDENNODES; j++) {
+				this.outputAxiom[i][j] = output[i][j];
+			}
+		}
+	}
+	
 	
 
 	public float[] getInput() {

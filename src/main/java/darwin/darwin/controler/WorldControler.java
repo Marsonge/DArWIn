@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -400,6 +402,11 @@ public class WorldControler extends Observable {
 	public void exportToPng(File selectedFile) throws IOException {
 		IOPng.exportToPng(grid, selectedFile);
 	}
+	
+	public void importFromPng(InputStream selectedFile) throws IOException {
+		IOPng.importFromPng(grid,selectedFile);
+		this.simulateForward();
+    }
 
 	public void importFromPng(File selectedFile) throws IOException {
 		IOPng.importFromPng(grid, selectedFile);

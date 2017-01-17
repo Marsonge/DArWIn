@@ -271,7 +271,6 @@ public class ViewMapGrid extends JPanel {
 	}
 
 	protected Color getTileColor(int x, int y) {
-		System.out.println(x + " " + y);
 		return grid[(int) Math.floor(x/TILESIZE)][(int) Math.floor(y/TILESIZE)];
 	}
 

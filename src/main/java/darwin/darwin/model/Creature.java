@@ -33,6 +33,15 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 	
+	public Creature(long id, int x, int y, int energy, float speed, NeuralNetwork nn){
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.energy = energy;
+		this.speed = speed;
+		this.nn = nn;
+	}
+	
 	protected Creature(int x, int y, float speed, NeuralNetwork nn){
 		this(x, y);
 		this.speed = speed;
@@ -148,6 +157,8 @@ public class Creature implements Cloneable {
 		JSONObject jsonThis = new JSONObject();
 		
 		jsonThis.put("id", this.id);
+		jsonThis.put("x", this.x);
+		jsonThis.put("y", this.y);
 		jsonThis.put("energy", this.energy);
 		jsonThis.put("speed", this.speed);
 		jsonThis.put("neural network", this.nn.toJson());
