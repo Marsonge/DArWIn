@@ -65,7 +65,7 @@ public class ViewCreature extends JLabel {
 				e.printStackTrace();
 			}
 		}
-		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
+		this.img = IMAGES.get((int)Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 
@@ -117,8 +117,8 @@ public class ViewCreature extends JLabel {
 		this.vg = vg;
 	}
 
-	public void setSpeed(float speed) {
-		this.img = IMAGES.get(Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
+	public void setSpeed(double d) {
+		this.img = IMAGES.get((int)Math.round(d)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 	}
 

@@ -44,7 +44,7 @@ public class WorldControler extends Observable {
 	private int countdownGrow;
 	private int creatureSize;
 	
-	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[], int creatureSize) {
+	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, double depths[], int creatureSize) {
 		this.tileSize = tilesize;
 		this.grid = new Grid(size, roughness, seed, depths);
 		this.seed = grid.getSeed();
@@ -342,7 +342,7 @@ public class WorldControler extends Observable {
 
 	// TODO opti ?
 	public double getCreatureSpeed(int x, int y) {
-		for (Creature c : creatureList) {
+		for (Creature c : creatureMap.keySet()) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getSpeed();
 			}
