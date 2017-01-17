@@ -43,13 +43,13 @@ public class ViewMapEditor extends JFrame{
 		this.setLayout(new BorderLayout());
 		this.parent = parent;
 		if(tiles==null){
-			grid = new ViewMapGrid(this);
+			grid = new ViewMapGrid(this,null);
 		}
 		else{
 			grid = new ViewMapGrid(this,tiles);
 		}
         // main JFrame setting
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);     
 		this.setExtendedState(JFrame.NORMAL);
 		this.add(grid,BorderLayout.CENTER);
 		this.add(palette,BorderLayout.EAST);
@@ -67,26 +67,42 @@ public class ViewMapEditor extends JFrame{
 				self.repaint();
 			}
 		});
+		this.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+			}			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+			}	
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z){
+					self.undo();
+				}
+			}
+		});
 		this.repaint();
 		this.pack();
 		this.setVisible(true);
+		this.requestFocus();
+
+		
 		
 	}
 	
-	
-	public static void main(String[] args){
-		ViewMapEditor vm = new ViewMapEditor();
-	}
-
 
 
 	public Color getCurrentColor() {
+		this.requestFocus();
 		return palette.getCurrentColor();
 	}
 
 
 
 	public Tool getTool() {
+		this.requestFocus();
 		return palette.getTool();
 	}
 
@@ -99,4 +115,11 @@ public class ViewMapEditor extends JFrame{
 		Grid g = new Grid(size,tiles);
 		return g;
 	}
+
+	public void undo() {
+		this.requestFocus();
+		grid.undo();
+	}
+
+
 }

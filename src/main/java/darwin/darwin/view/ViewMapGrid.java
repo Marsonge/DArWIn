@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,6 +18,7 @@ import darwin.darwin.model.grid.Grid;
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.model.grid.Tile;
 import darwin.darwin.utils.Tool;
+import darwin.darwin.utils.Utils;
 
 
 public class ViewMapGrid extends JPanel {
@@ -29,10 +32,13 @@ public class ViewMapGrid extends JPanel {
 	private double zoomLevel = 1;
 	private ViewMapGrid self = this;
 	private Color grid[][];
+	private Color previousGrids[][][];
 	static int TILESIZE = 6;
 	private Rectangle preview;
 	private ViewMapEditor parent;
 	private int originX,originY;
+	private int currentUndoLevel = 0;
+	private int successiveUndos = 0;
 	
 	@Override
     public void paintComponent(Graphics g) {
@@ -62,75 +68,7 @@ public class ViewMapGrid extends JPanel {
 		return new Dimension((int)(width * zoomLevel),(int) (height * zoomLevel));
 	}
 	
-	public ViewMapGrid(ViewMapEditor parent){
-		super();
-		this.grid = new Color[width][height];
-		for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height ; j++) {
-                grid[i][j] = Color.BLACK;
-            }
-		}
-		this.setPreferredSize(new Dimension((int)(width*zoomLevel),(int)(height*zoomLevel)));
-		this.addMouseMotionListener(new MouseMotionListener() {
-			
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if(parent.getTool().equals(Tool.BRUSH)){
-					Color c = parent.getCurrentColor();
-					paintTile(e.getX(),e.getY(),c);
-				}
-			}
 
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		this.addMouseListener(new MouseListener() {
-			
-			int originX;
-			int originY;
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if(parent.getTool().equals(Tool.RECTANGLE)){
-					self.paintRectangle(originX,originY,e.getX(),e.getY(),parent.getCurrentColor());
-				}
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if(parent.getTool().equals(Tool.RECTANGLE)){
-					originX = e.getX();
-					originY = e.getY();
-				}
-				if(parent.getTool().equals(Tool.BRUSH)){
-					Color c = parent.getCurrentColor();
-					paintTile(e.getX(),e.getY(),c);
-				}
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-	}
-	
 	public ViewMapGrid(ViewMapEditor parent, Grid tiles) {
 		super();
 		this.parent = parent;
@@ -140,7 +78,9 @@ public class ViewMapGrid extends JPanel {
 				grid[i][j] = tiles.getTileColour(i, j);
 			}
 		}
+		this.previousGrids = new Color[width][height][5];
 		this.setPreferredSize(new Dimension((int)(width*zoomLevel),(int)(height*zoomLevel)));
+		
 		this.addMouseMotionListener(new MouseMotionListener() {
 			
 			@Override
@@ -192,6 +132,9 @@ public class ViewMapGrid extends JPanel {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
+				self.previousGrids[currentUndoLevel] = (Color[][]) Utils.deepCopyColorMatrix(self.grid);
+				currentUndoLevel = (currentUndoLevel + 1)%5;
+				successiveUndos = 0;
 				if(parent.getTool().equals(Tool.RECTANGLE)){
 					originX = e.getX();
 					originY = e.getY();
@@ -344,5 +287,15 @@ public class ViewMapGrid extends JPanel {
 	
 	public int getGridSize(){
 		return width;
+	}
+	
+	public void undo(){
+		if(successiveUndos>=5)
+			return;
+		successiveUndos++;
+		int index = (currentUndoLevel - successiveUndos)%5;
+		if(index<0) index+=5;
+		grid = Utils.deepCopyColorMatrix(previousGrids[index]);
+		this.repaint();
 	}
 }
