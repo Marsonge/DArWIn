@@ -3,6 +3,8 @@ package darwin.darwin.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -140,7 +142,7 @@ public class ViewPalette extends JPanel {
         p.setMaximumSize(new Dimension(200,30));
         p.add(quitButton);
         p.add(saveButton);
-        this.add(p);
+        this.add(p);        
 	}
 
 

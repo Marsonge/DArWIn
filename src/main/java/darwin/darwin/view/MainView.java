@@ -39,7 +39,8 @@ public class MainView extends JFrame {
 	static final int TICK_GAMETURN_MIN = 10;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
-
+	static final int CREATURE_SIZE = 16;
+	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
 	private Timer timer;
@@ -50,6 +51,7 @@ public class MainView extends JFrame {
 	private MainView self = this;
 
 	private int NUMBER_OF_CREATURES = sP.getTabOptions().getInitialNbSlider().getValue();
+	
 
 	/**
 	 * MainView()
@@ -125,7 +127,7 @@ public class MainView extends JFrame {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
-		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
+		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths, CREATURE_SIZE);
 		this.wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
@@ -156,7 +158,7 @@ public class MainView extends JFrame {
 			depths[i] = j.getValue() / (float) 100;
 			i++;
 		}
-		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths);
+		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths, CREATURE_SIZE);
 		this.wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
 		this.wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
 		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
