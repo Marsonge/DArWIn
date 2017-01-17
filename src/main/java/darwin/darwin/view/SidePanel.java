@@ -71,6 +71,7 @@ public class SidePanel extends JPanel {
 	
 	private TabOptions tabOptions; 
 	private TabImportExport tabImportExport; 
+	private TabMap tabMap;
 	
 	public TabOptions getTabOptions(){
 		return tabOptions;
@@ -78,6 +79,10 @@ public class SidePanel extends JPanel {
 	
 	public TabImportExport getTabImportExport(){
 		return tabImportExport;
+	}
+	
+	public TabMap getTabMap(){
+		return tabMap;
 	}
 
 	/**
@@ -132,6 +137,7 @@ public class SidePanel extends JPanel {
 		JPanel tabStats = new JPanel();
 		tabStats.setPreferredSize(new Dimension(280, 660));
 
+		
 		// Help tab
 		JPanel tabHelp = new JPanel();
 		tabHelp.setPreferredSize(new Dimension(260, 1360));
@@ -142,12 +148,13 @@ public class SidePanel extends JPanel {
 
 		tabOptions = new TabOptions();
 		tabImportExport = new TabImportExport(parent, self);
+		tabMap = new TabMap(parent, self);
 		
 		// Add tabs to tabbedPane
 		tabbedPane.addTab("Options", null, tabOptions);
 		tabbedPane.addTab("Stats", null, tabStats);
-		// TODO : Get this back
 		tabbedPane.addTab("Import/Export", null, tabImportExport);
+		tabbedPane.addTab("Map", null, tabMap);
 		tabbedPane.addTab("Help", null, helpScrollable);
 
 		time = 0;

@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -33,13 +36,14 @@ public class Import {
 	public static void importFromJson(InputStream file, WorldControler wc) throws IOException{
 	
 		JSONParser jsonParser = new JSONParser();
+		
+		ArrayList<ViewCreature> deadList = new ArrayList<ViewCreature>(wc.getCreatureMap().values());
 
 		try {
 			
 			// Delete all creatures from list, starting from the end
-			for (int j = wc.getCreatureMap().size()-1; j >= 0;  j--) {
-				wc.getCreatureMap().remove(j);
-			}
+			
+			wc.getCreatureMap().clear();
 			
 			// Getting an array of creatures from the JSON
 			BufferedReader streamReader = new BufferedReader(new InputStreamReader(file, "UTF-8"));
@@ -137,6 +141,9 @@ public class Import {
 				++i;
 			}
 		
+			System.out.println("Taille map:" + wc.getCreatureMap().size());
+			UpdateInfoWrapper wrapper = new UpdateInfoWrapper(deadList, wc.getCreatureMap().values());
+			wc.notifyObservers(wrapper);
 			wc.simulateForward();
 			
 		} catch (ParseException e) {
