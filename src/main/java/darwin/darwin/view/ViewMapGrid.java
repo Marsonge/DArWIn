@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -268,8 +270,12 @@ public class ViewMapGrid extends JPanel {
 		this.repaint();
 	}
 	public void zoom() {
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        int maxZ = 6;
+        if(height<900)maxZ=4;
 		TILESIZE++;
-		if(TILESIZE>=6){
+		if(TILESIZE>=maxZ){
 			TILESIZE = 6;
 		}
 	}
