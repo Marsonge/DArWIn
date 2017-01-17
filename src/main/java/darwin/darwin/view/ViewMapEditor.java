@@ -5,11 +5,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -38,16 +41,24 @@ public class ViewMapEditor extends JFrame{
 		
 		// Create the main JFrame
 		this.setTitle("Darwin Map Editor");
-		this.setPreferredSize(new Dimension(930,810));
-		this.setResizable(false);
-		this.setLayout(new BorderLayout());
-		this.parent = parent;
 		if(tiles==null){
 			grid = new ViewMapGrid(this,null);
 		}
 		else{
 			grid = new ViewMapGrid(this,tiles);
 		}
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        if(height < 900){
+    		this.setPreferredSize(new Dimension(550,650));
+    		grid.unzoom();
+    		grid.unzoom();
+        }
+		this.setPreferredSize(new Dimension(930,810));
+		this.setResizable(false);
+		this.setLayout(new BorderLayout());
+		this.parent = parent;
+		
         // main JFrame setting
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);     
 		this.setExtendedState(JFrame.NORMAL);

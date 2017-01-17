@@ -42,8 +42,9 @@ public class WorldControler extends Observable {
 	private int seed;
 	private Map<Creature, ViewCreature> creatureMap;
 	private int countdownGrow;
-
-	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[]) {
+	private int creatureSize;
+	
+	public WorldControler(int size, int tilesize, float roughness, int seed, int creatureCount, Float depths[], int creatureSize) {
 		this.tileSize = tilesize;
 		this.grid = new Grid(size, roughness, seed, depths);
 		this.seed = grid.getSeed();
@@ -52,11 +53,12 @@ public class WorldControler extends Observable {
 		creatureMap = new HashMap<Creature, ViewCreature>();
 		this.nbdead = 0;
 		this.countdownGrow = 0;
+		this.creatureSize = creatureSize;
 		Random rand = new Random();
 		for (int i = 0; i < creatureCount; i++) {
 			Creature c = new Creature(rand.nextInt(size * this.tileSize), rand.nextInt(size * this.tileSize));
 			c.initializeNetwork(rand);
-			ViewCreature viewC = new ViewCreature(16, c.getX(), c.getY(), c.getSpeed(), this, null);
+			ViewCreature viewC = new ViewCreature(creatureSize, c.getX(), c.getY(), c.getSpeed(), this, null);
 			creatureMap.put(c, viewC);
 		}
 	}
@@ -290,8 +292,8 @@ public class WorldControler extends Observable {
 		int rot = c.getRot();
 		double rad = Math.toRadians(rot);
 		float speed = c.getSpeed();
-		int newX = (int) Math.round((Math.cos(rad) * speed + x));
-		int newY = (int) Math.round((Math.sin(rad) * speed + y));
+		int newX = (int) Math.round((Math.cos(rad) * speed * (tileSize/6) + x));
+		int newY = (int) Math.round((Math.sin(rad) * speed * (tileSize/6) + y));
 		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols() * tileSize, 5);
 		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows() * tileSize, 5);
 		c.move(newX, newY);

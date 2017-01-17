@@ -142,16 +142,7 @@ public class ViewPalette extends JPanel {
         p.setMaximumSize(new Dimension(200,30));
         p.add(quitButton);
         p.add(saveButton);
-        this.add(p);
-        
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
-        int height = gd.getDisplayMode().getHeight();
-        if(height < 900){
-        	this.add(Box.createRigidArea(new Dimension(200,200)));
-        	System.out.println("j'ai un écran minuscule :'(");
-        	this.add(Box.createVerticalGlue());
-        }
-        
+        this.add(p);        
 	}
 
 
