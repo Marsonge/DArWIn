@@ -24,7 +24,7 @@ public class Grid {
 	 * @param e roughness parameter (entropy)
 	 * @param seed used to create the map randomly
 	 */
-	public Grid(int size,float e,int seed,Float[] depths){
+	public Grid(int size, float e, int seed, double[] depths) {
 		this.tileGrid = new Tile[size][size];
 		this.fertileLand = new LinkedList<Tile>();
 		this.NUMCOLS = size;

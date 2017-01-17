@@ -40,7 +40,7 @@ public class ViewCreature extends JLabel {
 	
 	private static ArrayList<Image> IMAGES= null;
 	
-	public ViewCreature(int size, int x, int y, float speed, WorldControler wc, ViewGrid vg){
+	public ViewCreature(int size, int x, int y, double speed, WorldControler wc, ViewGrid vg) {
 		super();
 		this.size = size;
 		this.setLocation(x,y);

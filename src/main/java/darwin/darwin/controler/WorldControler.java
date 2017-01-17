@@ -291,9 +291,9 @@ public class WorldControler extends Observable {
 		int y = c.getY();
 		int rot = c.getRot();
 		double rad = Math.toRadians(rot);
-		float speed = c.getSpeed();
-		int newX = (int) Math.round((Math.cos(rad) * speed * ((float)tileSize/6) + x));
-		int newY = (int) Math.round((Math.sin(rad) * speed * ((float)tileSize/6) + y));
+		double speed = c.getSpeed();
+		int newX = (int) Math.round((Math.cos(rad) * speed + x));
+		int newY = (int) Math.round((Math.sin(rad) * speed + y));
 		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols() * tileSize, 5);
 		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows() * tileSize, 5);
 		c.move(newX, newY);
@@ -341,8 +341,8 @@ public class WorldControler extends Observable {
 	}
 
 	// TODO opti ?
-	public float getCreatureSpeed(int x, int y) {
-		for (Creature c : creatureMap.keySet()) {
+	public double getCreatureSpeed(int x, int y) {
+		for (Creature c : creatureList) {
 			if (c.getX() == x && c.getY() == y) {
 				return c.getSpeed();
 			}

@@ -36,10 +36,10 @@ public class Utils {
      * of references to your subarrays. Not good.
      * Use this instead.
      */
-    public static float[][] deepCopyFloatMatrix(float[][] input) {
+    public static double[][] deepCopydoubleMatrix(double[][] input) {
         if (input == null)
             return null;
-        float[][] result = new float[input.length][];
+        double[][] result = new double[input.length][];
         for (int r = 0; r < input.length; r++) {
             result[r] = input[r].clone();
         }
