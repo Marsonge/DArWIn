@@ -1,5 +1,6 @@
 package darwin.darwin.utils;
 
+import java.awt.Color;
 import java.net.URL;
 import java.util.Random;
 
@@ -39,6 +40,25 @@ public class Utils {
         if (input == null)
             return null;
         float[][] result = new float[input.length][];
+        for (int r = 0; r < input.length; r++) {
+            result[r] = input[r].clone();
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * @param input : The 2D array you want to clone
+     * @return A clone of the input
+     * 
+     * To clone a 2D array, you can't use .clone() : You will only make a new array
+     * of references to your subarrays. Not good.
+     * Use this instead.
+     */
+    public static Color[][] deepCopyColorMatrix(Color[][] input) {
+        if (input == null)
+            return null;
+        Color[][] result = new Color[input.length][];
         for (int r = 0; r < input.length; r++) {
             result[r] = input[r].clone();
         }

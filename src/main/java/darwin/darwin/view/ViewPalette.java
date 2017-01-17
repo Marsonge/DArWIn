@@ -31,6 +31,7 @@ public class ViewPalette extends JPanel {
     private final JButton woodButton = new JButton("Woods");
     private final JButton mountainsButton = new JButton("Mountains");
     private final JButton snowButton = new JButton("Snow");
+    private final JButton undoButton = new JButton("Undo");
     
     private Terrain current;
 
@@ -88,6 +89,10 @@ public class ViewPalette extends JPanel {
         	current = Terrain.SNOW;
         	this.setBackground(getCurrentColor());
         });
+        undoButton.addActionListener(e -> {
+        	parent.undo();
+        });
+        
         this.add(etherButton);
         this.add(deepButton);
         this.add(oceanButton);
@@ -123,10 +128,13 @@ public class ViewPalette extends JPanel {
         snowButton.setMaximumSize(d);
         snowButton.setMinimumSize(d);
         snowButton.setAlignmentX(CENTER_ALIGNMENT);
-
+        undoButton.setMaximumSize(d);
+        undoButton.setMinimumSize(d);
+        undoButton.setAlignmentX(CENTER_ALIGNMENT);
         
         toolBox.setMaximumSize(d);
         this.add(toolBox);
+        this.add(undoButton);
         this.add(Box.createVerticalGlue());
         JPanel p = new JPanel(new FlowLayout());
         p.setMaximumSize(new Dimension(200,30));
