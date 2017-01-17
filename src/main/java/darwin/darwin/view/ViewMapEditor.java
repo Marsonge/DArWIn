@@ -14,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import darwin.darwin.controler.WorldControler;
+import darwin.darwin.model.grid.Grid;
 import darwin.darwin.utils.Tool;
 
 
@@ -26,15 +28,26 @@ public class ViewMapEditor extends JFrame{
 	private final ViewMapGrid grid;
 	private final ViewMapEditor self = this;
 	private final ViewPalette palette = new ViewPalette(this);
+	private final WorldControler parent;
 	
 	public ViewMapEditor(){
+		this((Grid)null,null);
+	}
+	
+	public ViewMapEditor(Grid tiles,WorldControler parent){
 		
 		// Create the main JFrame
-		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
-		this.setPreferredSize(new Dimension(900,700));
+		this.setTitle("Darwin Map Editor");
+		this.setPreferredSize(new Dimension(930,810));
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
-		grid = new ViewMapGrid(this);
+		this.parent = parent;
+		if(tiles==null){
+			grid = new ViewMapGrid(this);
+		}
+		else{
+			grid = new ViewMapGrid(this,tiles);
+		}
         // main JFrame setting
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);     
 		this.setExtendedState(JFrame.NORMAL);
@@ -61,7 +74,6 @@ public class ViewMapEditor extends JFrame{
 	}
 	
 	
-	
 	public static void main(String[] args){
 		ViewMapEditor vm = new ViewMapEditor();
 	}
@@ -76,5 +88,15 @@ public class ViewMapEditor extends JFrame{
 
 	public Tool getTool() {
 		return palette.getTool();
+	}
+
+	public void save() {
+		parent.endMapEdition(createGridFromMap(grid.getGridSize(),grid.getTiles()));
+		this.dispose();
+	}
+
+	private Grid createGridFromMap(int size,Color[][] tiles) {
+		Grid g = new Grid(size,tiles);
+		return g;
 	}
 }

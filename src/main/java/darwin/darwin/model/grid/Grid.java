@@ -81,6 +81,52 @@ public class Grid {
         }
 	}
 
+	public Grid(int size,Color[][] tiles){
+		this.tileGrid = new Tile[size][size];
+		this.fertileLand = new LinkedList<Tile>();
+		this.NUMCOLS = size;
+		this.NUMROWS = size;
+		for(int i = 0;i<NUMROWS;i++){
+			for(int j = 0;j<NUMCOLS;j++){
+				if(tiles[i][j].getRGB() == Terrain.SNOW.getRGB()){
+					tileGrid[i][j] = new Tile(Terrain.SNOW,i,j);
+				}
+				else if(tiles[i][j].getRGB() == Terrain.MOUNTAINS.getRGB() || 
+				  (tiles[i][j].getBlue() == Terrain.MOUNTAINS.getBlueValue() 
+				  && tiles[i][j].getRed() == Terrain.MOUNTAINS.getRedValue() 
+				  && tiles[i][j].getGreen() <= 135 && tiles[i][j].getGreen() >= 110)){
+					tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,tiles[i][j].getRed(),tiles[i][j].getGreen(),tiles[i][j].getBlue(),i,j);
+					fertileLand.add(this.tileGrid[i][j]);
+
+				}
+				else if(tiles[i][j].getRGB() == Terrain.WOODS.getRGB() || 
+					   (tiles[i][j].getBlue() == Terrain.WOODS.getBlueValue() 
+					   && tiles[i][j].getRed() == Terrain.WOODS.getRedValue() 
+					   && tiles[i][j].getGreen() <= 185 && tiles[i][j].getGreen() >= 110)){
+					tileGrid[i][j] = new Tile(Terrain.WOODS,tiles[i][j].getRed(),tiles[i][j].getGreen(),tiles[i][j].getBlue(),i,j);
+					fertileLand.add(this.tileGrid[i][j]);
+
+				}
+				else if(tiles[i][j].getRGB() == Terrain.SAND.getRGB()){
+					tileGrid[i][j] = new Tile(Terrain.SAND,i,j);
+				}
+				else if(tiles[i][j].getRGB() == Terrain.SHALLOW_WATER.getRGB()){
+					tileGrid[i][j] = new Tile(Terrain.SHALLOW_WATER,i,j);
+				}
+				else if(tiles[i][j].getRGB() == Terrain.OCEAN.getRGB()){
+					tileGrid[i][j] = new Tile(Terrain.OCEAN,i,j);
+				}
+				else if(tiles[i][j].getRGB() == Terrain.DEEP_WATER.getRGB()){
+					tileGrid[i][j] = new Tile(Terrain.DEEP_WATER,i,j);
+				}
+				else{
+					tileGrid[i][j] = new Tile(Terrain.ETHER,i,j);
+				}
+			}
+		}
+		noiseGrid = null;
+	}
+	
 	public int getNumCols() {
 		return NUMCOLS;
 	}

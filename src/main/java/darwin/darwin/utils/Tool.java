@@ -2,7 +2,8 @@ package darwin.darwin.utils;
 
 public enum Tool {
 	BRUSH("Brush"),
-	RECTANGLE("Rectangle");
+	RECTANGLE("Rectangle"),
+	FILLBUCKET("Fill Bucket");
 	
 	private String s;
 	private Tool(String s){

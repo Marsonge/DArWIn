@@ -23,6 +23,7 @@ import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
 import darwin.darwin.view.ViewCreature;
+import darwin.darwin.view.ViewMapEditor;
 
 /**
  * General Controler
@@ -403,6 +404,19 @@ public class WorldControler extends Observable {
 	public void importFromPng(File selectedFile) throws IOException {
 		IOPng.importFromPng(grid, selectedFile);
 		this.simulateForward();
+	}
+
+	public void editMap() {
+		new ViewMapEditor(grid,this);
+	}
+
+	public void endMapEdition(Grid grid) {
+		this.grid = grid;
+		if(grid == null){
+			System.out.println("wut\n\n");
+		}
+		UpdateInfoWrapper wrapper = new UpdateInfoWrapper(null, creatureMap.values());
+		this.notifyObservers(wrapper);
 	}
 
 }

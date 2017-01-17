@@ -102,8 +102,10 @@ public class ViewGrid extends JPanel implements Observer {
 
 
 	private void removeDeadCreatures(List<ViewCreature> deadList) {
-		for(ViewCreature vc: deadList){
-			this.remove(vc);
+		if(deadList != null){
+			for(ViewCreature vc: deadList){
+				this.remove(vc);
+			}
 		}
 	}
 
