@@ -132,6 +132,7 @@ public class SidePanel extends JPanel {
 	JButton exportPngButton = new JButton("Export map to PNG");
 	JButton importPngButton = new JButton("Import map from PNG");
 	JButton exportButton = new JButton("Export to JSON");
+	JButton editButton = new JButton("Edit map");
 	JFileChooser fileChooserForExport = new JFileChooser();
 	private DecimalFormat df = new DecimalFormat("0.00");
 
@@ -487,6 +488,7 @@ public class SidePanel extends JPanel {
 		tabImportExport.add(exportButton);
 		tabImportExport.add(exportPngButton);
 		tabImportExport.add(importPngButton);
+		tabImportExport.add(editButton);
 
 		// Add tabbedPane to viewPanel
 		this.add(tabbedPane);
@@ -564,6 +566,11 @@ public class SidePanel extends JPanel {
 				}
 				cSeed.setText("Imported");
 			}
+
+		});
+		editButton.addActionListener(e -> {
+			wc = parent.getWorldControler();
+			wc.editMap();
 
 		});
 	}
