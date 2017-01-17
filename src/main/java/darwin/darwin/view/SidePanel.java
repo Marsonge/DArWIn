@@ -15,8 +15,6 @@ import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
@@ -47,7 +45,7 @@ import darwin.darwin.utils.Utils;
  * 
  *
  */
-public class SidePanel extends JPanel implements Observer {
+public class SidePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
@@ -67,6 +65,7 @@ public class SidePanel extends JPanel implements Observer {
 	private WorldControler wc;
 	private MainView parent;
 	private SidePanel self = this;
+	JButton editButton = new JButton("Edit map");
 	
 	JFileChooser fileChooserForExport = new JFileChooser();
 	private DecimalFormat df = new DecimalFormat("0.00");
@@ -148,7 +147,7 @@ public class SidePanel extends JPanel implements Observer {
 		// Add tabs to tabbedPane
 		tabbedPane.addTab("Options", null, tabOptions);
 		tabbedPane.addTab("Stats", null, tabStats);
-		//TODO : Get this back
+		// TODO : Get this back
 		tabbedPane.addTab("Import/Export", null, tabImportExport);
 		tabbedPane.addTab("Help", null, helpScrollable);
 
@@ -249,11 +248,16 @@ public class SidePanel extends JPanel implements Observer {
 
 	
 
+		editButton.addActionListener(e -> {
+			wc = parent.getWorldControler();
+			wc.editMap();
+
+		});
 	public void tick() {
 		time++;
 		nbTime.setText(Integer.toString(Math.round(time / 10)));
-		this.revalidate();
-		this.repaint();
+		nbTime.repaint();
+		nbTime.revalidate();
 	}
 
 	public void updateNbCreature(int nbAlive, int nbDead) {
@@ -277,6 +281,11 @@ public class SidePanel extends JPanel implements Observer {
 					.setText(currentCreature.getEnergy() != 0 ? Integer.toString(currentCreature.getEnergy()) : "DEAD");
 		}
 
+	}
+	
+	public void resetTime(){
+		this.time=0;
+		this.nbTime.setText(Integer.toString(this.time));
 	}
 
 }

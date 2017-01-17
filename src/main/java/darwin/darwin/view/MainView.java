@@ -20,7 +20,6 @@ import javax.swing.event.ChangeListener;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.EndOfGameEvent;
 import darwin.darwin.utils.EndOfGameEventListener;
-import darwin.darwin.utils.GrowTimerActionListener;
 import darwin.darwin.utils.TimerActionListener;
 import darwin.darwin.utils.Utils;
 
@@ -38,16 +37,12 @@ public class MainView extends JFrame {
 	static int TICK_GAMETURN = 100;
 	static final int TICK_GAMETURN_MAX = 5000;
 	static final int TICK_GAMETURN_MIN = 10;
-	static int TICK_GROW = 1000;
-	static final int TICK_GROW_MAX = 50000;
-	static final int TICK_GROW_MIN = 100;
 	static final int GRID_SIZE = 129;
 	static final int TILE_SIZE = 6;
 
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
 	private Timer timer;
-	private Timer growTimer;
 	WorldControler wc;
 	ViewGrid vG;
 	SidePanel sP = new SidePanel(this);
@@ -110,9 +105,6 @@ public class MainView extends JFrame {
 		this.timer = new Timer(TICK_GAMETURN, new TimerActionListener(wc, sP));
 	}
 
-	public void initGrowTimer() {
-		this.growTimer = new Timer(TICK_GROW, new GrowTimerActionListener(wc));
-	}
 
 	/**
 	 * Change the map
@@ -147,7 +139,6 @@ public class MainView extends JFrame {
 
 		wc.simulateForward();
 		initTimer();
-		initGrowTimer();
 	}
 
 	/**
@@ -179,7 +170,6 @@ public class MainView extends JFrame {
 
 		wc.simulateForward();
 		initTimer();
-		initGrowTimer();
 	}
 
 	/**
@@ -248,7 +238,6 @@ public class MainView extends JFrame {
 				if (btn.getText().equals("Start")) {
 
 					timer.start();
-					growTimer.start();
 					btn.setText("Pause");
 					if (simulationLaunched == false) {
 						simulationLaunched = true;
@@ -261,7 +250,6 @@ public class MainView extends JFrame {
 
 				} else if (btn.getText().equals("Pause")) {
 					timer.stop();
-					growTimer.stop();
 					btn.setText("Start");
 				}
 
@@ -381,7 +369,6 @@ public class MainView extends JFrame {
 
 	protected void changetOpeed(int i) {
 		timer.stop();
-		growTimer.stop();
 		switch (i) {
 		case 1:
 			sP.getTabOptions().enableDecceleration();
@@ -390,10 +377,6 @@ public class MainView extends JFrame {
 				TICK_GAMETURN = TICK_GAMETURN_MIN;
 				sP.getTabOptions().disableAcceleration();
 				sP.getTabOptions().enableDecceleration();
-			}
-			TICK_GROW -= 100;
-			if (TICK_GROW < TICK_GROW_MIN) {
-				TICK_GROW = TICK_GROW_MIN;
 			}
 			break;
 		case 2:
@@ -416,10 +399,6 @@ public class MainView extends JFrame {
 				sP.getTabOptions().enableAcceleration();
 				sP.getTabOptions().disableDecceleration();
 			}
-			TICK_GROW += 100;
-			if (TICK_GROW > TICK_GROW_MAX) {
-				TICK_GROW = TICK_GROW_MAX;
-			}
 			break;
 		case -2:
 			TICK_GAMETURN = TICK_GAMETURN_MAX;
@@ -430,9 +409,7 @@ public class MainView extends JFrame {
 		}
 
 		timer.setDelay(TICK_GAMETURN);
-		growTimer.setDelay(TICK_GROW);
 		timer.start();
-		growTimer.start();
 	}
 
 	public static int getNumberOfCreaturesDead() {
@@ -461,7 +438,8 @@ public class MainView extends JFrame {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
-
+		System.setProperty("sun.java2d.opengl", "True");
+		System.out.println("accelerated? : "+System.getProperty("sun.java2d.opengl"));
 		// Noice Look and Feel for the application
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

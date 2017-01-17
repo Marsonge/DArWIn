@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.util.Collection;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,6 +32,7 @@ public class Export {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
+		
 	public static void exportToJson(File file, WorldControler wc, List<Creature> listeCreatures) throws IOException{
 
 		JSONObject obj = new JSONObject();
