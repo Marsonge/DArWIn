@@ -1,21 +1,28 @@
 package darwin.darwin.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.utils.Tool;
+import darwin.darwin.utils.Utils;
 
 public class ViewPalette extends JPanel {
 	
@@ -36,23 +43,84 @@ public class ViewPalette extends JPanel {
     private final JButton undoButton = new JButton("Undo");
     
     private Terrain current;
+    private Tool currentTool;
 
     private final JComboBox toolBox;
+    private final JPanel toolPanel = new JPanel();
+    private final JButton brush = new JButton();
+    private final JButton rectangle = new JButton();
+    private final JButton fillBucket = new JButton();
+   
     private final JButton saveButton = new JButton("Save");
     private final JButton quitButton = new JButton("Quit");
+    private final JPanel preview = new JPanel();
     
 	public ViewPalette(ViewMapEditor parent){
 		super();
 		this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		this.parent = parent;
-		this.setBackground(new Color(t.getRGB()));
+		//this.setBackground(new Color(t.getRGB()));
 		toolBox = new JComboBox();
+		preview.setBackground(new Color(t.getRGB()));
+		
+		toolPanel.setLayout(new FlowLayout());
+		
+		 try {
+			 brush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Brush.png"))));
+			 brush.setBackground(Color.GRAY); // selected by default
+			 brush.setPreferredSize(new Dimension(50,50));
+			 
+			 rectangle.setBackground(Color.lightGray);
+			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Rectangle.png"))));
+			 rectangle.setPreferredSize(new Dimension(50,50));
+			 
+			 fillBucket.setBackground(Color.lightGray);
+			 fillBucket.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Fill Bucket.png"))));
+			 fillBucket.setPreferredSize(new Dimension(50,50));
+			 
+			 toolPanel.add(brush);
+			 toolPanel.add(rectangle);
+			 toolPanel.add(fillBucket);
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
         for(Tool t : Tool.values()){
         	toolBox.addItem(t);
         }
         
+        brush.addActionListener(e -> {
+        	brush.setBackground(Color.GRAY);
+        	rectangle.setBackground(Color.lightGray);
+        	fillBucket.setBackground(Color.lightGray);
+        	toolBox.setSelectedItem(Tool.BRUSH);
+        });
+        
+        rectangle.addActionListener(e -> {
+        	brush.setBackground(Color.lightGray);
+        	rectangle.setBackground(Color.GRAY);
+        	fillBucket.setBackground(Color.lightGray);
+        	toolBox.setSelectedItem(Tool.RECTANGLE);
+        });
+        
+        fillBucket.addActionListener(e -> {
+        	brush.setBackground(Color.lightGray);
+        	rectangle.setBackground(Color.lightGray);
+        	fillBucket.setBackground(Color.GRAY);
+        	toolBox.setSelectedItem(Tool.FILLBUCKET);
+        });
+        
         current = Terrain.ETHER;
+        etherButton.setBackground(Color.GRAY);
+    	deepButton.setBackground(Color.lightGray);
+    	oceanButton.setBackground(Color.lightGray);
+    	shallowButton.setBackground(Color.lightGray);
+    	sandButton.setBackground(Color.lightGray);
+    	woodButton.setBackground(Color.lightGray);
+    	mountainsButton.setBackground(Color.lightGray);
+    	snowButton.setBackground(Color.lightGray);
         saveButton.addActionListener(e -> {
         	parent.save();
         });
@@ -61,35 +129,99 @@ public class ViewPalette extends JPanel {
         });
         etherButton.addActionListener(e -> {
         	current = Terrain.ETHER;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.GRAY);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         deepButton.addActionListener(e -> {
         	current = Terrain.DEEP_WATER;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.GRAY);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         oceanButton.addActionListener(e -> {
         	current = Terrain.OCEAN;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.GRAY);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         shallowButton.addActionListener(e -> {
         	current = Terrain.SHALLOW_WATER;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.GRAY);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         sandButton.addActionListener(e -> {
         	current = Terrain.SAND;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.GRAY);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         woodButton.addActionListener(e -> {
         	current = Terrain.WOODS;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.GRAY);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         mountainsButton.addActionListener(e -> {
         	current = Terrain.MOUNTAINS;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.GRAY);
+        	snowButton.setBackground(Color.lightGray);
+        	preview.setBackground(getCurrentColor());
         });
         snowButton.addActionListener(e -> {
         	current = Terrain.SNOW;
-        	this.setBackground(getCurrentColor());
+        	etherButton.setBackground(Color.lightGray);
+        	deepButton.setBackground(Color.lightGray);
+        	oceanButton.setBackground(Color.lightGray);
+        	shallowButton.setBackground(Color.lightGray);
+        	sandButton.setBackground(Color.lightGray);
+        	woodButton.setBackground(Color.lightGray);
+        	mountainsButton.setBackground(Color.lightGray);
+        	snowButton.setBackground(Color.GRAY);
+        	preview.setBackground(getCurrentColor());
         });
         undoButton.addActionListener(e -> {
         	parent.undo();
@@ -103,6 +235,12 @@ public class ViewPalette extends JPanel {
         this.add(woodButton);
         this.add(mountainsButton);
         this.add(snowButton);
+        
+        this.add(preview);
+        
+       /* this.add(brush);
+        this.add(rectangle);*/
+        this.add(toolPanel);
         
         Dimension d = new Dimension(200,30);
         
@@ -130,12 +268,11 @@ public class ViewPalette extends JPanel {
         snowButton.setMaximumSize(d);
         snowButton.setMinimumSize(d);
         snowButton.setAlignmentX(CENTER_ALIGNMENT);
-        undoButton.setMaximumSize(d);
-        undoButton.setMinimumSize(d);
+
         undoButton.setAlignmentX(CENTER_ALIGNMENT);
         
         toolBox.setMaximumSize(d);
-        this.add(toolBox);
+        //this.add(toolBox);
         this.add(undoButton);
         this.add(Box.createVerticalGlue());
         JPanel p = new JPanel(new FlowLayout());
@@ -154,7 +291,6 @@ public class ViewPalette extends JPanel {
 			return null;
 		}
 	}
-
 
 	public Tool getTool() {
 		return (Tool) toolBox.getSelectedItem();

@@ -1,5 +1,6 @@
 package darwin.darwin.utils;
 
+
 public enum Tool {
 	BRUSH("Brush"),
 	RECTANGLE("Rectangle"),
@@ -13,4 +14,5 @@ public enum Tool {
 	public String getName(){
 		return s;
 	}
+
 }
