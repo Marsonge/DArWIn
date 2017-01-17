@@ -276,7 +276,7 @@ public class ViewMapGrid extends JPanel {
         if(height<900)maxZ=4;
 		TILESIZE++;
 		if(TILESIZE>=maxZ){
-			TILESIZE = 6;
+			TILESIZE = maxZ;
 		}
 	}
 	public void unzoom() {
