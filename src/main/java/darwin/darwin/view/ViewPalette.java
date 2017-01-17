@@ -3,6 +3,8 @@ package darwin.darwin.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -141,6 +143,13 @@ public class ViewPalette extends JPanel {
         p.add(quitButton);
         p.add(saveButton);
         this.add(p);
+        
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        if(height < 900){
+        	this.add(Box.createRigidArea(new Dimension(200,200)));
+        }
+        
 	}
 
 
