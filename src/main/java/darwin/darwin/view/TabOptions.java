@@ -24,15 +24,8 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author cyril
- *
- */
 public class TabOptions extends JPanel {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6519280040785280742L;
 
 	public static final Color defaultButtonColor = new Color(220, 220, 220);

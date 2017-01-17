@@ -153,12 +153,25 @@ public class SidePanel extends JPanel {
 		helpScrollable.setPreferredSize(new Dimension(280, size-100));
 		tabHelp.setLayout(new BorderLayout());
 
-		tabOptions = new TabOptions();
+
+		
 		tabImportExport = new TabImportExport(parent, self);
 		tabMap = new TabMap(parent, self);
 		
 		// Add tabs to tabbedPane
-		tabbedPane.addTab("Options", null, tabOptions);
+		tabOptions = new TabOptions();
+		
+		// Scrollable if resolution too small
+		if(height < 900){
+			tabOptions.setPreferredSize(new Dimension(260, 850));
+			JScrollPane optionsScrollable = new JScrollPane(tabOptions, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			optionsScrollable.setPreferredSize(new Dimension(280, size-100));
+			tabbedPane.addTab("Options", null, optionsScrollable);
+		} else{
+			tabbedPane.addTab("Options", null, tabOptions);
+		}
+		
 		tabbedPane.addTab("Stats", null, tabStats);
 		tabbedPane.addTab("Import/Export", null, tabImportExport);
 		tabbedPane.addTab("Map", null, tabMap);
