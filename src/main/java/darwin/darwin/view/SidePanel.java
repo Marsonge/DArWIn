@@ -861,5 +861,10 @@ public class SidePanel extends JPanel {
 		}
 
 	}
+	
+	public void resetTime(){
+		this.time=0;
+		this.nbTime.setText(Integer.toString(this.time));
+	}
 
 }

@@ -301,6 +301,7 @@ public class MainView extends JFrame {
 		self.sP.getInitialNbLabel().setEnabled(true);
 		self.sP.removeTimeControl();
 		self.sP.enableDepthTailoring();
+		self.sP.resetTime();
 		self.sP.revalidate();
 		self.sP.repaint();
 	}
