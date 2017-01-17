@@ -1,6 +1,5 @@
 package darwin.darwin.model;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import org.json.simple.JSONArray;
@@ -24,19 +23,23 @@ public class NeuralNetwork {
 	private static final int NB_INPUT = 17;
 	private static final int NB_OUTPUT = 2;
 	private static final int NB_HIDDENNODES = 17;
-	private Node[] input;
-	private Node[] matrix;
-	private Node[] output;
+	private double[] input;
+	private double[] matrix;
+	private double[] output;
 	private double[][] inputAxiom;
 	private double[][] outputAxiom;
 	private static Random rand = new Random();
+	private static String[] nodesTitles = { "Current red value", "Current green value", "Current blue value",
+			"Left red value", "Left green value", "Left blue value", "Right red value", "Right green value",
+			"Right blue value", "Bottom red value", "Bottom green value", "Bottom blue value", "Top red value",
+			"Top green value", "Top blue value", "", "", "Speed", "Direction" };
 
 	public NeuralNetwork() {
 		this.inputAxiom = new double[NB_HIDDENNODES][NB_INPUT];
 		this.outputAxiom = new double[NB_OUTPUT][NB_HIDDENNODES];
-		this.input = new Node[NB_INPUT];
-		this.matrix = new Node[NB_HIDDENNODES];
-		this.output = new Node[NB_OUTPUT];
+		this.input = new double[NB_INPUT];
+		this.matrix = new double[NB_HIDDENNODES];
+		this.output = new double[NB_OUTPUT];
 	}
 
 	/**
@@ -47,25 +50,26 @@ public class NeuralNetwork {
 	 *            : The neural network to mutate from to create a new one
 	 */
 	public NeuralNetwork(NeuralNetwork nn) {
-		this.input = new Node[NB_INPUT];
-		this.matrix = new Node[NB_HIDDENNODES];
-		this.output = new Node[NB_OUTPUT];
+		this.input = new double[NB_INPUT];
+		this.matrix = new double[NB_HIDDENNODES];
+		this.output = new double[NB_OUTPUT];
 
 		// init
 		int i;
 		for (i = 0; i < NB_INPUT; i++) {
-			input[i] = new Node(0, "");
+			input[i] = 0;
 		}
 		for (i = 0; i < NB_HIDDENNODES; i++) {
-			matrix[i] = new Node(0, "");
+			matrix[i] = 0;
 		}
 		for (i = 0; i < NB_OUTPUT; i++) {
-			output[i] = new Node(0, "");
+			output[i] = 0;
 		}
 
 		// deepCopydoubleMatrix clones properly a 2D array
 		this.inputAxiom = Utils.deepCopydoubleMatrix(nn.getInputAxiom());
 		this.outputAxiom = Utils.deepCopydoubleMatrix(nn.getOutputAxiom());
+		this.nodesTitles = nn.nodesTitles.clone();
 		mutateInput();
 		mutateOutput();
 	}
@@ -147,18 +151,18 @@ public class NeuralNetwork {
 		int i, j;
 
 		for (i = 0; i < NB_INPUT; i++) {
-			input[i] = new Node(0, "");
+			input[i] = 0;
 		}
 
 		for (i = 0; i < NB_HIDDENNODES; i++) {
-			matrix[i] = new Node(0, "");
+			matrix[i] = 0;
 			for (j = 0; j < NB_INPUT; j++) {
 				// Gives a random value between -1 and 1
 				this.inputAxiom[i][j] = rand.nextDouble() * 2 - 1;
 			}
 		}
 		for (i = 0; i < NB_OUTPUT; i++) {
-			output[i] = new Node(0, "");
+			output[i] = 0;
 			for (j = 0; j < NB_HIDDENNODES; j++) {
 				this.outputAxiom[i][j] = rand.nextDouble() * 2 - 1;
 			}
@@ -178,19 +182,20 @@ public class NeuralNetwork {
 		for (i = 0; i < NB_HIDDENNODES; i++) {
 			double result = 0;
 			for (j = 0; j < NB_INPUT; j++) {
-				this.input[j].setValue(input[j]);
+				this.input[j] = input[j];
 				result += this.inputAxiom[i][j] * input[j];
 			}
-			this.matrix[i].setValue(result);
+			this.matrix[i] = result;
 		}
 		for (i = 0; i < NB_OUTPUT; i++) {
 			double result = 0;
 			for (j = 0; j < NB_HIDDENNODES; j++) {
-				result += this.outputAxiom[i][j] * matrix[j].getValue();
+				result += this.outputAxiom[i][j] * matrix[j];
 			}
-			this.output[i].setValue(result);
+			this.output[i] = result;
 		}
-		return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
+		// return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
+		return output;
 	}
 
 	@Override
@@ -236,7 +241,7 @@ public class NeuralNetwork {
 		return NB_HIDDENNODES;
 	}
 
-	public Node[] getInput() {
+	public double[] getInput() {
 		return input;
 	}
 
@@ -245,24 +250,28 @@ public class NeuralNetwork {
 	 * 
 	 * @return a double array
 	 */
-	public double[] getInputValue() {
-		return Arrays.stream(input).mapToDouble(Node::getValue).toArray();
-	}
+	// public double[] getInputValue() {
+	// return Arrays.stream(input).mapToDouble(Node::getValue).toArray();
+	// }
 
-	public Node[] getMatrix() {
+	public double[] getMatrix() {
 		return matrix;
 	}
 
-	public double[] getMatrixValue() {
-		return Arrays.stream(matrix).mapToDouble(Node::getValue).toArray();
-	}
+	// public double[] getMatrixValue() {
+	// return Arrays.stream(matrix).mapToDouble(Node::getValue).toArray();
+	// }
 
-	public Node[] getOutput() {
+	public double[] getOutput() {
 		return output;
 	}
 
-	public double[] getOutputValue() {
-		return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
+	// public double[] getOutputValue() {
+	// return Arrays.stream(output).mapToDouble(Node::getValue).toArray();
+	// }
+
+	public static String[] getNodesTitles() {
+		return nodesTitles;
 	}
 
 	/**

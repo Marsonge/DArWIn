@@ -33,6 +33,18 @@ public class Creature implements Cloneable {
 		this.nn = new NeuralNetwork();
 	}
 
+	/**
+	 * Called only for reproduction purpose
+	 * 
+	 * @param x
+	 *            position on x axis
+	 * @param y
+	 *            position on y axis
+	 * @param speed
+	 *            initial speed of creature
+	 * @param nn
+	 *            neural network
+	 */
 	protected Creature(int x, int y, double speed, NeuralNetwork nn) {
 		this(x, y);
 		this.speed = speed;
