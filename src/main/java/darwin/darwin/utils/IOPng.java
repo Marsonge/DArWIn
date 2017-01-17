@@ -29,6 +29,7 @@ public class IOPng {
 			for (int j = 0; j < g.getNumRows(); j++) {
 				g.setTileColour(i, j, new Color(img.getRGB(i, j)));
 			}
+		}
 	}
 public static void importFromPng(Grid g,InputStream f) throws IOException{
 	BufferedImage img = ImageIO.read(f);
@@ -37,4 +38,5 @@ public static void importFromPng(Grid g,InputStream f) throws IOException{
 			g.setTileColour(i, j, new Color(img.getRGB(i,j)));
 		}
 	}
+}
 }

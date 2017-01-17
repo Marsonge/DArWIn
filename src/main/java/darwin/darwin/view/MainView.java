@@ -326,7 +326,6 @@ public class MainView extends JFrame {
 
 			if (!paused) {
 				timer.stop();
-				growTimer.stop();
 				sP.getTabOptions().getStartButton().setText("Start");
 			}
 
@@ -337,7 +336,6 @@ public class MainView extends JFrame {
 				reset();
 			} else if (!paused) {
 				timer.start();
-				growTimer.start();
 				sP.getTabOptions().getStartButton().setText("Pause");
 			}
 
@@ -381,13 +379,11 @@ public class MainView extends JFrame {
 			break;
 		case 2:
 			TICK_GAMETURN = TICK_GAMETURN_MIN;
-			TICK_GROW = TICK_GROW_MIN;
 			sP.getTabOptions().disableAcceleration();
 			sP.getTabOptions().enableDecceleration();
 			break;
 		case 0:
 			TICK_GAMETURN = 100;
-			TICK_GROW = 1000;
 			sP.getTabOptions().enableAcceleration();
 			sP.getTabOptions().enableDecceleration();
 			break;
@@ -402,7 +398,6 @@ public class MainView extends JFrame {
 			break;
 		case -2:
 			TICK_GAMETURN = TICK_GAMETURN_MAX;
-			TICK_GROW = TICK_GROW_MAX;
 			sP.getTabOptions().enableAcceleration();
 			sP.getTabOptions().disableDecceleration();
 			break;
@@ -422,12 +417,10 @@ public class MainView extends JFrame {
 	
 	public void pauseTimers(){
 		timer.stop();
-		growTimer.stop();
 	}
 	
 	public void startTimers(){
 		timer.start();
-		growTimer.start();
 	}
 
 	/**

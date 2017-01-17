@@ -18,6 +18,7 @@ import org.json.simple.parser.ParseException;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
+import darwin.darwin.view.ViewCreature;
 
 public class Import {
 
@@ -36,8 +37,8 @@ public class Import {
 		try {
 			
 			// Delete all creatures from list, starting from the end
-			for (int j = wc.getCreatureList().size()-1; j >= 0;  j--) {
-				wc.getCreatureList().remove(j);
+			for (int j = wc.getCreatureMap().size()-1; j >= 0;  j--) {
+				wc.getCreatureMap().remove(j);
 			}
 			
 			// Getting an array of creatures from the JSON
@@ -129,7 +130,9 @@ public class Import {
 				nn.setOutputAxiom(outputAxiom);
 				
 				// Adding creatures to list
-				wc.getCreatureList().add(new Creature(id, trueX, trueY, trueEnergy, trueSpeed, nn));		
+				ViewCreature viewC = new ViewCreature(16, trueX, trueY, trueSpeed, wc, null);
+
+				wc.getCreatureMap().put(new Creature(id, trueX, trueY, trueEnergy, trueSpeed, nn),viewC);		
 
 				++i;
 			}

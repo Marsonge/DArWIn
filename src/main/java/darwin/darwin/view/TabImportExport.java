@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -16,6 +18,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import darwin.darwin.controler.WorldControler;
+import darwin.darwin.model.Creature;
 import darwin.darwin.utils.Export;
 import darwin.darwin.utils.Import;
 
@@ -39,7 +42,7 @@ public class TabImportExport extends JPanel {
 	JButton importJSONButton = new JButton("Import creatures from JSON");
 	JButton exportAllButton = new JButton("Export All (zip)");
 	JButton importAllButton = new JButton("Import All (zip)");
-
+	JButton editMapButton = new JButton("Edit map");
 	
 	public TabImportExport(MainView parent, SidePanel self){
 		this.self = self;
@@ -55,7 +58,8 @@ public class TabImportExport extends JPanel {
 		importPngButton.setPreferredSize(new Dimension(200, 30));
 		exportAllButton.setPreferredSize(new Dimension(200, 30));
 		importAllButton.setPreferredSize(new Dimension(200, 30));
-		
+		editMapButton.setPreferredSize(new Dimension(200, 30));
+
 		custPanelExport.add(exportJSONButton);
 		custPanelExport.add(exportPngButton);
 		custPanelExport.add(exportAllButton);
@@ -71,6 +75,7 @@ public class TabImportExport extends JPanel {
 		custPanelImport.setBorder(new TitledBorder("Import"));
 		this.add(custPanelImport);
 		
+		this.add(editMapButton);
 		addActionListenerExportImport();
 	}
 	
@@ -103,7 +108,7 @@ public class TabImportExport extends JPanel {
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					wc = parent.getWorldControler();
-					Export.exportToJson(fileChooser.getSelectedFile(), wc, wc.getCreatureList());
+					Export.exportToJson(fileChooser.getSelectedFile(), wc, new ArrayList(wc.getCreatureMap().keySet()));
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 					return;
@@ -267,6 +272,12 @@ public class TabImportExport extends JPanel {
 				self.getTabOptions().updateSeed("Imported");
 			
 			}
+
+		});
+		
+		editMapButton.addActionListener(e -> {
+			wc = parent.getWorldControler();
+			wc.editMap();
 
 		});
 	}

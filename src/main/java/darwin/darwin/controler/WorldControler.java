@@ -403,9 +403,6 @@ public class WorldControler extends Observable {
 		IOPng.exportToPng(grid, selectedFile);
 	}
 	
-	public List<Creature> getCreatureList(){
-		return this.creatureList;
-	}
 	public void importFromPng(InputStream selectedFile) throws IOException {
 		IOPng.importFromPng(grid,selectedFile);
 		this.simulateForward();

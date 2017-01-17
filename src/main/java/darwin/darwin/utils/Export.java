@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -97,9 +98,9 @@ public class Export {
 
 			// Ajout du fichier JSON
 			File json = new File("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
-			exportToJson(json, wc, wc.getCreatureList());
+			exportToJson(json, wc, new ArrayList(wc.getCreatureMap().keySet()));
 
-
+			
 			ZipEntry jsonZip = new ZipEntry("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
 			
 			out.putNextEntry(jsonZip);

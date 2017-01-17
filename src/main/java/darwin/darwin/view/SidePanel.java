@@ -65,7 +65,6 @@ public class SidePanel extends JPanel {
 	private WorldControler wc;
 	private MainView parent;
 	private SidePanel self = this;
-	JButton editButton = new JButton("Edit map");
 	
 	JFileChooser fileChooserForExport = new JFileChooser();
 	private DecimalFormat df = new DecimalFormat("0.00");
@@ -241,18 +240,10 @@ public class SidePanel extends JPanel {
 		});
 
 		tabHelp.add(websiteButton);
-		
 		// Add tabbedPane to viewPanel
 		this.add(tabbedPane);
 	}
 
-	
-
-		editButton.addActionListener(e -> {
-			wc = parent.getWorldControler();
-			wc.editMap();
-
-		});
 	public void tick() {
 		time++;
 		nbTime.setText(Integer.toString(Math.round(time / 10)));
@@ -265,11 +256,6 @@ public class SidePanel extends JPanel {
 		this.nbDead.setText(Integer.toString(nbDead));
 	}
 
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
-	}
 	
 	public void updateCurrentCreature(Creature currentCreature) {
 		if (currentCreature == null) {
