@@ -3,6 +3,8 @@ package darwin.darwin.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
@@ -18,7 +20,11 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxIGraphModel;
@@ -54,6 +60,7 @@ public class ViewNeuralNetwork extends JDialog {
 	private double[] input;
 	private double[] matrix;
 	private double[] output;
+	public final ViewNeuralNetwork self = this;
 
 	public ViewNeuralNetwork(NeuralNetwork nn) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
@@ -63,7 +70,6 @@ public class ViewNeuralNetwork extends JDialog {
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
 		this.edgesValuesMap = new HashMap<Object, Double>();
-		ViewNeuralNetwork self = this;
 
 		DecimalFormat df = new DecimalFormat("#.##");
 
@@ -217,66 +223,103 @@ public class ViewNeuralNetwork extends JDialog {
 	    @Override
 	        public void mouseClicked(MouseEvent e) 
 	        {    
-	    		mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
-    			mxGraph graph = graphComponent.getGraph();
-    			mxIGraphModel model = graph.getModel();
-
-    			String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142;"+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // orange
-    			String styleDefault = mxConstants.STYLE_FILLCOLOR
-    					+ "=#C3D9FF;"+ mxConstants.STYLE_FONTCOLOR + "=#000000;"
-    					+mxConstants.STYLE_OPACITY + "=25"; // default light blue
-	    		//String fillOpacity = mxConstants.STYLE_FILL_OPACITY + "=20"; // ne fonctionne pas avec la version 3.1.2 de JGraphX
-	    		//String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
 	    		
-	            graph.getModel().beginUpdate();
-	            try {
-	            	// On remet � z�ro l'affichage avant toute op�ration
-	            	resetDisplay(model);
-		    		if (cell != null && !cell.isEdge()){ // si on clique sur un node
-			    		model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
-			    		
-			    		// mise � jour des edges affich�es : on efface les edges non connect�es � la cellule cliqu�e
-			            mxCell[] cellArray = {cell}; // transforme la cellule cliqu�e en array ...
-			            Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette m�thode
-			            
-						Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
-			            while (it.hasNext()) { // parcours de toutes les edges
-							Entry<Object, Double> pair = it.next();
-			                mxCell edge = ((mxCell) pair.getKey());
-			                if (!(Arrays.asList(edges).contains(edge))) {
-			                	edge.setVisible(false);
-			                }
-			                edge.setValue(null);
-			            }
-			            
-			            // Puis on affiche les valeurs des edges qui nous interessent
-			            for (int i = 0; i<edges.length; i++){ // R�cup�ration de toutes les aretes connect�es a la cellule
-			            	((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi � 2 d�cimales
-			            }
-			    		
-			    		// Enfin, mise � jour du style des autres nodes : on baisse l'opacit� et on remet la couleur par d�faut
-			            for (Object c : inputNodeList){
-			            	if (!c.equals(cell)) {
-			            		model.setStyle(c, styleDefault);
-			            		//model.setStyle(c, fillOpacity);
-			            	}
-			            }
-			            for (Object c : hiddenNodeList){
-			            	if (!c.equals(cell)) {
-				            	model.setStyle(c, styleDefault);
-			            		//model.setStyle(c, fillOpacity);
-			            	}
-			            }
-			            for (Object c : outputNodeList){
-			            	if (!c.equals(cell)) {
-			            		model.setStyle(c, styleDefault);
-			            		//model.setStyle(c, fillOpacity);
-			            	}
-			            }
-		    		}
-	            } finally {
-	            	graph.getModel().endUpdate();
-	            }
+		    	mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+				mxGraph graph = graphComponent.getGraph();
+				mxIGraphModel model = graph.getModel();
+	    	
+				// CLIC DROIT : USE CASE MODIFICATION DE LA VALEUR D'UN AXIOME
+				if (SwingUtilities.isRightMouseButton(e)) {
+
+					if (cell != null && cell.isEdge()) {
+						System.out.println("RIGHT CLICK");
+						JTextField textField = new JTextField();
+						textField.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								// Quand on tape sur entree dans le jtextfield,
+								// cette action est realisee
+								String value = textField.getText();
+								if (StringUtils.isNumeric(value)) {
+									graph.cellLabelChanged(cell, value, false);
+
+								} else {
+									// string entree n'est pas un chiffre
+									// TODO
+								}
+								textField.setVisible(false);
+								self.getLayeredPane().remove(textField);
+							}
+						});
+						textField.setBounds(100, 100, 100, 50);
+						self.getLayeredPane().add(textField, new Integer(2));
+					}
+					
+					
+				} else { // SINON : USE CASE CLIC POUR AFFICHER AXIOMES D'UN NODE
+
+					String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142;"
+							+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // orange
+					String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;" + mxConstants.STYLE_FONTCOLOR
+							+ "=#000000;" + mxConstants.STYLE_OPACITY + "=25"; // default light blue
+
+					// String fillOpacity = mxConstants.STYLE_FILL_OPACITY +
+					// "=20"; // ne fonctionne pas avec la version 3.1.2 de
+					// JGraphX
+					// String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
+
+					graph.getModel().beginUpdate();
+					try {
+						// On remet � z�ro l'affichage avant toute op�ration
+						resetDisplay(model);
+						if (cell != null && !cell.isEdge()) { // si on clique sur un node
+							model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
+
+							// mise � jour des edges affich�es : on efface les
+							// edges non connect�es � la cellule cliqu�e
+							mxCell[] cellArray = { cell }; // transforme la cellule cliquee en array ...
+							Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette methode
+
+							Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
+							while (it.hasNext()) { // parcours de toutes les edges
+								Entry<Object, Double> pair = it.next();
+								mxCell edge = ((mxCell) pair.getKey());
+								if (!(Arrays.asList(edges).contains(edge))) {
+									edge.setVisible(false);
+								}
+								edge.setValue(null);
+							}
+
+							// Puis on affiche les valeurs des edges qui nous interessent
+							for (int i = 0; i < edges.length; i++) { // Recuperation de toutes les aretes connectees a la cellule
+								((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi a 2 decimales
+							}
+
+							// Enfin, mise a jour du style des autres nodes : on
+							// baisse l'opacita et on remet la couleur par defaut
+							for (Object c : inputNodeList) {
+								if (!c.equals(cell)) {
+									model.setStyle(c, styleDefault);
+									// model.setStyle(c, fillOpacity);
+								}
+							}
+							for (Object c : hiddenNodeList) {
+								if (!c.equals(cell)) {
+									model.setStyle(c, styleDefault);
+									// model.setStyle(c, fillOpacity);
+								}
+							}
+							for (Object c : outputNodeList) {
+								if (!c.equals(cell)) {
+									model.setStyle(c, styleDefault);
+									// model.setStyle(c, fillOpacity);
+								}
+							}
+						}
+					} finally {
+						graph.getModel().endUpdate();
+					}
+				}
 	        }
 
 		});
