@@ -292,8 +292,8 @@ public class WorldControler extends Observable {
 		int rot = c.getRot();
 		double rad = Math.toRadians(rot);
 		float speed = c.getSpeed();
-		int newX = (int) Math.round((Math.cos(rad) * speed * (tileSize/6) + x));
-		int newY = (int) Math.round((Math.sin(rad) * speed * (tileSize/6) + y));
+		int newX = (int) Math.round((Math.cos(rad) * speed * ((float)tileSize/6) + x));
+		int newY = (int) Math.round((Math.sin(rad) * speed * ((float)tileSize/6) + y));
 		newX = Utils.wrappingBorderVar(newX, 0, grid.getNumCols() * tileSize, 5);
 		newY = Utils.wrappingBorderVar(newY, 0, grid.getNumRows() * tileSize, 5);
 		c.move(newX, newY);

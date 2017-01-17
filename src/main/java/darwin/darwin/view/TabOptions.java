@@ -6,6 +6,8 @@ package darwin.darwin.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -95,8 +97,13 @@ public class TabOptions extends JPanel {
 	
 
 	public TabOptions(){
-		
-		this.setPreferredSize(new Dimension(280, 765));
+		int size = 765;
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        if(height < 900){
+        	size -= 100;
+        }
+		this.setPreferredSize(new Dimension(280, size));
 		
 		// Change map button
 		changeMap.setBackground(defaultButtonColor);

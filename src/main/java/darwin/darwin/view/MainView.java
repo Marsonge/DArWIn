@@ -2,6 +2,8 @@ package darwin.darwin.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 import java.io.IOException;
 
@@ -38,8 +40,8 @@ public class MainView extends JFrame {
 	static final int TICK_GAMETURN_MAX = 5000;
 	static final int TICK_GAMETURN_MIN = 10;
 	static final int GRID_SIZE = 129;
-	static final int TILE_SIZE = 6;
-	static final int CREATURE_SIZE = 16;
+	private int TILE_SIZE = 6;
+	private int CREATURE_SIZE = 16;
 	
 	private static final long serialVersionUID = 1L;
 	public static final Color black = new Color(0, 0, 0);
@@ -65,7 +67,12 @@ public class MainView extends JFrame {
 	public MainView() throws InterruptedException, IOException {
 		
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        if(height < 900){
+        	TILE_SIZE--;
+        	CREATURE_SIZE -= 4;
+        }
 		// Create the main JFrame
 		this.setTitle("Darwin : ARtificial Wildlife INtelligence");
 		this.setResizable(false);

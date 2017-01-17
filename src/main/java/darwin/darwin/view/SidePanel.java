@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -126,16 +128,21 @@ public class SidePanel extends JPanel {
 	public SidePanel(MainView mv) throws IOException {
 
 		this.parent = mv;
-		
+		int size = 771;
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
+        int height = gd.getDisplayMode().getHeight();
+        if(height < 900){
+        	size -= 100;
+        }
 		// Set size and color of panel
-		this.setPreferredSize(new Dimension(300, 771));
+		this.setPreferredSize(new Dimension(300, size));
 		this.setBackground(black);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		// Stats tab
 		JPanel tabStats = new JPanel();
-		tabStats.setPreferredSize(new Dimension(280, 660));
+		tabStats.setPreferredSize(new Dimension(280, size-100));
 
 		
 		// Help tab
@@ -143,7 +150,7 @@ public class SidePanel extends JPanel {
 		tabHelp.setPreferredSize(new Dimension(260, 1360));
 		JScrollPane helpScrollable = new JScrollPane(tabHelp, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		helpScrollable.setPreferredSize(new Dimension(280, 660));
+		helpScrollable.setPreferredSize(new Dimension(280, size-100));
 		tabHelp.setLayout(new BorderLayout());
 
 		tabOptions = new TabOptions();
