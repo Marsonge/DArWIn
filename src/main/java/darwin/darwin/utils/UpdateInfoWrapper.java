@@ -1,9 +1,9 @@
 package darwin.darwin.utils;
 
+import java.util.Collection;
 import java.util.List;
 
-import darwin.darwin.model.Creature;
-import darwin.darwin.model.grid.Tile;
+import darwin.darwin.view.ViewCreature;
 
 /**
  * Wrapper class for notifying observers with several arguments
@@ -11,21 +11,23 @@ import darwin.darwin.model.grid.Tile;
  *
  */
 public class UpdateInfoWrapper {
-	private List<Creature> creatureList;
-	private List<Tile> tileList;
-	//TODO : Supprimer tileList, non utilisé
-	public UpdateInfoWrapper (List<Creature> creatureList, List<Tile> tileList){
+	private List<ViewCreature> deadList;
+	private Collection<ViewCreature> creatureList;
+
+	
+	public UpdateInfoWrapper (List<ViewCreature> deadList, Collection<ViewCreature> creatureList){
 		this.creatureList = creatureList;
-		this.tileList = tileList;
+		this.deadList = deadList;
 	}
 
-	public List<Creature> getCreatureList() {
+	public Collection<ViewCreature> getCreatureList() {
 		return creatureList;
 	}
 
-	public List<Tile> getTileList() {
-		return tileList;
+	public List<ViewCreature> getDeadList() {
+		return deadList;
 	}
+
 	
 	
 }

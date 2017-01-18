@@ -45,6 +45,16 @@ public class Creature implements Cloneable {
 	 * @param nn
 	 *            neural network
 	 */
+	
+	public Creature(long id, int x, int y, int energy, float speed, NeuralNetwork nn){
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.energy = energy;
+		this.speed = speed;
+		this.nn = nn;
+	}
+	
 	protected Creature(int x, int y, double speed, NeuralNetwork nn) {
 		this(x, y);
 		this.speed = speed;
@@ -69,12 +79,12 @@ public class Creature implements Cloneable {
 		for (int i = 0; i < 15; i++) {// Normalize input : Colors
 			input[i] = ((double) intput[i]) / (255);
 		}
-		input[15] = this.previousRot / 180;
-		input[16] = this.energy / 150;
+		input[15] = (float)this.previousRot/180;
+		input[16] = (float)this.energy/150;
 		double result[] = this.nn.compute(input);
-		this.speed = getShortSigmoid(result[0]) * MAXSPEED;
-		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1]) - 0.5) * 360)) % 360;
-		this.previousRot = (int) (getLargeSigmoid(result[1]) - 0.5) * 360;
+		this.speed = getShortSigmoid(result[0])*MAXSPEED;
+		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
+		this.previousRot = (int) (getLargeSigmoid(result[1])-0.5)*360;
 	}
 
 	private double getShortSigmoid(double f) {
@@ -159,6 +169,8 @@ public class Creature implements Cloneable {
 		JSONObject jsonThis = new JSONObject();
 		
 		jsonThis.put("id", this.id);
+		jsonThis.put("x", this.x);
+		jsonThis.put("y", this.y);
 		jsonThis.put("energy", this.energy);
 		jsonThis.put("speed", this.speed);
 		jsonThis.put("neural network", this.nn.toJson());

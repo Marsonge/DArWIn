@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -29,4 +30,12 @@ public class IOPng {
 			}
 		}
 	}
+public static void importFromPng(Grid g,InputStream f) throws IOException{
+	BufferedImage img = ImageIO.read(f);
+	for(int i = 0;i<g.getNumCols();i++){
+		for(int j = 0;j<g.getNumRows();j++){
+			g.setTileColour(i, j, new Color(img.getRGB(i,j)));
+		}
+	}
+}
 }

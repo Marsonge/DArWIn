@@ -69,7 +69,6 @@ public class NeuralNetwork {
 		// deepCopydoubleMatrix clones properly a 2D array
 		this.inputAxiom = Utils.deepCopydoubleMatrix(nn.getInputAxiom());
 		this.outputAxiom = Utils.deepCopydoubleMatrix(nn.getOutputAxiom());
-		this.nodesTitles = nn.nodesTitles.clone();
 		mutateInput();
 		mutateOutput();
 	}
@@ -240,6 +239,31 @@ public class NeuralNetwork {
 	public static int getNbHiddennodes() {
 		return NB_HIDDENNODES;
 	}
+	
+	public void setInputAxiom(float[][] input){
+		int i;
+		int j;
+		
+		for (i = 0; i < NB_HIDDENNODES; i++) {
+			for (j = 0; j < NB_INPUT; j++) {
+				this.inputAxiom[i][j] = input[i][j];
+			}
+			
+		}
+	}
+	
+	public void setOutputAxiom(float[][] output){
+		int i;
+		int j;
+		
+		for (i = 0; i < NB_OUTPUT; i++) {
+			for (j = 0; j < NB_HIDDENNODES; j++) {
+				this.outputAxiom[i][j] = output[i][j];
+			}
+		}
+	}
+	
+	
 
 	public double[] getInput() {
 		return input;

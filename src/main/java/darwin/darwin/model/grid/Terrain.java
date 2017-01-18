@@ -1,6 +1,8 @@
 package darwin.darwin.model.grid;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum Terrain {
 	ETHER(0,0,0), //Pure death
@@ -8,7 +10,6 @@ public enum Terrain {
 	MOUNTAINS(130,120,95), //Brownish
 	SAND(245,231,117), //Yellowish
 	WOODS(0,140,57), //Darkish Green
-	FOOD(0,255,0), //Pure Green of Pain
 	SNOW(241,255,255), //Bluish White
 	SHALLOW_WATER(0,70,255), //Lighter Blue
 	DEEP_WATER(20,0,180); //Dark blue
@@ -18,6 +19,14 @@ public enum Terrain {
     private final int blue;
     private final int rgb;
 
+    private static Map<Integer, Terrain> map = new HashMap<Integer, Terrain>();
+
+    static {
+        for (Terrain t : Terrain.values()) {
+            map.put(t.getRGB(), t);
+        }
+    }
+    
     private Terrain(int r, int g, int b) {
         this.red = r;
         this.green = g;
@@ -47,5 +56,9 @@ public enum Terrain {
     @Override
     public String toString() {
         return red + "," + green + "," + blue;
+    }
+    
+    public static Terrain valueOf(Color c) {
+        return map.get(c.getRGB());
     }
 }
