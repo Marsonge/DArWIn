@@ -31,8 +31,8 @@ public class TabOptions extends JPanel {
 
 	public static final Color defaultButtonColor = new Color(220, 220, 220);
 	
-	public static int MIN_CREATURE = 0;
-	public static int MAX_CREATURE = 100;
+	public static int MIN_CREATURE = 1;
+	public static int MAX_CREATURE = 101;
 	public static int MIN_CRITICAL_CREATURE = 0;
 	public static int MAX_CRITICAL_CREATURE = 1000;
 	public static int DEFAULT_CREATURE = 50;
