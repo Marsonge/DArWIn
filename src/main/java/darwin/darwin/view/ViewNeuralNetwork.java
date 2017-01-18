@@ -3,8 +3,6 @@ package darwin.darwin.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
@@ -24,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxIGraphModel;
@@ -34,10 +32,10 @@ import com.mxgraph.view.mxGraph;
 
 import darwin.darwin.model.NeuralNetwork;
 
-
 /**
- * Vue pour le r�seau neuronal d'une cr�ature
- * Attention, cette classe utilise la librairie JGraphX.
+ * Vue pour le r�seau neuronal d'une cr�ature Attention, cette classe utilise la
+ * librairie JGraphX.
+ * 
  * @author lulu
  *
  */
@@ -65,7 +63,7 @@ public class ViewNeuralNetwork extends JDialog {
 	public ViewNeuralNetwork(NeuralNetwork nn) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
 		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 + 150);
-		this.setPreferredSize(new Dimension(width,height));
+		this.setPreferredSize(new Dimension(width, height));
 		this.inputNodeList = new ArrayList<Object>();
 		this.hiddenNodeList = new ArrayList<Object>();
 		this.outputNodeList = new ArrayList<Object>();
@@ -92,82 +90,72 @@ public class ViewNeuralNetwork extends JDialog {
 
 		Object parent = graph.getDefaultParent();
 		mxIGraphModel model = graph.getModel();
-		//mxStylesheet stylesheet = new mxStylesheet();
-		
+		// mxStylesheet stylesheet = new mxStylesheet();
+
 		// Nodes creation
 		model.beginUpdate();
 		try {
-			for (int i = 0; i<COLUMN_NUMBER; i++){
-				switch(i){
-					case 0: // Input nodes
-						for (int j = 0; j<NB_INPUT; j++){;
-							Object node = graph.insertVertex(parent,
-									null,
-									df.format(input[j]),
-									((this.getPreferredSize().getWidth())/7)+25,
-									(((this.getPreferredSize().getHeight())/NB_INPUT)-2)*j,
-									NODE_SIZE,
-									NODE_SIZE);
-							inputNodeList.add(node);
-						}
-						break;
-					case 1: // Hidden nodes
-						for (int j = 0; j<NB_HIDDENNODES; j++){
-							// Nodes creation
-							Object node = graph.insertVertex(parent,
-									null,
-									df.format(matrix[j]),
-									((((this.getPreferredSize().getWidth())/7))+25)*3,
-									(((this.getPreferredSize().getHeight())/NB_HIDDENNODES)-2)*j,
-									NODE_SIZE,
-									NODE_SIZE);
-							hiddenNodeList.add(node);
-						}
-						break;
-					case 2: // Output nodes
-						for (int j = 0; j<NB_OUTPUT; j++){
-							Object node = graph.insertVertex(parent,
-									null,
-									df.format(output[j]),
-									((((this.getPreferredSize().getWidth())/7))+25)*5,
-									(((this.getPreferredSize().getHeight())/NB_OUTPUT)-2)*j,
-									NODE_SIZE,
-									NODE_SIZE);
-							outputNodeList.add(node);
-						}
-						break;
+			for (int i = 0; i < COLUMN_NUMBER; i++) {
+				switch (i) {
+				case 0: // Input nodes
+					for (int j = 0; j < NB_INPUT; j++) {
+						;
+						Object node = graph.insertVertex(parent, null, df.format(input[j]),
+								((this.getPreferredSize().getWidth()) / 7) + 25,
+								(((this.getPreferredSize().getHeight()) / NB_INPUT) - 2) * j, NODE_SIZE, NODE_SIZE);
+						inputNodeList.add(node);
+					}
+					break;
+				case 1: // Hidden nodes
+					for (int j = 0; j < NB_HIDDENNODES; j++) {
+						// Nodes creation
+						Object node = graph.insertVertex(parent, null, df.format(matrix[j]),
+								((((this.getPreferredSize().getWidth()) / 7)) + 25) * 3,
+								(((this.getPreferredSize().getHeight()) / NB_HIDDENNODES) - 2) * j, NODE_SIZE,
+								NODE_SIZE);
+						hiddenNodeList.add(node);
+					}
+					break;
+				case 2: // Output nodes
+					for (int j = 0; j < NB_OUTPUT; j++) {
+						Object node = graph.insertVertex(parent, null, df.format(output[j]),
+								((((this.getPreferredSize().getWidth()) / 7)) + 25) * 5,
+								(((this.getPreferredSize().getHeight()) / NB_OUTPUT) - 2) * j, NODE_SIZE, NODE_SIZE);
+						outputNodeList.add(node);
+					}
+					break;
 				}
 			}
-			
+
 			// Edges creation (inputAxiom)
 			for (Object hidden : hiddenNodeList) {
-				for (Object input : inputNodeList){
+				for (Object input : inputNodeList) {
 					Object edge = graph.insertEdge(parent, null, null, input, hidden);
 					double value = inputAxiom[hiddenNodeList.indexOf(hidden)][inputNodeList.indexOf(input)];
 					this.edgesValuesMap.put(edge, value);
-					
-					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
-					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#000000");
+
+					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value) + ";"
+							+ mxConstants.STYLE_FONTCOLOR + "=#000000");
 				}
 			}
 			// (outputAxiom)
 			for (Object output : outputNodeList) {
-				for (Object hidden : hiddenNodeList){
+				for (Object hidden : hiddenNodeList) {
 					Object edge = graph.insertEdge(parent, null, null, hidden, output);
 					double value = outputAxiom[outputNodeList.indexOf(output)][hiddenNodeList.indexOf(hidden)];
 					this.edgesValuesMap.put(edge, value);
-					
-					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value)
-					+ ";" + mxConstants.STYLE_FONTCOLOR + "=#000000");
+
+					((mxCell) edge).setStyle(mxConstants.STYLE_STROKECOLOR + "=" + this.getEdgeColor(value) + ";"
+							+ mxConstants.STYLE_FONTCOLOR + "=#000000");
 				}
 			}
 		} finally {
 			model.endUpdate();
 		}
-		
+
 		// apply settings
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		
+
 		// Affichage labels input
 		int i = 0;
 		for (; i < this.NB_INPUT; i++) {
@@ -176,8 +164,7 @@ public class ViewNeuralNetwork extends JDialog {
 				label.setVerticalAlignment(SwingConstants.CENTER);
 
 				label.setLayout(new BoxLayout(label, BoxLayout.PAGE_AXIS));
-				label.setBounds(10,
-						(((int) this.getPreferredSize().getHeight() / NB_INPUT) * i) - i, 120, 15);
+				label.setBounds(10, (((int) this.getPreferredSize().getHeight() / NB_INPUT) * i) - i, 120, 15);
 
 				label.setBackground(Color.LIGHT_GRAY); // marche pas ?
 				label.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -198,8 +185,7 @@ public class ViewNeuralNetwork extends JDialog {
 
 				label2.setLayout(new BoxLayout(label2, BoxLayout.PAGE_AXIS));
 				label2.setBounds((((((int) this.getPreferredSize().getWidth()) / 7)) + 25) * 5,
-						((((int) this.getPreferredSize().getHeight()) / NB_OUTPUT) * j) + 2 * NODE_SIZE, 80,
-						15);
+						((((int) this.getPreferredSize().getHeight()) / NB_OUTPUT) * j) + 2 * NODE_SIZE, 80, 15);
 				label2.setBackground(Color.LIGHT_GRAY);
 				label2.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -212,56 +198,55 @@ public class ViewNeuralNetwork extends JDialog {
 			}
 		}
 
-
 		this.add(graphComponent, BorderLayout.CENTER);
 
-	    /**
-	     * Classe interne MouseAdapter
-	     */
-	    graphComponent.getGraphControl().addMouseListener(new MouseAdapter() 
-	    {
-	    @Override
-	        public void mouseClicked(MouseEvent e) 
-	        {    
-	    		
-		    	mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
+		/**
+		 * Classe interne MouseAdapter
+		 */
+		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				mxCell cell = (mxCell) graphComponent.getCellAt(e.getX(), e.getY());
 				mxGraph graph = graphComponent.getGraph();
 				mxIGraphModel model = graph.getModel();
-	    	
+
 				// CLIC DROIT : USE CASE MODIFICATION DE LA VALEUR D'UN AXIOME
 				if (SwingUtilities.isRightMouseButton(e)) {
 
 					if (cell != null && cell.isEdge()) {
 						System.out.println("RIGHT CLICK");
 						JTextField textField = new JTextField();
-						textField.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// Quand on tape sur entree dans le jtextfield,
-								// cette action est realisee
-								String value = textField.getText();
-								if (StringUtils.isNumeric(value)) {
-									graph.cellLabelChanged(cell, value, false);
+						textField.addActionListener(ev -> {
+							// Quand on tape sur entree dans le jtextfield,
+							// cette action est realisee
+							String value = textField.getText();
+							if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
+								graph.cellLabelChanged(cell, value, false);
 
-								} else {
-									// string entree n'est pas un chiffre
-									// TODO
-								}
-								textField.setVisible(false);
-								self.getLayeredPane().remove(textField);
+							} else {
+								// string entree n'est pas un chiffre
+								// TODO
 							}
+							textField.setVisible(false);
+							self.getLayeredPane().remove(textField);
+
 						});
 						textField.setBounds(100, 100, 100, 50);
+						textField.setVisible(true);
 						self.getLayeredPane().add(textField, new Integer(2));
+						textField.requestFocus();
 					}
-					
-					
-				} else { // SINON : USE CASE CLIC POUR AFFICHER AXIOMES D'UN NODE
+
+				} else { // SINON : USE CASE CLIC POUR AFFICHER AXIOMES D'UN
+							// NODE
 
 					String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142;"
 							+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // orange
 					String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;" + mxConstants.STYLE_FONTCOLOR
-							+ "=#000000;" + mxConstants.STYLE_OPACITY + "=25"; // default light blue
+							+ "=#000000;" + mxConstants.STYLE_OPACITY + "=25"; // default
+																				// light
+																				// blue
 
 					// String fillOpacity = mxConstants.STYLE_FILL_OPACITY +
 					// "=20"; // ne fonctionne pas avec la version 3.1.2 de
@@ -272,16 +257,31 @@ public class ViewNeuralNetwork extends JDialog {
 					try {
 						// On remet � z�ro l'affichage avant toute op�ration
 						resetDisplay(model);
-						if (cell != null && !cell.isEdge()) { // si on clique sur un node
-							model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
+						if (cell != null && !cell.isEdge()) { // si on clique
+																// sur un node
+							model.setStyle(cell, styleCurrentCellFill); // on
+																		// change
+																		// la
+																		// couleur
+																		// en
+																		// orange
 
 							// mise � jour des edges affich�es : on efface les
 							// edges non connect�es � la cellule cliqu�e
-							mxCell[] cellArray = { cell }; // transforme la cellule cliquee en array ...
-							Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette methode
+							mxCell[] cellArray = { cell }; // transforme la
+															// cellule cliquee
+															// en array ...
+							Object[] edges = graph.getAllEdges(cellArray); // ...
+																			// pour
+																			// le
+																			// bien
+																			// de
+																			// cette
+																			// methode
 
 							Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
-							while (it.hasNext()) { // parcours de toutes les edges
+							while (it.hasNext()) { // parcours de toutes les
+													// edges
 								Entry<Object, Double> pair = it.next();
 								mxCell edge = ((mxCell) pair.getKey());
 								if (!(Arrays.asList(edges).contains(edge))) {
@@ -290,13 +290,25 @@ public class ViewNeuralNetwork extends JDialog {
 								edge.setValue(null);
 							}
 
-							// Puis on affiche les valeurs des edges qui nous interessent
-							for (int i = 0; i < edges.length; i++) { // Recuperation de toutes les aretes connectees a la cellule
-								((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi a 2 decimales
+							// Puis on affiche les valeurs des edges qui nous
+							// interessent
+							for (int i = 0; i < edges.length; i++) { // Recuperation
+																		// de
+																		// toutes
+																		// les
+																		// aretes
+																		// connectees
+																		// a la
+																		// cellule
+								((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi
+																										// a
+																										// 2
+																										// decimales
 							}
 
 							// Enfin, mise a jour du style des autres nodes : on
-							// baisse l'opacita et on remet la couleur par defaut
+							// baisse l'opacita et on remet la couleur par
+							// defaut
 							for (Object c : inputNodeList) {
 								if (!c.equals(cell)) {
 									model.setStyle(c, styleDefault);
@@ -320,7 +332,7 @@ public class ViewNeuralNetwork extends JDialog {
 						graph.getModel().endUpdate();
 					}
 				}
-	        }
+			}
 
 		});
 		graphComponent.getGraphControl().addMouseMotionListener(new MouseAdapter() {
@@ -341,40 +353,44 @@ public class ViewNeuralNetwork extends JDialog {
 				//
 				// }
 			}
-	    });
-	    resetDisplay(model);
+		});
+		resetDisplay(model);
 	}
-	
+
 	/**
 	 * Fonction de remise � z�ro de l'affichage du neural network
 	 */
-	private void resetDisplay(mxIGraphModel model){
-		
-		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;"+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // default light blue
-		
-		for (Object c : inputNodeList){
-	    		model.setStyle(c, styleDefault);
-	    }
-	    for (Object c : hiddenNodeList){
-	        	model.setStyle(c, styleDefault);
-	    }
-	    for (Object c : outputNodeList){
-	    		model.setStyle(c, styleDefault);
-	    }
-		Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
-	    while (it.hasNext()) {
-			Entry<Object, Double> pair = it.next();
-	        ((mxCell) pair.getKey()).setValue(null);
-	        ((mxCell) pair.getKey()).setVisible(true);
-	    }
+	private void resetDisplay(mxIGraphModel model) {
 
-    }
-	
+		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;" + mxConstants.STYLE_FONTCOLOR + "=#000000"; // default
+																													// light
+																													// blue
+
+		for (Object c : inputNodeList) {
+			model.setStyle(c, styleDefault);
+		}
+		for (Object c : hiddenNodeList) {
+			model.setStyle(c, styleDefault);
+		}
+		for (Object c : outputNodeList) {
+			model.setStyle(c, styleDefault);
+		}
+		Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<Object, Double> pair = it.next();
+			((mxCell) pair.getKey()).setValue(null);
+			((mxCell) pair.getKey()).setVisible(true);
+		}
+
+	}
+
 	/**
-	 * Fonction de g�n�ration de la couleur de l'ar�te
-	 * Les couleurs g�n�r�es sont entre le bleu (vers 1) et le rouge (vers -1)
-	 * (gris pour alentours de 0.)
-	 * @param value poids de l'ar�te
+	 * Fonction de g�n�ration de la couleur de l'ar�te Les couleurs g�n�r�es
+	 * sont entre le bleu (vers 1) et le rouge (vers -1) (gris pour alentours de
+	 * 0.)
+	 * 
+	 * @param value
+	 *            poids de l'ar�te
 	 * @return valeur en hexadecimal de la couleur
 	 */
 	private String getEdgeColor(double value) {
