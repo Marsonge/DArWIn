@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -90,14 +91,19 @@ public class TabOptions extends JPanel {
 	
 
 	public TabOptions(){
+		
+
 		int size = 765;
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
         int height = gd.getDisplayMode().getHeight();
         if(height < 900){
         	size -= 127;
         }
+        
+		
 		this.setPreferredSize(new Dimension(280, size));
 		
+		custPanel.setPreferredSize(new Dimension(280, size-100));
 		// Change map button
 		changeMap.setBackground(defaultButtonColor);
 		changeMap.setPreferredSize(new Dimension(130, 30));
@@ -178,6 +184,9 @@ public class TabOptions extends JPanel {
 		this.add(labelSeed);
 		this.add(textSeed);
 		
+		JScrollPane optionsScrollable = new JScrollPane(custPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
 		custPanel.add(deepOceanLabel);
 		custPanel.add(deepOceanSlider);
 
@@ -198,9 +207,16 @@ public class TabOptions extends JPanel {
 
 		custPanel.add(snowLabel);
 		custPanel.add(snowSlider);
-		custPanel.setPreferredSize(new Dimension(290, 400));
-		custPanel.setBorder(new TitledBorder("Customize heights"));
-		this.add(custPanel);
+		
+		if (height<900){
+			optionsScrollable.setPreferredSize(new Dimension(280, size-200));
+			custPanel.setBorder(new TitledBorder("Customize heights"));
+		
+			this.add(optionsScrollable);
+		} else {
+			this.add(custPanel);
+		}
+		
 	}
 	
 	/**
