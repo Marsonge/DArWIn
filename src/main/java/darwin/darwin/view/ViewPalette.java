@@ -68,16 +68,16 @@ public class ViewPalette extends JPanel {
 			 brush.setBackground(Color.GRAY); // selected by default
 			 brush.setPreferredSize(new Dimension(40,50));
 			 
-			 largeBrush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Brush.png"))));
+			 largeBrush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/brush.png"))));
 			 largeBrush.setBackground(Color.lightGray); // selected by default
 			 largeBrush.setPreferredSize(new Dimension(40,50));
 			 
 			 rectangle.setBackground(Color.lightGray);
-			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Rectangle.png"))));
+			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/ectangle.png"))));
 			 rectangle.setPreferredSize(new Dimension(40,50));
 			 
 			 fillBucket.setBackground(Color.lightGray);
-			 fillBucket.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Fill Bucket.png"))));
+			 fillBucket.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/fillbucket.png"))));
 			 fillBucket.setPreferredSize(new Dimension(40,50));
 			 
 			 toolPanel.add(brush);
