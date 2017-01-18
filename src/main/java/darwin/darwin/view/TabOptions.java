@@ -204,6 +204,8 @@ public class TabOptions extends JPanel {
 		custPanel.add(snowLabel);
 		custPanel.add(snowSlider);
 		
+		custPanel.setBorder(new TitledBorder("Customize heights"));
+		
 		addScrollingPanel();
 		
 	}
@@ -215,7 +217,6 @@ public class TabOptions extends JPanel {
 			optionsScrollable = new JScrollPane(custPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			optionsScrollable.setPreferredSize(new Dimension(280, 438));
-			custPanel.setBorder(new TitledBorder("Customize heights"));
 		
 			this.add(optionsScrollable);
 		} else {
@@ -238,8 +239,15 @@ public class TabOptions extends JPanel {
 	 * disableSliders
 	 */
 	public void disableSliders() {
+		
 		this.remove(custPanel);
-		this.remove(optionsScrollable);
+		
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();    
+		
+		int height = gd.getDisplayMode().getHeight();
+		if (height<900){
+			this.remove(optionsScrollable);
+		}
 	}
 
 	/**
