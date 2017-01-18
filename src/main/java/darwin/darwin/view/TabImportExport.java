@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -107,7 +106,7 @@ public class TabImportExport extends JPanel {
 			if (rVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					wc = parent.getWorldControler();
-					Export.exportToJson(fileChooser.getSelectedFile(), wc, new ArrayList(wc.getCreatureMap().keySet()));
+					Export.exportToJson(fileChooser.getSelectedFile(), wc, new ArrayList<Creature>(wc.getCreatureMap().keySet()));
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "The export has failed! Error: " + e1.getMessage());
 					return;

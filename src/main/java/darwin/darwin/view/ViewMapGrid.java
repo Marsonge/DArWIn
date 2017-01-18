@@ -3,22 +3,17 @@ package darwin.darwin.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.Box;
 import javax.swing.JPanel;
 
 import darwin.darwin.model.grid.Grid;
 import darwin.darwin.model.grid.Terrain;
-import darwin.darwin.model.grid.Tile;
 import darwin.darwin.utils.Tool;
 import darwin.darwin.utils.Utils;
 

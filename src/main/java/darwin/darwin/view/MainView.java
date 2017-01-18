@@ -7,7 +7,6 @@ import java.awt.GraphicsEnvironment;
 import java.util.List;
 import java.util.Locale;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -127,7 +126,7 @@ public class WorldControler extends Observable {
 				Creature baby = this.reproduce(c);
 				// Babies aren't added to the list if we reached the hardcap
 				if (baby != null && nbCreature < hardcap) {
-					ViewCreature viewBaby = new ViewCreature(16, baby.getX(), baby.getY(), baby.getSpeed(), this, null);
+					ViewCreature viewBaby = new ViewCreature(creatureSize, baby.getX(), baby.getY(), baby.getSpeed(), this, null);
 					toAdd.put(baby, viewBaby);
 				}
 				this.move(c);
