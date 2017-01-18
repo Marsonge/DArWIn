@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.List;
+import java.util.Locale;
 import java.io.IOException;
 import java.util.List;
 
@@ -444,6 +445,10 @@ public class MainView extends JFrame {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		System.setProperty("sun.java2d.opengl", "True");
 		System.out.println("accelerated? : "+System.getProperty("sun.java2d.opengl"));
+		Locale enLocale = new Locale("en_GB");
+
+		Locale.setDefault (enLocale);
+		
 		// Noice Look and Feel for the application
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
