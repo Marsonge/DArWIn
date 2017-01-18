@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.InputStream;
@@ -427,15 +428,13 @@ public class WorldControler extends Observable {
 	 */
 	public void updateModelNeuralNetwork(long idCreature, double[][] inputAxiom, double[][] outputAxiom) {
 		// TODO Auto-generated method stub
-		for (Creature c : this.creatureList) {
+		for (Creature c : new ArrayList<Creature>(creatureMap.keySet())) {
 			if (c.getId() == idCreature) {
 				c.update(inputAxiom, outputAxiom);
 			}
 		}
 	}
 	
-} 
-
 	public void editMap() {
 		new ViewMapEditor(grid,this);
 	}
