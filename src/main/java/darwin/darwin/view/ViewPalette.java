@@ -73,7 +73,7 @@ public class ViewPalette extends JPanel {
 			 largeBrush.setPreferredSize(new Dimension(40,50));
 			 
 			 rectangle.setBackground(Color.lightGray);
-			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/ectangle.png"))));
+			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/rectangle.png"))));
 			 rectangle.setPreferredSize(new Dimension(40,50));
 			 
 			 fillBucket.setBackground(Color.lightGray);
