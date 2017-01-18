@@ -177,5 +177,16 @@ public class Creature implements Cloneable {
 		
 		return jsonThis;
 	}
+
+	/**
+	 * updates model inputAxiom and outputAxiom
+	 * 
+	 * @param inputAxiom
+	 * @param outputAxiom
+	 */
+	public void update(double[][] inputAxiom, double[][] outputAxiom) {
+		this.nn.setInputAxiom(inputAxiom);
+		this.nn.setOutputAxiom(outputAxiom);
+	}
 	
 }

@@ -203,7 +203,7 @@ public class SidePanel extends JPanel {
 
 			// NeuralNetwork view is created with current creature's NN.
 			if (wc.getCurrentCreature() != null) {
-				ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc.getCurrentCreature().getNeuralNetwork());
+				ViewNeuralNetwork nnView = new ViewNeuralNetwork(wc);
 				nnView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				nnView.pack();
 				nnView.setVisible(true);
