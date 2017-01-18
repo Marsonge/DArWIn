@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import java.util.Collection;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -98,7 +95,7 @@ public class Export {
 
 			// Ajout du fichier JSON
 			File json = new File("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
-			exportToJson(json, wc, new ArrayList(wc.getCreatureMap().keySet()));
+			exportToJson(json, wc, new ArrayList<Creature>(wc.getCreatureMap().keySet()));
 
 			
 			ZipEntry jsonZip = new ZipEntry("DArWIn_export_" + sdf.format(cal.getTime()) + ".json");
