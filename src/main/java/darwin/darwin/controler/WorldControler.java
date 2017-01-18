@@ -349,5 +349,25 @@ public class WorldControler extends Observable{
 		IOPng.importFromPng(grid,selectedFile);
 		this.simulateForward();
 	}
+
+	/**
+	 * Modify the creature's neural network through its axioms. Allows the user
+	 * to modify it during game.
+	 * 
+	 * @param idCreature
+	 *            creature id
+	 * @param inputAxiom
+	 *            new inputAxiom to modify
+	 * @param outputAxiom
+	 *            new outputAxiom to modify
+	 */
+	public void updateModelNeuralNetwork(long idCreature, double[][] inputAxiom, double[][] outputAxiom) {
+		// TODO Auto-generated method stub
+		for (Creature c : this.creatureList) {
+			if (c.getId() == idCreature) {
+				c.update(inputAxiom, outputAxiom);
+			}
+		}
+	}
 	
 } 

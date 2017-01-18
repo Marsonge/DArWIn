@@ -30,7 +30,9 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
+import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.NeuralNetwork;
+import darwin.darwin.utils.Utils;
 
 /**
  * Vue pour le r�seau neuronal d'une cr�ature Attention, cette classe utilise la
@@ -60,7 +62,7 @@ public class ViewNeuralNetwork extends JDialog {
 	private double[] output;
 	public final ViewNeuralNetwork self = this;
 
-	public ViewNeuralNetwork(NeuralNetwork nn) {
+	public ViewNeuralNetwork(WorldControler wc) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
 		int width = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 + 150);
 		this.setPreferredSize(new Dimension(width, height));
@@ -70,7 +72,8 @@ public class ViewNeuralNetwork extends JDialog {
 		this.edgesValuesMap = new HashMap<Object, Double>();
 
 		DecimalFormat df = new DecimalFormat("#.##");
-
+		NeuralNetwork nn = wc.getCurrentCreature().getNeuralNetwork();
+		long idCreature = wc.getCurrentCreature().getId();
 		double[][] inputAxiom = nn.getInputAxiom();
 		double[][] outputAxiom = nn.getOutputAxiom();
 		input = nn.getInput();
@@ -222,7 +225,27 @@ public class ViewNeuralNetwork extends JDialog {
 							// cette action est realisee
 							String value = textField.getText();
 							if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
+								double dValue = Double.valueOf(value);
+								dValue = Utils.borderVarDouble(dValue, -1, 1, 0);
+
 								graph.cellLabelChanged(cell, value, false);
+
+								cell.setValue(value);
+								// verification de la position de la source et
+								// cible dans les listes de nodes
+								Object source = cell.getSource();
+								Object target = cell.getTarget();
+								int j = inputNodeList.indexOf(source);
+								if (j != -1) {
+									int i = hiddenNodeList.indexOf(target);
+									inputAxiom[i][j] = dValue;
+								} else {
+									j = hiddenNodeList.indexOf(source);
+									int i = outputNodeList.indexOf(target);
+									outputAxiom[i][j] = dValue;
+								}
+								// updates model
+								wc.updateModelNeuralNetwork(idCreature, inputAxiom, outputAxiom);
 
 							} else {
 								// string entree n'est pas un chiffre
@@ -248,23 +271,12 @@ public class ViewNeuralNetwork extends JDialog {
 																				// light
 																				// blue
 
-					// String fillOpacity = mxConstants.STYLE_FILL_OPACITY +
-					// "=20"; // ne fonctionne pas avec la version 3.1.2 de
-					// JGraphX
-					// String styleOpacity = mxConstants.STYLE_OPACITY + "=25";
-
 					graph.getModel().beginUpdate();
 					try {
 						// On remet � z�ro l'affichage avant toute op�ration
 						resetDisplay(model);
-						if (cell != null && !cell.isEdge()) { // si on clique
-																// sur un node
-							model.setStyle(cell, styleCurrentCellFill); // on
-																		// change
-																		// la
-																		// couleur
-																		// en
-																		// orange
+						if (cell != null && !cell.isEdge()) { // si on clique sur un node
+							model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
 
 							// mise � jour des edges affich�es : on efface les
 							// edges non connect�es � la cellule cliqu�e

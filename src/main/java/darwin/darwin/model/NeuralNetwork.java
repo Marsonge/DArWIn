@@ -274,6 +274,14 @@ public class NeuralNetwork {
 		return nodesTitles;
 	}
 
+	public void setInputAxiom(double[][] inputAxiom) {
+		this.inputAxiom = inputAxiom;
+	}
+
+	public void setOutputAxiom(double[][] outputAxiom) {
+		this.outputAxiom = outputAxiom;
+	}
+
 	/**
 	 * toJson
 	 * 
