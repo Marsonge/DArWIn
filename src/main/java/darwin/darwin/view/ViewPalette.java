@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.utils.Tool;
@@ -30,7 +31,6 @@ public class ViewPalette extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -2195288634007240391L;
-	private final ViewMapEditor parent;
     private Terrain t = Terrain.values()[0];
     private final JButton etherButton = new JButton("Ether");
     private final JButton deepButton = new JButton("Deep Ocean");
@@ -43,11 +43,11 @@ public class ViewPalette extends JPanel {
     private final JButton undoButton = new JButton("Undo");
     
     private Terrain current;
-    private Tool currentTool;
 
-    private final JComboBox toolBox;
+    private final JComboBox<Tool> toolBox;
     private final JPanel toolPanel = new JPanel();
     private final JButton brush = new JButton();
+    private final JButton largeBrush = new JButton();
     private final JButton rectangle = new JButton();
     private final JButton fillBucket = new JButton();
    
@@ -58,27 +58,30 @@ public class ViewPalette extends JPanel {
 	public ViewPalette(ViewMapEditor parent){
 		super();
 		this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
-		this.parent = parent;
-		//this.setBackground(new Color(t.getRGB()));
-		toolBox = new JComboBox();
+		toolBox = new JComboBox<Tool>();
 		preview.setBackground(new Color(t.getRGB()));
 		
 		toolPanel.setLayout(new FlowLayout());
-		
+		toolPanel.setMaximumSize(new Dimension(200,60));
 		 try {
-			 brush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Brush.png"))));
+			 brush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/pencil.png"))));
 			 brush.setBackground(Color.GRAY); // selected by default
-			 brush.setPreferredSize(new Dimension(50,50));
+			 brush.setPreferredSize(new Dimension(40,50));
+			 
+			 largeBrush.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Brush.png"))));
+			 largeBrush.setBackground(Color.lightGray); // selected by default
+			 largeBrush.setPreferredSize(new Dimension(40,50));
 			 
 			 rectangle.setBackground(Color.lightGray);
 			 rectangle.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Rectangle.png"))));
-			 rectangle.setPreferredSize(new Dimension(50,50));
+			 rectangle.setPreferredSize(new Dimension(40,50));
 			 
 			 fillBucket.setBackground(Color.lightGray);
 			 fillBucket.setIcon(new ImageIcon(ImageIO.read(Utils.getResource("img/tools/Fill Bucket.png"))));
-			 fillBucket.setPreferredSize(new Dimension(50,50));
+			 fillBucket.setPreferredSize(new Dimension(40,50));
 			 
 			 toolPanel.add(brush);
+			 toolPanel.add(largeBrush);
 			 toolPanel.add(rectangle);
 			 toolPanel.add(fillBucket);
 			
@@ -93,13 +96,23 @@ public class ViewPalette extends JPanel {
         
         brush.addActionListener(e -> {
         	brush.setBackground(Color.GRAY);
+        	largeBrush.setBackground(Color.lightGray);
         	rectangle.setBackground(Color.lightGray);
         	fillBucket.setBackground(Color.lightGray);
         	toolBox.setSelectedItem(Tool.BRUSH);
         });
         
+        largeBrush.addActionListener(e -> {
+        	brush.setBackground(Color.lightGray);
+        	largeBrush.setBackground(Color.GRAY);
+        	rectangle.setBackground(Color.lightGray);
+        	fillBucket.setBackground(Color.lightGray);
+        	toolBox.setSelectedItem(Tool.LARGEBRUSH);
+        });
+        
         rectangle.addActionListener(e -> {
         	brush.setBackground(Color.lightGray);
+        	largeBrush.setBackground(Color.lightGray);
         	rectangle.setBackground(Color.GRAY);
         	fillBucket.setBackground(Color.lightGray);
         	toolBox.setSelectedItem(Tool.RECTANGLE);
@@ -107,6 +120,7 @@ public class ViewPalette extends JPanel {
         
         fillBucket.addActionListener(e -> {
         	brush.setBackground(Color.lightGray);
+        	largeBrush.setBackground(Color.lightGray);
         	rectangle.setBackground(Color.lightGray);
         	fillBucket.setBackground(Color.GRAY);
         	toolBox.setSelectedItem(Tool.FILLBUCKET);
@@ -226,24 +240,8 @@ public class ViewPalette extends JPanel {
         undoButton.addActionListener(e -> {
         	parent.undo();
         });
-        
-        this.add(etherButton);
-        this.add(deepButton);
-        this.add(oceanButton);
-        this.add(shallowButton);
-        this.add(sandButton);
-        this.add(woodButton);
-        this.add(mountainsButton);
-        this.add(snowButton);
-        
-        this.add(preview);
-        
-       /* this.add(brush);
-        this.add(rectangle);*/
-        this.add(toolPanel);
-        
         Dimension d = new Dimension(200,30);
-        
+
         etherButton.setMaximumSize(d);
         etherButton.setMinimumSize(d);
         etherButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -268,11 +266,27 @@ public class ViewPalette extends JPanel {
         snowButton.setMaximumSize(d);
         snowButton.setMinimumSize(d);
         snowButton.setAlignmentX(CENTER_ALIGNMENT);
-
+        
+        undoButton.setMaximumSize(d);
+        undoButton.setMinimumSize(d);
         undoButton.setAlignmentX(CENTER_ALIGNMENT);
         
-        toolBox.setMaximumSize(d);
-        //this.add(toolBox);
+        this.add(etherButton);
+        this.add(deepButton);
+        this.add(oceanButton);
+        this.add(shallowButton);
+        this.add(sandButton);
+        this.add(woodButton);
+        this.add(mountainsButton);
+        this.add(snowButton);
+        
+        this.add(preview);
+        
+        this.add(toolPanel);
+        
+        
+
+        
         this.add(undoButton);
         this.add(Box.createVerticalGlue());
         JPanel p = new JPanel(new FlowLayout());

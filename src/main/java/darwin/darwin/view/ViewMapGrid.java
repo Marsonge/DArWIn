@@ -40,6 +40,7 @@ public class ViewMapGrid extends JPanel {
 	private int originX,originY;
 	private int currentUndoLevel = 0;
 	private int successiveUndos = 0;
+	private int numberOfPossibleUndos = 0;
 	
 	@Override
     public void paintComponent(Graphics g) {
@@ -113,6 +114,55 @@ public class ViewMapGrid extends JPanel {
 					preview.setBounds(x,y,width,height);
 					self.repaint();
 				}
+				if(parent.getTool().equals(Tool.LARGEBRUSH)){
+					Color c = parent.getCurrentColor();
+					paintTile(e.getX(),e.getY(),c);
+
+					paintTile(e.getX()+(1*TILESIZE),e.getY(),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY(),c);
+					
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()+(2*TILESIZE),c);
+					
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(2*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY(),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY(),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()+(2*TILESIZE),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(2*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX(),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX(),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX(),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(3*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(3*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(3*TILESIZE),c);
+					
+					paintTile(e.getX()+(3*TILESIZE),e.getY(),c);
+					paintTile(e.getX()+(3*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(3*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY(),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY()+(1*TILESIZE),c);
+				}
 			}
 
 			@Override
@@ -136,6 +186,7 @@ public class ViewMapGrid extends JPanel {
 				self.previousGrids[currentUndoLevel] = (Color[][]) Utils.deepCopyColorMatrix(self.grid);
 				currentUndoLevel = (currentUndoLevel + 1)%5;
 				successiveUndos = 0;
+				numberOfPossibleUndos++;
 				if(parent.getTool().equals(Tool.RECTANGLE)){
 					originX = e.getX();
 					originY = e.getY();
@@ -148,6 +199,55 @@ public class ViewMapGrid extends JPanel {
 				if(parent.getTool().equals(Tool.FILLBUCKET)){
 					Color c = parent.getCurrentColor();
 					fillBucket(e.getX(),e.getY(),c,self.getTileColor(e.getX(),e.getY()));
+				}
+				if(parent.getTool().equals(Tool.LARGEBRUSH)){
+					Color c = parent.getCurrentColor();
+					paintTile(e.getX(),e.getY(),c);
+
+					paintTile(e.getX()+(1*TILESIZE),e.getY(),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY(),c);
+					
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()+(2*TILESIZE),c);
+					
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(2*TILESIZE),c);
+					paintTile(e.getX()+(2*TILESIZE),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY(),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY(),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()+(2*TILESIZE),c);
+					
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(2*TILESIZE),c);
+					paintTile(e.getX()-(2*TILESIZE),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX(),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX(),e.getY()+(2*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(2*TILESIZE),c);
+					
+					paintTile(e.getX(),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()+(3*TILESIZE),c);
+					paintTile(e.getX(),e.getY()-(3*TILESIZE),c);
+					paintTile(e.getX()-(1*TILESIZE),e.getY()-(3*TILESIZE),c);
+					paintTile(e.getX()+(1*TILESIZE),e.getY()-(3*TILESIZE),c);
+					
+					paintTile(e.getX()+(3*TILESIZE),e.getY(),c);
+					paintTile(e.getX()+(3*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()+(3*TILESIZE),e.getY()+(1*TILESIZE),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY(),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY()-(1*TILESIZE),c);
+					paintTile(e.getX()-(3*TILESIZE),e.getY()+(1*TILESIZE),c);
 				}
 			}
 			
@@ -298,9 +398,10 @@ public class ViewMapGrid extends JPanel {
 	}
 	
 	public void undo(){
-		if(successiveUndos>=5)
+		if(successiveUndos>=5 || numberOfPossibleUndos==0)
 			return;
 		successiveUndos++;
+		numberOfPossibleUndos--;
 		int index = (currentUndoLevel - successiveUndos)%5;
 		if(index<0) index+=5;
 		grid = Utils.deepCopyColorMatrix(previousGrids[index]);
