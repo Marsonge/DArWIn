@@ -239,8 +239,15 @@ public class TabOptions extends JPanel {
 	 * disableSliders
 	 */
 	public void disableSliders() {
+		
 		this.remove(custPanel);
-		this.remove(optionsScrollable);
+		
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();    
+		
+		int height = gd.getDisplayMode().getHeight();
+		if (height<900){
+			this.remove(optionsScrollable);
+		}
 	}
 
 	/**
