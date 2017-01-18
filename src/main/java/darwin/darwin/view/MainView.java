@@ -316,6 +316,7 @@ public class MainView extends JFrame {
 		self.sP.getTabOptions().getInitialNbLabel().setEnabled(true);
 		self.sP.getTabOptions().removeTimeControl();
 		self.sP.getTabOptions().enableDepthTailoring();
+		self.sP.getTabOptions().addScrollingPanel();
 		self.sP.getTabOptions().revalidate();
 		self.sP.getTabOptions().repaint();
 	}

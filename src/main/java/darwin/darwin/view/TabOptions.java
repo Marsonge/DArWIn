@@ -49,7 +49,7 @@ public class TabOptions extends JPanel {
 	public static int SNOW = 88;
 	
 	private JPanel custPanel = new JPanel();
-	
+
 	private List<JSlider> depthSliders;
 	private JButton changeMap = new JButton("Change Map");
 	private JButton start = new JButton("Start");
@@ -88,11 +88,10 @@ public class TabOptions extends JPanel {
 	private JLabel labelCSeed = new JLabel("Current seed:");
 	private JLabel cSeed = new JLabel("");
 	private JLabel labelSeed = new JLabel("Input seed for generation:");
+	private JScrollPane optionsScrollable;
 	
-
 	public TabOptions(){
-		
-
+	
 		int size = 765;
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
         int height = gd.getDisplayMode().getHeight();
@@ -184,9 +183,6 @@ public class TabOptions extends JPanel {
 		this.add(labelSeed);
 		this.add(textSeed);
 		
-		JScrollPane optionsScrollable = new JScrollPane(custPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
 		custPanel.add(deepOceanLabel);
 		custPanel.add(deepOceanSlider);
 
@@ -208,15 +204,23 @@ public class TabOptions extends JPanel {
 		custPanel.add(snowLabel);
 		custPanel.add(snowSlider);
 		
+		addScrollingPanel();
+		
+	}
+	
+	public void addScrollingPanel(){
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();    
+		int height = gd.getDisplayMode().getHeight();
 		if (height<900){
-			optionsScrollable.setPreferredSize(new Dimension(280, size-200));
+			optionsScrollable = new JScrollPane(custPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			optionsScrollable.setPreferredSize(new Dimension(280, 438));
 			custPanel.setBorder(new TitledBorder("Customize heights"));
 		
 			this.add(optionsScrollable);
 		} else {
 			this.add(custPanel);
 		}
-		
 	}
 	
 	/**
@@ -235,6 +239,7 @@ public class TabOptions extends JPanel {
 	 */
 	public void disableSliders() {
 		this.remove(custPanel);
+		this.remove(optionsScrollable);
 	}
 
 	/**
@@ -585,6 +590,12 @@ public class TabOptions extends JPanel {
 				mountainsSlider.setValue(snowSlider.getValue());
 			}
 		});
+	}
+
+	public void addScroll() {
+		optionsScrollable = new JScrollPane(custPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
 	}
 	
 	
