@@ -226,7 +226,7 @@ public class ViewNeuralNetwork extends JDialog {
 								dValue = Utils.borderVarDouble(dValue, -1, 1, 0); // valeur remise entre -1 et 1
 	
 								// mise a jour de la valeur affichee sur le graph
-								graph.cellLabelChanged(cell, value, false);
+								graph.cellLabelChanged(cell, dValue, false);
 								// mise a jour de la valeur dans la map cell/valeur
 								self.edgesValuesMap.put(cell, dValue);
 	
@@ -267,9 +267,9 @@ public class ViewNeuralNetwork extends JDialog {
 										// si notre cell est source d'une edge dans la map
 										// on update sa valeur
 	
-										graph.cellLabelChanged(edge, value, false);
+										graph.cellLabelChanged(edge, dValue, false);
 										self.edgesValuesMap.put(edge, dValue);
-										((mxCell) edge).setValue(value);
+										((mxCell) edge).setValue(dValue);
 	
 										Object target = ((mxCell) edge).getTarget();
 										int j = inputNodeList.indexOf(source);

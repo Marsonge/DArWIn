@@ -32,7 +32,7 @@ public class NeuralNetwork {
 	private static String[] nodesTitles = { "Current red value", "Current green value", "Current blue value",
 			"Left red value", "Left green value", "Left blue value", "Right red value", "Right green value",
 			"Right blue value", "Bottom red value", "Bottom green value", "Bottom blue value", "Top red value",
-			"Top green value", "Top blue value", "", "", "Speed", "Direction" };
+			"Top green value", "Top blue value", "Previous Rotation", "Current Energy", "Speed", "Direction" };
 
 	public NeuralNetwork() {
 		this.inputAxiom = new double[NB_HIDDENNODES][NB_INPUT];
