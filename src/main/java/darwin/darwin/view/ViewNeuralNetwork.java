@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -246,6 +247,41 @@ public class ViewNeuralNetwork extends JDialog {
 						} else {
 							// string entree n'est pas un chiffre
 							// TODO
+						}
+					} else if (cell != null && cell.isVertex()){
+						// Si clic droit sur un node
+						// on veut pouvoir mettre a jour la valeur de toutes ses edges
+						
+						String value = JOptionPane.showInputDialog("Value ?");
+						if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
+							double dValue = Double.valueOf(value);
+							dValue = Utils.borderVarDouble(dValue, -1, 1, 0); // valeur remise entre -1 et 1
+
+							Collection<Object> edges = self.edgesValuesMap.keySet();
+							for (Object edge : edges) {
+								Object source = ((mxCell) edge).getSource();
+								if (source.equals(cell)) {
+									// si notre cell est source d'une edge dans la map
+									// on update sa valeur
+
+									graph.cellLabelChanged(edge, value, false);
+									self.edgesValuesMap.put(edge, dValue);
+									((mxCell) edge).setValue(value);
+
+									Object target = ((mxCell) edge).getTarget();
+									int j = inputNodeList.indexOf(source);
+									if (j != -1) {
+										int i = hiddenNodeList.indexOf(target);
+										inputAxiom[i][j] = dValue;
+									} else {
+										j = hiddenNodeList.indexOf(source);
+										int i = outputNodeList.indexOf(target);
+										outputAxiom[i][j] = dValue;
+									}
+								}
+							}
+							// updates model
+							wc.updateModelNeuralNetwork(idCreature, inputAxiom, outputAxiom);
 						}
 					}
 
