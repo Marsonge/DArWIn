@@ -45,7 +45,7 @@ public class ViewMapEditor extends JFrame{
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(); 
         int height = gd.getDisplayMode().getHeight();
         if(height < 900){
-    		this.setPreferredSize(new Dimension(650,550));
+    		this.setPreferredSize(new Dimension(700,550));
     		grid.setZoomLevel(4);
         }
         else{
