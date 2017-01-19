@@ -49,7 +49,7 @@ public class ViewMapEditor extends JFrame{
     		grid.setZoomLevel(4);
         }
         else{
-    		this.setPreferredSize(new Dimension(930,810));
+    		this.setPreferredSize(new Dimension(970,810));
         }
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
