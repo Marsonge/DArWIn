@@ -219,13 +219,16 @@ public class ViewNeuralNetwork extends JDialog {
 						String value = JOptionPane.showInputDialog("Value ?");
 						if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
 							double dValue = Double.valueOf(value);
-							dValue = Utils.borderVarDouble(dValue, -1, 1, 0);
+							dValue = Utils.borderVarDouble(dValue, -1, 1, 0); // valeur remise entre -1 et 1
 
+							// mise a jour de la valeur affichee sur le graph
 							graph.cellLabelChanged(cell, value, false);
+							// mise a jour de la valeur dans la map cell/valeur
+							self.edgesValuesMap.put(cell, dValue);
 
 							cell.setValue(value);
 							// verification de la position de la source et
-							// cible dans les listes de nodes
+							// cible de l'arrete dans les listes de nodes
 							Object source = cell.getSource();
 							Object target = cell.getTarget();
 							int j = inputNodeList.indexOf(source);
