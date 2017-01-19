@@ -51,7 +51,8 @@ public class TabOptions extends JPanel {
 	private JPanel custPanel = new JPanel();
 
 	private List<JSlider> depthSliders;
-	private JButton changeMap = new JButton("Change Map");
+	private JButton changeMap = new JButton("New Map");
+	private JButton reloadCreatures = new JButton("Reload");
 	private JButton start = new JButton("Start");
 	private JButton reset = new JButton("Reset");
 	JButton timeSlow2 = new JButton("<<");
@@ -105,11 +106,16 @@ public class TabOptions extends JPanel {
 		custPanel.setPreferredSize(new Dimension(280, size-100));
 		// Change map button
 		changeMap.setBackground(defaultButtonColor);
-		changeMap.setPreferredSize(new Dimension(130, 30));
+		changeMap.setPreferredSize(new Dimension(85, 30));
 
+		// Change reload creatures button
+		reloadCreatures.setBackground(defaultButtonColor);
+		reloadCreatures.setPreferredSize(new Dimension(85, 30));
+
+		
 		// Start button
 		start.setBackground(defaultButtonColor);
-		start.setPreferredSize(new Dimension(130, 30));
+		start.setPreferredSize(new Dimension(85, 30));
 		
 		timeSlow2.setPreferredSize(new Dimension(48, 30));
 		timeSlow1.setPreferredSize(new Dimension(42, 30));
@@ -176,6 +182,7 @@ public class TabOptions extends JPanel {
 		
 		this.setLayout(new FlowLayout());
 		this.add(changeMap);
+		this.add(reloadCreatures);
 		this.add(start);
 		enableDepthTailoring();
 		this.add(labelCSeed);
@@ -407,6 +414,11 @@ public class TabOptions extends JPanel {
 	public JButton getChangeMapButton() {
 		return this.changeMap;
 	}
+	
+	public JButton getReloadCreaturesButton() {
+		return this.reloadCreatures;
+	}
+	
 	
 	private void initDepthSliders() {
 		int width = 70;

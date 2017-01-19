@@ -96,6 +96,7 @@ public class MainView extends JFrame {
 		// Add listeners
 		this.setStartButtonListener();
 		this.setChangeMapButtonListener();
+		this.setReloadCreaturesButtonListener();
 		this.setNbCreaturesListener();
 		this.setNbCreaturesSoftCapListener();
 		this.setNbCreaturesHardCapListener();
@@ -128,6 +129,38 @@ public class MainView extends JFrame {
 		if (this.sP.getTabOptions().getSeed() != 0) {
 			seed = Utils.borderVar(this.sP.getTabOptions().getSeed(), 0, Integer.MAX_VALUE, 0);
 		}
+		double[] depths = new double[7];
+		int i = 0;
+		List<JSlider> depthSliders = this.sP.getTabOptions().getDepthSliders();
+		for (JSlider j : depthSliders) {
+			depths[i] = j.getValue() / (float) 100;
+			i++;
+		}
+		this.wc = new WorldControler(GRID_SIZE, TILE_SIZE, (float) 80 * GRID_SIZE, seed, NUMBER_OF_CREATURES, depths, CREATURE_SIZE);
+		this.wc.setSoftCap(sP.getTabOptions().getSoftCapSlider().getValue());
+		this.wc.setHardCap(sP.getTabOptions().getHardCapSlider().getValue());
+		this.sP.updateNbCreature(NUMBER_OF_CREATURES, 0);
+		this.sP.getTabOptions().updateSeed(this.wc.getSeed());
+		this.vG = new ViewGrid(wc);
+		this.setEndOfGameListener(this.vG);
+
+		this.add(vG, BorderLayout.WEST);
+		this.pack();
+		this.setVisible(true);
+
+		wc.simulateForward();
+		initTimer();
+	}
+	
+	/**
+	 * reloadCreatures
+	 */
+	public void reloadCreatures() {
+
+		// When map is created the first time, vG is null
+		if (vG != null)
+			this.remove(vG);
+		int seed = this.wc.getSeed();
 		double[] depths = new double[7];
 		int i = 0;
 		List<JSlider> depthSliders = this.sP.getTabOptions().getDepthSliders();
@@ -252,6 +285,7 @@ public class MainView extends JFrame {
 					if (simulationLaunched == false) {
 						simulationLaunched = true;
 						sP.disable(sP.getTabOptions().getChangeMapButton());
+						sP.disable(sP.getTabOptions().getReloadCreaturesButton());
 						sP.disable(sP.getTabOptions().getInitialNbSlider());
 						sP.getTabOptions().disableSliders();
 						sP.getTabOptions().disableLabels();
@@ -279,6 +313,22 @@ public class MainView extends JFrame {
 		sP.getTabOptions().getChangeMapButton().addActionListener(e -> {
 			if (!simulationLaunched) {
 				changeMap();
+			}
+		});
+	}
+	
+	/**
+	 * setChangeMapButtonListener
+	 * 
+	 * Will set the change map button listener
+	 * 
+	 * @param tOp
+	 */
+	public void setReloadCreaturesButtonListener() {
+
+		sP.getTabOptions().getReloadCreaturesButton().addActionListener(e -> {
+			if (!simulationLaunched) {
+				reloadCreatures();
 			}
 		});
 	}
@@ -310,6 +360,7 @@ public class MainView extends JFrame {
 		self.simulationLaunched = false;
 		self.resetMap(self.wc.getSeed());
 		self.sP.getTabOptions().getChangeMapButton().setEnabled(true);
+		self.sP.getTabOptions().getReloadCreaturesButton().setEnabled(true);
 		self.sP.getTabOptions().getStartButton().setEnabled(true);
 		self.sP.getTabOptions().getStartButton().setText("Start");
 		self.sP.getTabOptions().getInitialNbSlider().setEnabled(true);
