@@ -137,7 +137,7 @@ public class SidePanel extends JPanel {
 		
 		// Help tab
 		JPanel tabHelp = new JPanel();
-		tabHelp.setPreferredSize(new Dimension(260, 1360));
+		tabHelp.setPreferredSize(new Dimension(260, 1660));
 		JScrollPane helpScrollable = new JScrollPane(tabHelp, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		helpScrollable.setPreferredSize(new Dimension(280, size-100));

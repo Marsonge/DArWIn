@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -53,14 +54,13 @@ public class ViewNeuralNetwork extends JDialog {
 	private List<Object> inputNodeList;
 	private List<Object> hiddenNodeList;
 	private List<Object> outputNodeList;
-	private Map<Object, Double> edgesValuesMap; // mxGraph object 'edge' and its
-												// value
-	private String[] nodesTitles; // facultative strings to be associated with
-									// nodes
+	private Map<Object, Double> edgesValuesMap; // mxGraph object 'edge' and its value
+	private String[] nodesTitles; // facultative strings to be associated with nodes
 	private double[] input;
 	private double[] matrix;
 	private double[] output;
 	public final ViewNeuralNetwork self = this;
+	private boolean editable = false;
 
 	public ViewNeuralNetwork(WorldControler wc) {
 		int height = (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 80);
@@ -217,22 +217,22 @@ public class ViewNeuralNetwork extends JDialog {
 				// CLIC DROIT : USE CASE MODIFICATION DE LA VALEUR D'UN AXIOME
 				if (SwingUtilities.isRightMouseButton(e)) {
 
-					if (cell != null && cell.isEdge()) {
-						System.out.println("RIGHT CLICK");
-						JTextField textField = new JTextField();
-						textField.addActionListener(ev -> {
-							// Quand on tape sur entree dans le jtextfield,
-							// cette action est realisee
-							String value = textField.getText();
+					if (self.editable){
+						// Si la cellule cliquee est bien une arrete
+						if (cell != null && cell.isEdge()) {
+							String value = JOptionPane.showInputDialog("Value ?");
 							if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
 								double dValue = Double.valueOf(value);
-								dValue = Utils.borderVarDouble(dValue, -1, 1, 0);
-
+								dValue = Utils.borderVarDouble(dValue, -1, 1, 0); // valeur remise entre -1 et 1
+	
+								// mise a jour de la valeur affichee sur le graph
 								graph.cellLabelChanged(cell, value, false);
-
+								// mise a jour de la valeur dans la map cell/valeur
+								self.edgesValuesMap.put(cell, dValue);
+	
 								cell.setValue(value);
 								// verification de la position de la source et
-								// cible dans les listes de nodes
+								// cible de l'arrete dans les listes de nodes
 								Object source = cell.getSource();
 								Object target = cell.getTarget();
 								int j = inputNodeList.indexOf(source);
@@ -246,54 +246,71 @@ public class ViewNeuralNetwork extends JDialog {
 								}
 								// updates model
 								wc.updateModelNeuralNetwork(idCreature, inputAxiom, outputAxiom);
-
+	
 							} else {
 								// string entree n'est pas un chiffre
 								// TODO
 							}
-							textField.setVisible(false);
-							self.getLayeredPane().remove(textField);
-
-						});
-						textField.setBounds(100, 100, 100, 50);
-						textField.setVisible(true);
-						self.getLayeredPane().add(textField, new Integer(2));
-						textField.requestFocus();
+						} else if (cell != null && cell.isVertex()){
+							// Si clic droit sur un node
+							// on veut pouvoir mettre a jour la valeur de toutes ses edges
+							
+							String value = JOptionPane.showInputDialog("Value ?");
+							if (NumberUtils.isParsable(value)) { // on verifie que la chaine entrée est un nombre
+								double dValue = Double.valueOf(value);
+								dValue = Utils.borderVarDouble(dValue, -1, 1, 0); // valeur remise entre -1 et 1
+	
+								Collection<Object> edges = self.edgesValuesMap.keySet();
+								for (Object edge : edges) {
+									Object source = ((mxCell) edge).getSource();
+									if (source.equals(cell)) {
+										// si notre cell est source d'une edge dans la map
+										// on update sa valeur
+	
+										graph.cellLabelChanged(edge, value, false);
+										self.edgesValuesMap.put(edge, dValue);
+										((mxCell) edge).setValue(value);
+	
+										Object target = ((mxCell) edge).getTarget();
+										int j = inputNodeList.indexOf(source);
+										if (j != -1) {
+											int i = hiddenNodeList.indexOf(target);
+											inputAxiom[i][j] = dValue;
+										} else {
+											j = hiddenNodeList.indexOf(source);
+											int i = outputNodeList.indexOf(target);
+											outputAxiom[i][j] = dValue;
+										}
+									}
+								}
+								// updates model
+								wc.updateModelNeuralNetwork(idCreature, inputAxiom, outputAxiom);
+							}
+						}
 					}
 
-				} else { // SINON : USE CASE CLIC POUR AFFICHER AXIOMES D'UN
-							// NODE
+				} else { // SINON : USE CASE CLIC POUR AFFICHER AXIOMES D'UN NODE
 
 					String styleCurrentCellFill = mxConstants.STYLE_FILLCOLOR + "=#f47142;"
 							+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // orange
 					String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;" + mxConstants.STYLE_FONTCOLOR
-							+ "=#000000;" + mxConstants.STYLE_OPACITY + "=25"; // default
-																				// light
-																				// blue
+							+ "=#000000;" + mxConstants.STYLE_OPACITY + "=25"; // default light blue
 
 					graph.getModel().beginUpdate();
 					try {
 						// On remet � z�ro l'affichage avant toute op�ration
 						resetDisplay(model);
 						if (cell != null && !cell.isEdge()) { // si on clique sur un node
+							self.editable = true;
 							model.setStyle(cell, styleCurrentCellFill); // on change la couleur en orange
 
 							// mise � jour des edges affich�es : on efface les
 							// edges non connect�es � la cellule cliqu�e
-							mxCell[] cellArray = { cell }; // transforme la
-															// cellule cliquee
-															// en array ...
-							Object[] edges = graph.getAllEdges(cellArray); // ...
-																			// pour
-																			// le
-																			// bien
-																			// de
-																			// cette
-																			// methode
+							mxCell[] cellArray = { cell }; // transforme la cellule cliquee en array ...
+							Object[] edges = graph.getAllEdges(cellArray); // ... pour le bien de cette methode
 
 							Iterator<Entry<Object, Double>> it = edgesValuesMap.entrySet().iterator();
-							while (it.hasNext()) { // parcours de toutes les
-													// edges
+							while (it.hasNext()) { // parcours de toutes les  edges
 								Entry<Object, Double> pair = it.next();
 								mxCell edge = ((mxCell) pair.getKey());
 								if (!(Arrays.asList(edges).contains(edge))) {
@@ -302,20 +319,9 @@ public class ViewNeuralNetwork extends JDialog {
 								edge.setValue(null);
 							}
 
-							// Puis on affiche les valeurs des edges qui nous
-							// interessent
-							for (int i = 0; i < edges.length; i++) { // Recuperation
-																		// de
-																		// toutes
-																		// les
-																		// aretes
-																		// connectees
-																		// a la
-																		// cellule
-								((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi
-																										// a
-																										// 2
-																										// decimales
+							// Puis on affiche les valeurs des edges qui nous interessent
+							for (int i = 0; i < edges.length; i++) { // Recuperation de toutes les aretes connectees a la cellule
+								((mxCell) edges[i]).setValue(df.format(edgesValuesMap.get(edges[i]))); // arrondi a 2 decimales
 							}
 
 							// Enfin, mise a jour du style des autres nodes : on
@@ -373,10 +379,10 @@ public class ViewNeuralNetwork extends JDialog {
 	 * Fonction de remise � z�ro de l'affichage du neural network
 	 */
 	private void resetDisplay(mxIGraphModel model) {
+		this.editable = false;
 
-		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;" + mxConstants.STYLE_FONTCOLOR + "=#000000"; // default
-																													// light
-																													// blue
+		String styleDefault = mxConstants.STYLE_FILLCOLOR + "=#C3D9FF;"
+		+ mxConstants.STYLE_FONTCOLOR + "=#000000"; // default light blue
 
 		for (Object c : inputNodeList) {
 			model.setStyle(c, styleDefault);
