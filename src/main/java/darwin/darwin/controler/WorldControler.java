@@ -21,11 +21,11 @@ import darwin.darwin.model.NeuralNetwork;
 import darwin.darwin.model.grid.Grid;
 import darwin.darwin.model.grid.Terrain;
 import darwin.darwin.model.grid.Tile;
-import darwin.darwin.utils.IOPng;
 import darwin.darwin.utils.UpdateInfoWrapper;
 import darwin.darwin.utils.Utils;
-import darwin.darwin.view.ViewCreature;
-import darwin.darwin.view.ViewMapEditor;
+import darwin.darwin.utils.importexport.IOPng;
+import darwin.darwin.view.creature.ViewCreature;
+import darwin.darwin.view.mapeditor.ViewMapEditor;
 
 /**
  * General Controler

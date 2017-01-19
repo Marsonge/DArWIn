@@ -1,7 +1,7 @@
 /**
  * 
  */
-package darwin.darwin.view;
+package darwin.darwin.view.sidepanel;
 
 import java.awt.Color;
 import java.awt.Dimension;

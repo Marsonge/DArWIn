@@ -3,7 +3,7 @@ package darwin.darwin.utils;
 import java.util.Collection;
 import java.util.List;
 
-import darwin.darwin.view.ViewCreature;
+import darwin.darwin.view.creature.ViewCreature;
 
 /**
  * Wrapper class for notifying observers with several arguments

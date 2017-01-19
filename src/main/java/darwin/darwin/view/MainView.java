@@ -25,6 +25,8 @@ import darwin.darwin.utils.EndOfGameEvent;
 import darwin.darwin.utils.EndOfGameEventListener;
 import darwin.darwin.utils.TimerActionListener;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.map.ViewGrid;
+import darwin.darwin.view.sidepanel.SidePanel;
 
 /**
  * 

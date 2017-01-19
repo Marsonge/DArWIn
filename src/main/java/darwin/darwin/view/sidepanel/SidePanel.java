@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.sidepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,6 +28,8 @@ import javax.swing.JTabbedPane;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.MainView;
+import darwin.darwin.view.creature.ViewNeuralNetwork;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.creature;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

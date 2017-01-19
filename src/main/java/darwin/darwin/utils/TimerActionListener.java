@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import darwin.darwin.controler.WorldControler;
-import darwin.darwin.view.SidePanel;
+import darwin.darwin.view.sidepanel.SidePanel;
 
 public class TimerActionListener implements ActionListener{
 	

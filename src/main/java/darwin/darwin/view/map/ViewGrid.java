@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.map;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +16,7 @@ import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.EndOfGameEvent;
 import darwin.darwin.utils.EndOfGameEventListener;
 import darwin.darwin.utils.UpdateInfoWrapper;
+import darwin.darwin.view.creature.ViewCreature;
 
 public class ViewGrid extends JPanel implements Observer {
 	/**

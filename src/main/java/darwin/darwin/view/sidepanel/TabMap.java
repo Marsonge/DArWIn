@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.sidepanel;
 
 import java.awt.Dimension;
 
@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import darwin.darwin.controler.WorldControler;
+import darwin.darwin.view.MainView;
 
 public class TabMap extends JPanel {
 

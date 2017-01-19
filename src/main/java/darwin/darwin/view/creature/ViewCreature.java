@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.creature;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
 
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.map.ViewGrid;
 
 public class ViewCreature extends JLabel {
 

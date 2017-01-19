@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.sidepanel;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -18,8 +18,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
-import darwin.darwin.utils.Export;
-import darwin.darwin.utils.Import;
+import darwin.darwin.utils.importexport.Export;
+import darwin.darwin.utils.importexport.Import;
+import darwin.darwin.view.MainView;
 
 /**
  * TabImportExport

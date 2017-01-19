@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.mapeditor;
 
 import java.awt.Color;
 import java.awt.Dimension;
