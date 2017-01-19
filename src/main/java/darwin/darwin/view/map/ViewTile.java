@@ -1,4 +1,4 @@
-package darwin.darwin.view;
+package darwin.darwin.view.map;
 
 import java.awt.Color;
 import java.awt.Graphics;

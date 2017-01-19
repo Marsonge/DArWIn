@@ -1,11 +1,10 @@
-package darwin.darwin.view;
+package darwin.darwin.view.creature;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import javax.swing.border.LineBorder;
 
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.utils.Utils;
+import darwin.darwin.view.map.ViewGrid;
 
 public class ViewCreature extends JLabel {
 
@@ -39,9 +39,9 @@ public class ViewCreature extends JLabel {
 			Utils.getResource("img/creature7.png")
 	};
 	
-	private static ArrayList<BufferedImage> IMAGES= null;
+	private static ArrayList<Image> IMAGES= null;
 	
-	public ViewCreature(int size, int x, int y, float speed, WorldControler wc, ViewGrid vg){
+	public ViewCreature(int size, int x, int y, double speed, WorldControler wc, ViewGrid vg) {
 		super();
 		this.size = size;
 		this.setLocation(x,y);
@@ -49,23 +49,24 @@ public class ViewCreature extends JLabel {
 		this.y = y;
 		this.wc = wc;
 		this.vg = vg;
-		this.setSize(size,size);
+		this.setSize(size+4,size+4);
 		/* Getting all the images only once
 		 * Because ImageIO.read(URL) is so slow
 		 */
-		if(IMAGES==null){
+		if(IMAGES==null || IMAGES.size() < 8){
 			IMAGES = new ArrayList<>();
 			try {
 				for(int i=0; i<8; i++){
-					IMAGES.add(ImageIO.read(IMAGESURL[i]));
+					Image img=ImageIO.read(IMAGESURL[i]).getScaledInstance(size,size,Image.SCALE_SMOOTH);
+					img.setAccelerationPriority(1);
+					IMAGES.add(img);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		this.img = IMAGES.get(Math.round(speed)).getScaledInstance(size,size,Image.SCALE_SMOOTH); //Resizes the image. Try to keep size a power of 2!
+		this.img = IMAGES.get((int)Math.round(speed)); //Resizes the image. Try to keep size a power of 2!
 		this.setIcon(new ImageIcon(this.img));
 		this.addMouseListener(new CreatureMouseListener());
 
@@ -74,6 +75,8 @@ public class ViewCreature extends JLabel {
 	@Override
 	public void setLocation(int x, int y) {
 		super.setLocation(x-(size/2), y-(size/2)); //Offsets the label position so that its center corresponds to the creature's coordinates
+		this.x = x;
+		this.y = y;
 	}
 	@Override
 	public void setLocation(Point p) {
@@ -87,11 +90,10 @@ public class ViewCreature extends JLabel {
 	 */
 	class CreatureMouseListener implements MouseListener{
 	   public void mouseClicked(MouseEvent e) {
-		   //TODO display creature info
 		   wc.setCurrentCreature(x, y);
-		   vg.clearBorders();
+		   System.out.println(wc.getCurrentCreature());
+		   vg.clearBorders(self);
 		   self.setBorder(new LineBorder(Color.RED, 3, true));
-		   System.out.println("current creature : " + wc.getCurrentCreature().getX() + " " + wc.getCurrentCreature().getY());
 	   }
 
 	   public void mousePressed(MouseEvent e) {
@@ -107,6 +109,22 @@ public class ViewCreature extends JLabel {
 
 	   public void mouseExited(MouseEvent e) {
 	   }
+	}
+
+	public void setWC(WorldControler wc){
+		this.wc = wc;
+	}
+	public void setVG(ViewGrid vg){
+		this.vg = vg;
+	}
+
+	public void setSpeed(double d) {
+		this.img = IMAGES.get((int)Math.round(d)); //Resizes the image. Try to keep size a power of 2!
+		this.setIcon(new ImageIcon(this.img));
+	}
+
+	public ViewGrid getVG() {
+		return vg;
 	}
 
 	
