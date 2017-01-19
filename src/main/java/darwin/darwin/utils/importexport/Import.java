@@ -1,4 +1,4 @@
-package darwin.darwin.utils;
+package darwin.darwin.utils.importexport;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,8 @@ import org.json.simple.parser.ParseException;
 import darwin.darwin.controler.WorldControler;
 import darwin.darwin.model.Creature;
 import darwin.darwin.model.NeuralNetwork;
-import darwin.darwin.view.ViewCreature;
+import darwin.darwin.utils.UpdateInfoWrapper;
+import darwin.darwin.view.creature.ViewCreature;
 
 public class Import {
 
