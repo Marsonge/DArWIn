@@ -155,13 +155,13 @@ public class Grid {
 		else if(c.getRGB() == Terrain.MOUNTAINS.getRGB() || 
 		  (c.getBlue() == Terrain.MOUNTAINS.getBlueValue() 
 		  && c.getRed() == Terrain.MOUNTAINS.getRedValue() 
-		  && c.getGreen() <= 130 && c.getGreen() >= 115)){
+		  && c.getGreen() <= 135 && c.getGreen() >= 110)){
 			tileGrid[i][j] = new Tile(Terrain.MOUNTAINS,c.getRed(),c.getGreen(),c.getBlue(),i,j);
 		}
 		else if(c.getRGB() == Terrain.WOODS.getRGB() || 
 			   (c.getBlue() == Terrain.WOODS.getBlueValue() 
 			   && c.getRed() == Terrain.WOODS.getRedValue() 
-			   && c.getGreen() <= 180 && c.getGreen() >= 115)){
+			   && c.getGreen() <= 185 && c.getGreen() >= 110)){
 			tileGrid[i][j] = new Tile(Terrain.WOODS,c.getRed(),c.getGreen(),c.getBlue(),i,j);
 		}
 		else if(c.getRGB() == Terrain.SAND.getRGB()){

@@ -20,7 +20,7 @@ public class Creature implements Cloneable {
 	private double speed;
 	private NeuralNetwork nn;
 	private int rot = 0;
-	private int previousRot = 0;
+	private float previousRot = 0;
 	private static final int MAXSPEED = 7;
 	private static long idmax = 0;
 	
@@ -79,12 +79,13 @@ public class Creature implements Cloneable {
 		for (int i = 0; i < 15; i++) {// Normalize input : Colors
 			input[i] = ((double) intput[i]) / (255);
 		}
-		input[15] = (float)this.previousRot/180;
+		System.out.println();
+		input[15] = this.previousRot/180;
 		input[16] = (float)this.energy/150;
 		double result[] = this.nn.compute(input);
 		this.speed = getShortSigmoid(result[0])*MAXSPEED;
 		this.rot = (int) (this.rot + ((getLargeSigmoid(result[1])-0.5)*360))%360;
-		this.previousRot = (int) (getLargeSigmoid(result[1])-0.5)*360;
+		this.previousRot = (float) ((getLargeSigmoid(result[1])-0.5)*360);
 	}
 
 	private double getShortSigmoid(double f) {
