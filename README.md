@@ -1,6 +1,6 @@
 # DArWIn
 
-[![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
+[![Licence GPL](http://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
 
 
 # THIS README IS NOT UP-TO-DATE : WIP 2.0
