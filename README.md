@@ -2,6 +2,8 @@
 
 [![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
 
+
+# THIS README IS NOT UP-TO-DATE : WIP 2.0
 Darwin: Artificial Wildlife Intelligence
 
 <b> Page web officielle : </b> https://marsonge.github.io/DArWIn/
